@@ -1,0 +1,165 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">  #{labels['quest.vaprosi']} </ui:define> 
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	
+	
+	<style>
+	    .marker .ui-icon-carat-1-s {
+		    background-position: -16px -80px;
+		}
+	</style>
+	
+		<ui:remove><h:form>
+			 <p:remoteCommand name="rcQL" actionListener="#{questDataList.changePage()}" immediate="true" update="@this"/> 
+		</h:form></ui:remove>
+	
+		<h:form id="formQuestList" >
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			<p:tooltip/>
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{labels['quest.quest']}</h3>
+ 				</div>
+ 			 </div>	
+			
+			<div class="container"> 
+				<div class="container-white">
+				
+				<p:focus context="panelSearch"/>	
+									
+				<p:panel header="#{labels['global.criteriaFind']}:"  toggleable="true" toggleOrientation="vertical" styleClass="marker" id="panelSearch">
+        			
+					<div  onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('formQuestList:bnt_search').click()}">
+					    <div class="p-grid" >
+							<div class="p-col-12 p-md-2" align="right" >
+								<p:outputLabel for="idGrupaText" value="#{labels['quest.grupa']}:"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+			           		<div class="ui-inputgroup">
+			           			<p:inputText value="#{questDataList.grupaText}"  id="idGrupaText" readonly="true"  tabindex="1"/>
+								<ibg:selectOneModal  
+									header="#{labels['quest.izbGrupa']}"   
+									userId="#{questDataList.idUser}"  
+									lang="1"   
+					 	            saveStateTree="true"  
+					 	            isSelectNode="true"  
+					 	            withBtnClear="true"
+					 	            expanded="false"
+					 	            id="idOneModGrupa"
+					 		        codeClassif="#{IBConstants.CODE_SYSCLASS_QUEST_GRUPA}"     
+					 		        update="formQuestList:idGrupaText"  
+					 		        selectedCode="#{questDataList.codeGrupa}" 
+					 		        selectedText="#{questDataList.grupaText}"/>
+							</div>
+							</div>
+					    </div>
+					    
+	
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="#{labels['quest.quest']}:" />
+							</div>
+							<div class="p-col-12 p-md-10" align="right">
+								<p:inputText id="idQuest" value="#{questDataList.questF}"/>
+							</div>
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<p:outputLabel  value="#{labels['quest.ready']}:"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+				           		<div class="ui-inputgroup">
+				           			<p:selectBooleanCheckbox value="#{questDataList.codeStatus}" />
+								</div>
+							</div>
+					    </div>
+						
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-6" align="left">
+	        					<p:commandButton id="bnt_clear" update="formQuestList" action="#{questDataList.actionClear}" 
+								icon="fa fa-fw fa-eraser" value="#{labels['general.clear']}" title="#{labels['general.clear']}" tabindex="-1"/>
+							</div>
+		        			<div class="p-col-12 p-md-6" align="right">	
+	        					<p:commandButton id="bnt_search" update="formQuestList" action="#{questDataList.actionFind}" 
+								icon="fa fa-fw fa-search" value="#{labels['general.search']}" title="#{labels['general.search']}"/>
+		        				
+        					</div>
+        				</div>
+					    
+				    </div>
+				    </p:panel>
+		    		<br/>
+				    <p:toolbar>
+        				<f:facet name="left">
+        					<h:outputText value="#{labels['quest.vaprosi']}" />
+							<h:outputText value="(#{questDataList.questListT.rowCount})"/>
+        				</f:facet>
+        				<f:facet name="right">
+        					<p:commandButton id="btnNewQuest" action="questData.jsf" ajax="false"
+								icon="ui-icon-document" value="#{labels['quest.new']}" title="#{labels['quest.new']}" >
+							</p:commandButton>
+        				</f:facet>
+        			</p:toolbar>
+				    
+				    <br/>
+				    
+				    	<p:dataTable var="row" value="#{questDataList.questListT}" id="tableQuest" reflow="true" 
+							rendered="#{questDataList.questListT.rowCount > 0}" lazy="true" 
+							rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" 
+							rows="10" paginator="true" paginatorPosition="bottom" 
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							style="margin-bottom:20px">
+							
+							<p:column headerText="#{labels['quest.grupa']}" width="20%" sortBy="#{row.A1}" >
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_QUEST_GRUPA, row[1], questDataList.currentLang, questDataList.currentDate, questDataList.idUser)}" />
+							</p:column>
+
+							<p:column headerText="#{labels['quest.ready']}" width="10%" sortBy="#{row.A1}" style="text-align:center;">
+								<h:outputText value="#{systemData.decodeItem(IBConstantsSys.CODE_CLASSIF_DANE, row[3], questDataList.currentLang, questDataList.currentDate, questDataList.idUser)}" />
+							</p:column>
+							
+							<p:column headerText="#{labels['quest.quest']}" width="65%" sortBy="#{row.A2}" >												
+								<h:outputText value="#{row[2]}" escape="false"/>	
+							</p:column>
+		
+							<p:column style="text-align:center;" width="5%" >
+								<f:facet name="header"/>
+								<p:commandButton  icon="fa fa-fw fa-edit"  actionListener="#{questDataList.changePage()}" ajax="false" title="#{labels['general.edit']}" action="questData.jsf">
+								 	<f:param name="idQuest" value="#{row[0]}" />
+								</p:commandButton>
+								
+							</p:column>
+
+						</p:dataTable>
+				    
+				  </div>
+			</div>
+				
+
+		</h:form>
+		
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

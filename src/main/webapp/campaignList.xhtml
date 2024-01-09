@@ -1,0 +1,280 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,104)}" />		   
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 68, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{campaignList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+	
+		<h:form id="campForm">
+			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			
+			<h:inputHidden value="#{campaignList.pageHidden}" />
+			
+			<!-- TITLE -->
+				<div class="title-page">
+					<div class="container">	 
+						<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 68, environment.currentLang, null, null)}</h3>
+					</div>
+				</div>	
+
+			<div class="container">
+				<p:focus context="panelData"/>
+				<p:outputPanel id="panelData">	
+					<div class="container-white"  onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('campForm:btnSearch').click()}">	
+										
+					<p:panel header="#{labels['general.search']}" style="margin-bottom:10px" toggleable="true" toggleOrientation="vertical" styleClass="marker">
+						<div class="p-grid ">
+							<div class="p-col-12 p-md-12 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['general.name']}: " />
+							</div>
+								
+							<div class="p-col-12 p-md-12 p-lg-9">
+			                    <p:inputText id="name"  value="#{campaignList.nameCamp}" />			                       
+		                    </div>
+													
+							<div class="p-col-12 p-md-12 p-lg-3 cc-right" >
+									<h:outputText value="#{labels['general.status']}: " />
+							</div>
+		 
+							<div class="p-col-12 p-md-12 p-lg-4 ui-fluid" >	
+								
+								<p:selectCheckboxMenu id="status"  value="#{campaignList.status}" multiple="true"  >
+								 
+									<f:selectItems  value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_CAMPAIGN_STATUS, campaignList.today, campaignList.currentLang, campaignList.userId)}"
+										 var="itemSc" itemLabel="#{itemSc.tekst}" itemValue="#{itemSc.code}"/>
+								</p:selectCheckboxMenu>		
+																		
+							</div>
+														
+							<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+								<h:outputText value="#{labels['userEdit.dateStat']}: "  />
+							</div>
+	
+							<div class="p-col-12 p-md-6 p-lg-2">											
+	    							<p:calendar id="dateStatus" locale="bg" value="#{campaignList.dateStatus}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>
+  
+							</div>
+																				                   
+	                    	<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.beginDateApply']}: "  />
+							</div>
+	
+							<div class="p-col-12 p-md-6 p-lg-2">											
+	    							<p:calendar id="begDate" locale="bg" value="#{campaignList.dateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>									  
+							</div>
+							<div class="p-col-12 p-md-6 p-lg-2">	
+							</div>
+							<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.endDateApply']}: " />
+							</div>
+	
+							<div class="p-col-12 p-md-6 p-lg-2">											
+	    							<p:calendar id="endDate" locale="bg" value="#{campaignList.dateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>
+
+							</div>
+							<ui:remove>
+							<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+								<h:outputText value="#{labels['campaign.rankingDate']}: "  />
+							</div>
+	
+							<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="dateRaking" locale="bg" value="#{campaignList.dateFirsRank}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>
+  
+							</div>
+							<div class="p-col-12 p-md-6 p-lg-6">
+							</div>
+	                              
+	                        <div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['campaign.beginDateConf']}:"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">
+								 <p:calendar id="dateOtConf" pattern="dd.MM.yyyy" mask="true"  showOn="button" timeZone="#{campaignList.timeZone}" size="10" locale="bg" 
+							         	value="#{campaignList.confDateFrom}" label="#{labels['campaign.beginDateConf']}"  />						      
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['campaign.endDateConf']}:"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">
+								<p:calendar id="dateDoConf" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{campaignList.timeZone}" size="10" locale="bg" 
+						         	value="#{campaignList.confDateTo}" label="#{labels['campaign.endDateConf']}" />
+							   
+							</div> 
+							</ui:remove>
+							
+						
+					
+						</div>
+						<div class="p-grid">		
+							<div class="p-col-12 p-md-10 p-lg-10 cc-left">
+					 				<p:commandButton action="#{campaignList.actionClear()}" value="#{labels['general.clear']}"  id="btnClear" update="campForm:panelData campForm:panelTable"
+					 					tabindex="-1"/> 
+							</div>
+		 
+						    <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+							        <p:commandButton action="#{campaignList.actionSearch()}" value="#{labels['general.search']}" icon="fa fa-search" id="btnSearch" update="campForm:panelTable" 
+							     />
+							</div>
+						</div>
+					
+					</p:panel>	
+				</div>
+				</p:outputPanel>
+
+			</div>
+					<br />
+				<div class="container-white">	
+					<p:panel  id="panelTable" >
+					
+					    <f:facet name="header" >
+					    	<h:outputText value="#{labels['general.result']}: #{campaignList.campList.getRowCount()} " styleClass="form-label" rendered="#{campaignList.campList.getRowCount() > 0}"/>
+							
+							<span class="p-mx-2" jsf:rendered="#{campaignList.campList.rowCount > 0}"> 
+								<span class="fas fa-ellipsis-v" />
+							</span>	
+							
+							<p:spacer width="5"/>	
+							<p:commandButton  icon="fa fa-fw fa-plus" action="campaign.jsf" ajax="false"
+							 	styleClass="button-green" title="#{labels['general.new']}" value="#{labels['general.new']}"/>
+						</f:facet>	
+			 						 	
+					 	 <p:dataTable id="tbl" var="row" value="#{campaignList.campList}" lazy="true" rows="15"
+							rowIndexVar="idx" sortMode="single" reflow="true" rendered="#{campaignList.campList!=null}"
+							emptyMessage="" 
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+							paginator="true" style="margin-bottom:20px">
+
+                             <f:facet name="{Exporters}">
+                                 <h:commandLink >
+                                     <p:graphicImage library="images" name="excel.png" width="24"/>
+                                     <p:dataExporter type="xls" target="tbl" fileName="app" encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="csv.png" width="24"/>
+                                     <p:dataExporter type="csv" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="xml.png" width="24"/>
+                                     <p:dataExporter type="xml" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                             </f:facet>
+
+
+                             <p:column style="text-align: center" width="30">
+								<f:facet name="header">
+					                 No
+					            </f:facet>
+								<h:outputText value="#{idx + 1}" />
+							</p:column>
+							
+							<p:column style="text-align: center" width="50" exportable="false">							
+								 <p:commandButton icon="fa fa-fw fa-edit" action="campaign.jsf"  ajax="false" title="#{labels['general.izbor']}"  onclick="rc()" >
+								 	<f:param name="idObj" value="#{row[0]}" />							   
+								 </p:commandButton>  					
+					        </p:column>
+					        
+					        <p:column  sortBy="#{row.A1}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['general.name']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[1]}" />	
+							</p:column>	
+							
+
+							<p:column width="90" sortBy="#{row.A2}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.status']}" />
+								</f:facet>
+									<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_CAMPAIGN_STATUS, row[2], campaignList.currentLang, campaignList.today, campaignList.userId)}" />
+							</p:column>
+							
+							<p:column width="130" sortBy="#{row.A3}">
+								<f:facet name="header">
+									 <h:outputText  value="#{labels['userEdit.dateStat']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[3]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{campaignList.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+																												
+							<p:column width="200" sortBy="#{row.A4}">
+								<f:facet name="header">
+									 <h:outputText  value="#{labels['campaign.beginDateApply']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[4]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{campaignList.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column width="200" sortBy="#{row.A5}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['campaign.endDateApply']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[5]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{campaignList.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column width="220" sortBy="#{row.A6}">
+								<f:facet name="header">
+									 <h:outputText  value="#{labels['campaign.rankingDate']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[6]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{campaignList.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column width="200" sortBy="#{row.A7}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['campaign.beginDateConf']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[7]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{campaignList.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column width="200" sortBy="#{row.A8}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['campaign.endDateConf']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[8]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{campaignList.timeZone}"/>
+								</h:outputText>
+							</p:column>					 
+
+						</p:dataTable>
+
+			         </p:panel>
+		</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

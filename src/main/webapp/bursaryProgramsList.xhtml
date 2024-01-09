@@ -1,0 +1,240 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,62)}" />		   
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 35, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{bursaryProgramsList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+	
+		<h:form id="exhibitionForm">
+			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			
+			<h:inputHidden value="#{bursaryProgramsList.pageHidden}" />
+			
+			<!-- TITLE -->
+				<div class="title-page">
+					<div class="container">	 
+						<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 35, environment.currentLang, null, null)}</h3>
+					</div>
+				</div>	
+
+			<div class="container">
+				<p:focus context="panelData"/>
+				<p:outputPanel id="panelData">	
+					<div class="container-white"  onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('exhibitionForm:btnSearch').click()}">	
+					
+					<p:panel header="#{labels['general.search']}" style="margin-bottom:10px" toggleable="true" toggleOrientation="vertical" styleClass="marker">
+						<div class="p-grid">
+						
+						
+							<div class="p-col-12 p-md-2 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.period']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-3">
+								<p:selectOneMenu id="idPer" value="#{bursaryProgramsList.period}" >
+		                             <f:selectItem value="#{null}" itemValue="#{null}"/>          
+		                             <f:selectItems  value="#{bursaryProgramsList.periodList}"  var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+		                             <p:ajax event="change" update="exhibitionForm:idPer exhibitionForm:dateOt exhibitionForm:dateDo" listener="#{bursaryProgramsList.changePeriod}"/>   
+		                        </p:selectOneMenu>
+	                        </div>
+	                                
+	                        <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.dataOt']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								 <p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true"  showOn="button" timeZone="#{bursaryProgramsList.timeZone}" size="10" locale="bg" 
+							         	value="#{bursaryProgramsList.dateFrom}" label="#{labels['publ.dateFrom']}"  />
+							      <p:message for="dateOt" showDetail="true" showSummary="true" display="tooltip">
+							      		<p:autoUpdate/>
+							      </p:message>
+							</div>
+							
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.dataDo']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-3">
+								<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{bursaryProgramsList.timeZone}" size="10" locale="bg" 
+						         	value="#{bursaryProgramsList.dateTo}" label="#{labels['publ.dateTo']}" />
+							     <p:message for="dateDo" showDetail="true" showSummary="true" display="tooltip">
+							     	 <p:autoUpdate/>
+							     </p:message> 
+							</div> 
+							
+							
+							<div class="p-col-12 p-md-6 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['bursary.subject']}:"/>
+							</div>
+							<div class="p-col-12 p-md-6 p-lg-3">
+								<p:inputText id="spec" value="#{bursaryProgramsList.spec}" >  
+    							 	
+    							</p:inputText>    
+	                        </div>
+	                        
+							<div class="p-col-12 p-md-6 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.admStruc']}:" />
+							</div>
+							<div class="p-col-12 p-md-6 p-lg-6">
+							
+							 <div class="ibg-modal-button">
+							     <h:panelGroup rendered="#{bursaryProgramsList.admin}">
+									<p:inputText value="#{bursaryProgramsList.admText}" id="admStr" readonly="true" />
+				                	<ibg:selectOneModal header="#{labels['general.admStruc']}" userId="#{bursaryProgramsList.userId}" lang="#{bursaryProgramsList.currentLang}" 
+							 	 			saveStateTree="true" isSelectNode="true" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_ADM_REGISTER}"     
+							 				update="exhibitionForm:admStr" selectedCode="#{bursaryProgramsList.admStr}" selectedText="#{bursaryProgramsList.admText}"  />
+						 		 </h:panelGroup>
+						 		 <h:panelGroup rendered="#{!bursaryProgramsList.admin}">
+									<p:inputText  value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, bursaryProgramsList.admStr, bursaryProgramsList.currentLang, bursaryProgramsList.today, bursaryProgramsList.userId)}" readonly="true"/>	                        
+						 		 </h:panelGroup>
+						 	 </div> 
+							
+							
+	                        </div>
+				
+						</div>
+						<div class="p-grid">		
+							<div class="p-col-12 p-md-10 p-lg-10 cc-left">
+					 				<p:commandButton action="#{bursaryProgramsList.actionClear()}" value="#{labels['general.clear']}"  id="btnClear" update="exhibitionForm:panelData"
+					 				tabindex="-1"/> 
+							</div>
+		 
+						    <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+							        <p:commandButton action="#{bursaryProgramsList.actionSearch()}" value="#{labels['general.search']}" icon="fa fa-search" id="btnSearch" update="exhibitionForm:panelData" />
+							</div>
+						</div>
+					
+					</p:panel>	
+					 
+					<br />
+					
+					<p:panel  id="panelTable" >
+					
+					    <f:facet name="header" >
+					    	<h:outputText value="#{labels['general.result']}: #{bursaryProgramsList.bursaryList.getRowCount()} " styleClass="form-label" rendered="#{bursaryProgramsList.bursaryList.getRowCount() > 0}"/>
+							
+							<span class="p-mx-2" jsf:rendered="#{bursaryProgramsList.bursaryList.rowCount > 0}"> 
+								<span class="fas fa-ellipsis-v" />
+							</span>	
+							
+							<p:spacer width="5"/>	
+							<p:commandButton  icon="fa fa-fw fa-plus" action="bursaryPrograms.jsf" ajax="false" rendered="#{!bursaryProgramsList.admin}" 
+							 	styleClass="button-green" title="#{labels['general.new']}" value="#{labels['general.new']}"/>
+						</f:facet>	
+			 						 	
+					 	 <p:dataTable id="tbl" var="row" value="#{bursaryProgramsList.bursaryList}" lazy="true" rows="15"
+							rowIndexVar="idx" sortMode="single" reflow="true" rendered="#{bursaryProgramsList.bursaryList!=null}"
+							emptyMessage="" 
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+							paginator="true" style="margin-bottom:20px">
+
+                             <f:facet name="{Exporters}">
+                                 <h:commandLink >
+                                     <p:graphicImage library="images" name="excel.png" width="24"/>
+                                     <p:dataExporter type="xls" target="tbl" fileName="app" encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="csv.png" width="24"/>
+                                     <p:dataExporter type="csv" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="xml.png" width="24"/>
+                                     <p:dataExporter type="xml" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                             </f:facet>
+
+
+                             <p:column style="text-align: center" width="5">
+								<f:facet name="header">
+					                 No
+					            </f:facet>
+								<h:outputText value="#{idx + 1}" />
+							</p:column>
+							
+							<p:column style="text-align: center" width="25" exportable="false">							
+								 <p:commandButton icon="fa fa-fw fa-edit" action="bursaryPrograms.jsf"  ajax="false" title="#{labels['general.izbor']}"  onclick="rc()" >
+								 	<f:param name="idObj" value="#{row[0]}" />							   
+								 </p:commandButton>  					
+					        </p:column>
+
+							<p:column width="110" sortBy="#{row.A1}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.admStruc']}" />
+								</f:facet>
+									<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, row[1], bursaryProgramsList.currentLang, bursaryProgramsList.today, bursaryProgramsList.userId)}" />
+							</p:column>
+							
+							<p:column width="80" sortBy="#{row.A2}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['bursary.subject']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[2]}" />	
+							</p:column>		
+													
+							<p:column width="30" sortBy="#{row.A3}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['bursary.size']}" />
+								</f:facet>
+									<h:outputText value="#{row[3]}" />
+							</p:column>
+							<p:column width="33" sortBy="#{row.A4}">
+								 <f:facet name="header">
+									 <h:outputText value="#{labels['bursary.num']}" />
+								 </f:facet>
+									<h:outputText value="#{row[4]}" />
+							 </p:column>							
+							
+							<p:column width="50" sortBy="#{row.A5}">
+								<f:facet name="header">
+									 <h:outputText  value="#{labels['bursary.dateFrom']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[5]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{bursaryProgramsList.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column width="50" sortBy="#{row.A6}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['bursary.dateTo']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[6]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{bursaryProgramsList.timeZone}"/>
+								</h:outputText>
+							</p:column>						 
+
+						</p:dataTable>
+
+			         </p:panel>
+			         </div>
+				</p:outputPanel>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

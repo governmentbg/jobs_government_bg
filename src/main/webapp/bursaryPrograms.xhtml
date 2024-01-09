@@ -1,0 +1,332 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,62)}" />		   
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 35, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<style type="text/css">
+			.ui-fileupload-buttonbar {
+				margin: 0 0 0 0 !important;
+				padding: 0 0 0 0 !important;
+				border: none;
+				position: relative;
+				background-color: transparent;
+			}
+
+			.ui-fileupload {
+				margin: 0 0 0 0 !important;
+				padding: 0 0 0 0 !important;
+				display: inline-block;
+				border: none;
+
+			}
+
+			.ui-fileupload-content {
+				border: none;
+				padding: 0 !important;
+			}
+
+			.ui-fileupload-files {
+				display: none;
+			}
+		</style>
+
+		<p:tooltip />
+		<h:form id="exhbForm">
+		 
+		 			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			
+			<!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+						<div class="p-col-fixed back-col">
+							<p:link outcome="bursaryProgramsList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					     <div class="p-col">  
+							<h3 class="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 35, environment.currentLang, null, null)}</h3>
+						 </div>
+					</div>
+				</div>
+			</div>	
+		
+			<div class="container">
+				<p:focus context="panelBursary"/>
+				<p:outputPanel id="panelData">
+					<div class="container-white">
+				
+					<br />
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton id="bntSave" action="#{bursaryBean.actionSave}"  update="exhbForm:panelData "  icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+						<f:facet name="right">
+							<ibg:compObjAudit id="compJ" idObj="#{bursaryBean.bursary.id}" codeObj="#{IBConstants.CODE_OBJECT_BURSARY}" />
+						</f:facet>
+					</p:toolbar>					
+					<br />
+					
+					<p:panel style="margin-bottom:10px" id="panelBursary">
+                        
+							<div class="p-grid" >	
+								<ui:remove> <!-- Скрито на 04.08.2023 по искане  на МС-->
+								 <h:panelGroup rendered="#{bursaryBean.admin}">
+									<div class="up-col-12 p-md-12 p-lg-2 cc-right" >
+										<h:outputText value="#{labels['bursary.obobrqvane']}: " styleClass="req"/>
+									</div>
+								    <div class="p-col-12 p-md-12 p-lg-10">
+										<p:inputSwitch value="#{bursaryBean.odobrena}" onLabel="Да" offLabel="Не">
+								            <p:ajax listener="#{bursaryBean.addMessage}" />
+								        </p:inputSwitch>							
+		                            </div>						
+								 </h:panelGroup>
+								 </ui:remove>
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['general.admStruc']}: " styleClass="req"/>
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-4">
+			                        <p:inputText id="admStr" disabled="#{bursaryBean.admin}" value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, bursaryBean.bursary.administration, bursaryBean.currentLang, bursaryBean.today, bursaryBean.userId)}" readonly="true"/>
+			                        <p:message for="admStr" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>    
+		                        </div>
+													
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['bursary.subject']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-4">											
+	    							<p:inputText id="spec" value="#{bursaryBean.bursary.subject}" disabled="#{bursaryBean.admin}">  
+	    							 	
+	    							</p:inputText>   
+	    							
+	    							<p:message for="spec" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>                        
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['bursary.size']}: " styleClass="req" />
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-4">		
+									<p:inputNumber id="razmer" min="0" maxlength="4" decimalPlaces="0" thousandSeparator="" value="#{bursaryBean.bursary.bursary}" label="#{labels['bursary.size']}"  disabled="#{bursaryBean.admin}"/>									
+	    						    
+	    							<p:message for="razmer" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>                        
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['bursary.num']}: " styleClass="req" />
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-4">											
+	    						
+	    							<p:inputNumber id="broi" min="0" maxlength="4" decimalPlaces="0" thousandSeparator="" value="#{bursaryBean.bursary.num}" label="#{labels['bursary.num']}"  disabled="#{bursaryBean.admin}"/>									
+	    						    
+	    							<p:message for="broi" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>                            
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['bursary.dateFrom']}: " styleClass="req" />
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-4">											
+	    							<p:calendar id="dateFrom" locale="bg" value="#{bursaryBean.bursary.dateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy" disabled="#{bursaryBean.admin}"/>
+									<p:message for="dateFrom" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['bursary.dateTo']}: " />
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-4">											
+	    							<p:calendar id="dateTo" locale="bg" value="#{bursaryBean.bursary.dateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy" disabled="#{bursaryBean.admin}"/>
+								</div>
+								<ui:remove>
+								<h:panelGroup rendered="#{!bursaryBean.admin}">
+								
+									<div class="up-col-12 p-md-6 p-lg-2 cc-right" >
+										<h:outputText value="#{labels['general.status']}: " styleClass="req"/>
+										
+									</div>	
+											
+									<div class="p-col-12 p-md-6 p-lg-10">									
+										<p:selectOneMenu  height="300px" value="#{bursaryBean.bursary.status}" id="status" disabled="true" >										     
+				                             <f:selectItem value="#{null}" itemValue="#{null}"/> 
+				                              <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_STATUS_BURSARY  , bursaryBean.today, bursaryBean.currentLang, bursaryBean.userId)}" 
+		                                    			   var="status" itemLabel="#{status.tekst}" itemValue="#{status.code}" />	       				                          
+				                        </p:selectOneMenu>
+				            			                        
+			                        </div>
+			                        
+		                        </h:panelGroup>
+		                        </ui:remove>
+		                        <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['general.dopalnitelnaInformacia']}: " />
+								</div>
+								
+								<div class="p-col-12 p-md-10">
+									<p:textEditor id="addInfo" value="#{bursaryBean.bursary.addInfo}" height="190" 
+										secure="true" readonly="#{bursaryBean.admin}" toolbarVisible="#{!bursaryBean.admin}">
+					  				<f:facet name="toolbar">
+					  					<span class="ql-formats">
+											<select	class="ql-size" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-bold" />
+											<button class="ql-italic" />
+											<button class="ql-underline" />
+											<button class="ql-strike" />
+										</span>
+										<span class="ql-formats"> 
+											<select class="ql-color" />
+											<select class="ql-background" />
+										</span>
+										<span class="ql-formats">
+											<select class="ql-align" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-script" value="sub" />
+											<button class="ql-script" value="super" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-header" value="1" />
+											<button class="ql-header" value="2" />
+											<button class="ql-blockquote" />
+											<button class="ql-code-block" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-list" value="ordered" />
+											<button class="ql-list" value="bullet" />
+											<button class="ql-indent" value="-1" />
+											<button class="ql-indent" value="+1" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-link" />
+										</span>
+					  				</f:facet>
+					  			</p:textEditor>
+								<p:message for="addInfo"  display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+								</div>
+								
+						</div>
+							
+					</p:panel>	 				
+										
+					<br/>
+					
+					<p:panel header="#{labels['general.attachedDoc']}" style="margin-bottom:10px">
+					
+						<div class="p-grid">
+						
+						<div class="p-col-12 p-md-12 p-lg-12">
+							<p:fileUpload id="filesUpload" listener="#{bursaryBean.uploadFileListener}"  label="" skinSimple="true" update="fileList" auto="true"
+											   allowTypes="/(\.|\/)(pdf)$/" invalidSizeMessage="#{labels['general.invalidFileSize']}" 
+					    					  invalidFileMessage="#{labels['general.InvalidTypeOnlyPdf']}" mode="advanced"/>
+											  							
+							<p:tooltip for="filesUpload" value="#{labels['file.upload']}" />
+							
+						</div>	
+
+						<div class="p-col-12 p-md-12 p-lg-12">	
+							
+							 <p:dataTable id="fileList" var="row" value="#{bursaryBean.filesList}" reflow="true" 
+							 			  rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" rows="10" style="margin-bottom:10px" paginator="true" 
+							 			  paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+							      
+							        <p:column headerText="#{labels['general.No-symbol']}" width="40">
+										<h:outputText value="#{rkv + 1}" />
+									</p:column>
+									
+									 <p:column headerText="" width="60">									           	
+								        <p:commandButton ajax="false" actionListener="#{bursaryBean.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+								     </p:column>
+									
+							       	<p:column headerText="#{labels['file.filename']}" width="30%" >
+							       		 <h:outputText value="#{row.filename}" />     
+							         </p:column>
+							       	
+							       <p:column headerText="#{labels['file.description']}" width="60%" >									   
+							            <p:inputText value="#{row.description}" />									            								           
+							       </p:column>				       
+											
+									<p:column headerText="" width="60" exportable="false">
+										<p:commandButton action="#{bursaryBean.remove(row)}" update="fileList" icon="fa fa-fw fa-trash" style="color: #d90000;" title="#{labels['general.delete']}"
+														 onclick="if(!confirm('#{labels['file.confirmDeleteFile']}'))return false;">
+											<f:param name="idObjDel" value="#{row.id}" />																					
+										</p:commandButton>
+									</p:column>
+							  
+							   </p:dataTable>
+							   
+							    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+							   </p:confirmDialog>	
+								
+							</div>
+						</div>
+					</p:panel>		
+					
+					<br/>
+					
+					<p:toolbar>
+					
+						<f:facet name="left">
+							<p:commandButton id="bntSaveDown"   action="#{bursaryBean.actionSave}" update="exhbForm:panelData "  icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+						
+						<f:facet name="right">
+							<p:commandButton id="bntDelete"  action="#{bursaryBean.actionDelete}" rendered="#{bursaryBean.bursary.id!=null and !bursaryBean.admin}"
+							 style="color: #d90000;" icon="fa fa-fw fa-trash"  value="#{labels['general.delete']}" update="exhbForm:panelData" >
+								<p:confirm header="#{labels['general.delete']}" message="#{labels['general.confirm']}" icon="ui-icon-alert" />
+							</p:commandButton>
+						</f:facet>
+						
+						
+					</p:toolbar>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
+				    </div>
+				</p:outputPanel>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

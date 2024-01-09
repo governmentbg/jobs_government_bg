@@ -1,0 +1,117 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,69)}" />		   
+</f:metadata>
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 37, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:tooltip />
+		<h:form id="contactsForm">
+		 
+		 	<!-- TITLE -->
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 37, environment.currentLang, null, null)}</h3>
+				</div>
+			</div>			
+					
+			<div class="container">
+			
+			 <p:focus context="panelData"/>	
+
+				<p:outputPanel id="panelData">
+				    <div class="container-white">
+					<br />
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton id="bntSave" action="#{contactsBean.actionSave}" update="contactsForm:panelData" icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+					</p:toolbar>					
+					<br />
+					
+					<p:panel style="margin-bottom:10px">
+                        
+							<div class="p-grid" >	
+																
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['general.email']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-10">											
+	    							<p:inputText id="email" value="#{contactsBean.contacts.emails}" >  
+	    							 	
+	    							</p:inputText>    
+	    							<p:message for="email" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>     	                   
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['general.telefon']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-10">											
+	    							<p:inputText value="#{contactsBean.contacts.phones}" id="telefon" /> 
+	    							<p:message for="telefon" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>     	                        
+								</div>	
+								
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['general.facebook']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-10">											
+	    							<p:inputText value="#{contactsBean.contacts.fax}" id="fax" /> 
+	    							<p:message for="fax" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>     	                        
+								</div>	
+								
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['general.dopInfo']}: " />
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-10">											
+	    							<p:inputTextarea value="#{contactsBean.contacts.addInfo}" id="add_info" cols="3"/>                         
+								</div>		
+								
+						</div>
+							
+					</p:panel>	 				
+										
+					<br/>
+					
+					<p:toolbar>
+					
+						<f:facet name="left">
+							<p:commandButton id="bntSaveDown"   action="#{contactsBean.actionSave}" update="contactsForm:panelData" icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+				
+					</p:toolbar>
+					</div>
+				</p:outputPanel>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

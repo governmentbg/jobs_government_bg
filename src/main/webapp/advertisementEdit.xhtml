@@ -1,0 +1,794 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+	 <f:metadata>
+	  		<f:viewAction action="#{userData.hasAccessPage(7,61)}" />		   
+	  </f:metadata>
+	  
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{labels['advertisementEdit.titleNew']}" rendered="#{advertisementEdit.adver.id == null}"/> 
+		<h:outputText value="#{labels['advertisementEdit.titleEdit']}" rendered="#{advertisementEdit.adver.id != null}"/>	
+	</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+	<ui:define name="content">
+	
+	<style>	
+		.ui-fileupload-buttonbar {
+		    margin: 0px 0px 0px 0px !important;
+		    padding: 0px 0px 0px 0px !important;
+		    border: none;
+		    position: relative;  
+		    background-color: #fff;
+		}
+		
+		.ui-fileupload {
+		    margin: 0px 0px 0px 0px !important;
+		    padding: 0px 0px 0px 0px !important;
+		    display: inline-block;
+		    border: none;
+		   
+		}
+		
+		.ui-fileupload-content { 
+		   border: none;
+		   padding: 0px !important;
+		}
+		.ui-fileupload-files {display:none;}
+		
+		.ui-selectonemenu-filter-container {
+		    width: 98% !important;
+		}	
+		
+		.button-align {
+			margin: calc(0.45em - 2px) auto;
+		}
+			
+	</style>	
+	
+	  <h:form id="formAdvertisement">	  	
+	  	  
+		  <p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  <p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+		  
+		  	<p:tooltip/>
+		  	
+		  			  	
+		  	  <!-- PAGE TITLE -->
+			  <div class="title-page back">
+				 <div class="container">
+				 	<div class="p-grid p-align-center">
+				 		<div class="p-col-fixed back-col">
+							<p:link outcome="advertisementsList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					    <div class="p-col">  	 
+							<h3 class="title">
+								<h:outputText value="#{labels['advertisementEdit.titleNew']}" rendered="#{advertisementEdit.adver.id == null}"/> 
+								<h:outputText value="#{labels['advertisementEdit.titleEdit']}" rendered="#{advertisementEdit.adver.id != null}"/>
+							</h3>
+						</div>
+					</div>
+				 </div>
+			  </div>				 
+			  			  
+			  <div class="container">
+			  
+			  <div class="container-white">	
+			 
+			  <p:focus context="panelData"/>
+			 
+			  <p:outputPanel id="panelData">
+			  
+			  		<p:toolbar>
+						<f:facet name="left">							
+							<p:commandButton id="bntSaveUp" update="formAdvertisement:panelData formAdvertisement:bntDelete" action="#{advertisementEdit.actionSave}" icon="fa fa-save" value="#{labels['general.save']}" ajax="false" styleClass="#{advertisementEdit.adver.id != null ? 'button-align' : ''}"/>							
+						</f:facet>
+						<f:facet name="right">
+							<h:panelGroup id="pJAdver" rendered="#{advertisementEdit.adver.id != null}">					
+								<ibg:compObjAudit id="compJAdver" idObj="#{advertisementEdit.adver.id}" codeObj="#{IBConstants.CODE_OBJECT_ADVERTISEMENT}" />
+							</h:panelGroup>
+						</f:facet>
+						
+						<f:facet name="right">
+							
+							<div id="shareFacebook" jsf:rendered="#{advertisementEdit.adver.id != null}">
+								<script>
+									$("#shareFacebook").jsSocials({
+									    shareIn: "popup",
+									    showLabel: false,
+									    url: "#{systemData.getSettingsValue('linkToPJobsSite')}#{advertisementEdit.adver.id}" ,
+										text: "#{labels['general.shareFacebook']}",
+									    shares: ["facebook"]										
+									});
+	   
+								</script>
+							</div>
+
+						</f:facet>
+				</p:toolbar>
+					
+					<br />
+			  		
+			  		<p:panel header="#{labels['advertisementEdit.description']}" style="margin-bottom:10px" id="description">
+			  		
+			  			<div class="p-grid">
+			  			
+			  				<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['general.admStruc']}: "  styleClass="req"/>
+							</div>
+	
+							<div class="p-col-12 p-md-10 p-lg-10">								
+								<p:inputText id="admin" value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, advertisementEdit.adver.administration, advertisementEdit.currentLang, now, advertisementEdit.userId)}" readonly="true"/>						 		
+						 	</div>
+						 	
+						 	<div class="p-col-12 p-md-2 p-lg-2">
+						 		
+						 	</div>
+						 	<div class="p-col-12 p-md-10 p-lg-10">
+						 		<p:outputLabel id="direkcia" value="#{advertisementEdit.direkcia}" style="font-style: italic;" escape="false"/> 
+						 	</div>
+						 	
+						 	<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.zveno']}: "/>
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">
+                                <div class="ibg-modal-button">
+									<p:inputText value="#{advertisementEdit.unitText}" id="zveno" readonly="true" />
+									<p:message for="zveno" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>
+				                	<ibg:selectDirAdmStruct header="#{labels['advertisement.zveno']}" userId="#{advertisementEdit.userId}" lang="#{advertisementEdit.currentLang}" 
+							 	 			saveStateTree="true" isSelectNode="true" withBtnClear="true" codeClassif="#{advertisementEdit.adver.administration}"     
+							 				update="formAdvertisement:zveno formAdvertisement:nasMestoPubl formAdvertisement:direkcia" 
+							 				selectedCode="#{advertisementEdit.unit}" selectedText="#{advertisementEdit.unitText}" />
+						 		</div>								                        
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+			  					<h:outputText value="#{labels['general.oblast']}: " styleClass="req"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-2 p-lg-2">
+			  					<p:selectOneMenu id="oblastPubl" value="#{advertisementEdit.adver.locationRegion}" autoWidth="false" filter="true" filterMatchMode="contains">
+			  					    <f:selectItem itemLabel="" itemValue="" />
+						            <f:selectItems value="#{advertisementEdit.locOblastList}" var="oblastP" itemLabel="#{oblastP.tekst}" itemValue="#{oblastP.code}"/>
+                                    <p:ajax event="change" update="formAdvertisement:description" listener="#{advertisementEdit.actionChangeLocOblast}" process="@all"/>	
+						        </p:selectOneMenu>
+						       
+						        <p:tooltip for="oblastPubl" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('oblastPubl', view).clientId)}">						        
+									<p:message for="oblastPubl"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+			  					<h:outputText value="#{labels['general.obshtina']}: " styleClass="req"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3">
+			  					<p:selectOneMenu id="obshtinaPubl" value="#{advertisementEdit.adver.locationMunicipality}" autoWidth="false" filter="true" filterMatchMode="contains">
+			  						<f:selectItem itemLabel="" itemValue="" />
+						            <f:selectItems value="#{advertisementEdit.locObshtiniList}" var="obshtinaP" itemLabel="#{obshtinaP.tekst}" itemValue="#{obshtinaP.code}"/>
+                                    <p:ajax event="change" update="formAdvertisement:description" listener="#{advertisementEdit.actionChangeLocObshtina}" process="@all"/>
+						        </p:selectOneMenu>
+						        
+						        <p:tooltip for="obshtinaPubl" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('obshtinaPubl', view).clientId)}" >
+									<p:message for="obshtinaPubl"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+			  					<h:outputText value="#{labels['general.nasMiasto']}: " styleClass="req"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3">
+			  					<p:selectOneMenu id="nasMestoPubl" value="#{advertisementEdit.adver.locationTown}" autoWidth="false" filter="true" filterMatchMode="contains">
+						             <f:selectItem itemLabel="" itemValue="" />
+						             <f:selectItems value="#{advertisementEdit.locNasMestoList}" var="nasMestoP" itemLabel="#{nasMestoP.tekst}" itemValue="#{nasMestoP.code}"/>
+						        </p:selectOneMenu>
+						        
+						        <p:tooltip for="nasMestoPubl" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('nasMestoPubl', view).clientId)}" >
+									<p:message for="nasMestoPubl"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.dlajnost']}: " styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">								
+                                <div class="ibg-modal-button">
+									<p:inputText value="#{advertisementEdit.positionText}" id="dlajnost" readonly="true" />
+									<p:message for="dlajnost" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>
+				                	<ibg:selectOneModal header="#{labels['advertisement.dlajnost']}" userId="#{advertisementEdit.userId}" lang="#{advertisementEdit.currentLang}" 
+							 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_JOBS}" dateClassif="#{advertisementEdit.adver.dateReg}"
+							 				update="formAdvertisement:dlajnost formAdvertisement:dlajNivo formAdvertisement:obrazovanie formAdvertisement:opit formAdvertisement:rang formAdvertisement:razmerZaplata" 
+							 				selectedCode="#{advertisementEdit.position}" selectedText="#{advertisementEdit.positionText}"  />
+						 		</div>                                										                        
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.profNapr']}: " styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-6 p-lg-6">
+								<p:selectOneMenu value="#{advertisementEdit.adver.professionalField}" id="profNapr" autoWidth="false" filter="true" filterMatchMode="contains">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_PROFESSIONAL_FIELD, now, advertisementEdit.currentLang, advertisementEdit.userId)}"  
+                                    			   var="profNaprJ" itemLabel="#{profNaprJ.tekst}" itemValue="#{profNaprJ.code}" />			                                    
+                                </p:selectOneMenu>
+                                 <p:tooltip for="profNapr" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('profNapr', view).clientId)}" >
+									<p:message for="profNapr"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>                                										                        
+							</div>
+							
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['advertisement.dlajNivo']}: " styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">
+								<p:selectOneMenu value="#{advertisementEdit.adver.level}" id="dlajNivo" autoWidth="false">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_POSITION_LEVEL, now, advertisementEdit.currentLang, advertisementEdit.userId)}"  
+                                    			   var="dlajNivoJ" itemLabel="#{dlajNivoJ.tekst}" itemValue="#{dlajNivoJ.code}" />
+                                    <p:ajax event="change" update="formAdvertisement:razmerZaplata" listener="#{advertisementEdit.actionChangeLevel}" process="@all"/>				                                    
+                                </p:selectOneMenu>
+                                <p:tooltip for="dlajNivo" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('dlajNivo', view).clientId)}" >
+									<p:message for="dlajNivo"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>  											                        
+							</div>	
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.tipMobil']}: " />
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">
+								<p:selectOneMenu value="#{advertisementEdit.adver.mobilityType}" id="tipMobil" autoWidth="false">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_MOBILITY_TYPE, now, advertisementEdit.currentLang, advertisementEdit.userId)}"   
+                                    			   var="tipMobilJ" itemLabel="#{tipMobilJ.tekst}" itemValue="#{tipMobilJ.code}" />			                                    
+                                </p:selectOneMenu>											                        
+							</div>
+											
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.minObrazStepen']}: " styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-4 p-lg-4">
+								<p:selectOneMenu value="#{advertisementEdit.adver.educationDegree}" id="obrazovanie" autoWidth="false">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, now, advertisementEdit.currentLang, advertisementEdit.userId)}" 
+                                    			   var="obrazJ" itemLabel="#{obrazJ.tekst}" itemValue="#{obrazJ.code}" />			                                    
+                                </p:selectOneMenu>
+                                <p:tooltip for="obrazovanie" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('obrazovanie', view).clientId)}"  >
+									<p:message for="obrazovanie"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>       											                        
+							</div>			
+							
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.minProfOpit']}: " styleClass="req"/> 
+							</div>
+							<div class="p-col-12 p-md-4 p-lg-4">
+								<p:selectOneMenu value="#{advertisementEdit.adver.experience}" id="opit" autoWidth="false">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_EXPERIENCE, now, advertisementEdit.currentLang, advertisementEdit.userId)}" 
+                                    			   var="opitJ" itemLabel="#{opitJ.tekst}" itemValue="#{opitJ.code}" />
+                                    <p:ajax event="change" update="formAdvertisement:razmerZaplata" listener="#{advertisementEdit.actionChangeExperience}" process="@all"/>			                                    
+                                </p:selectOneMenu>
+                                <p:tooltip for="opit" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('opit', view).clientId)}" >
+									<p:message for="opit"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>  											                        
+							</div>									
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.rang']}: " styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:selectOneMenu value="#{advertisementEdit.adver.rank}" id="rang" autoWidth="false">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_RANK, now, advertisementEdit.currentLang, advertisementEdit.userId)}" 
+                                    			   var="rangJ" itemLabel="#{rangJ.tekst}" itemValue="#{rangJ.code}" />			                                    
+                                </p:selectOneMenu>
+                                <p:tooltip for="rang" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('rang', view).clientId)}" >
+									<p:message for="rang"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>  											                        
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.minRazmerNaOsnZapl']}: " styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:inputNumber value="#{advertisementEdit.adver.salary}" id="razmerZaplata" min="0" decimalPlaces="0" style="display:block;"/>
+								<p:tooltip for="razmerZaplata" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('razmerZaplata', view).clientId)}" >
+									<p:message for="razmerZaplata"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip> 
+								
+								<ui:remove><p:selectOneMenu value="#{advertisementEdit.adver.salary}" id="razmerZaplata" autoWidth="false">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="" var="razmZaplJ" itemLabel="#{razmZaplJ.tekst}" itemValue="#{razmZaplJ.code}" />			                                    
+                                </p:selectOneMenu> </ui:remove>											                        
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.brMesta']}: " styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-1 p-lg-1">																
+								<p:inputNumber value="#{advertisementEdit.adver.num}" id="brMesta" min="0" decimalPlaces="0" style="display:block;"/>
+								<p:tooltip for="brMesta" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('brMesta', view).clientId)}" >
+									<p:message for="brMesta"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>  										                        
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['advertisement.specIziskDlaj']}: "/>
+							</div>
+	
+							<div class="p-col-12 p-md-10 p-lg-10">	
+								<p:textEditor id="specIzisk" value="#{advertisementEdit.adver.requirements}" height="190" secure="true">
+					  				<f:facet name="toolbar">
+					  					<span class="ql-formats"> 										
+											<select	class="ql-size" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-bold" />
+											<button class="ql-italic" />
+											<button class="ql-underline" />
+											<button class="ql-strike" />
+										</span>
+										<span class="ql-formats"> 
+											<select class="ql-color" />
+											<select class="ql-background" />
+										</span>
+										<span class="ql-formats">
+											<select class="ql-align" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-script" value="sub" />
+											<button class="ql-script" value="super" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-header" value="1" />
+											<button class="ql-header" value="2" />
+											<button class="ql-blockquote" />
+											<button class="ql-code-block" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-list" value="ordered" />
+											<button class="ql-list" value="bullet" />
+											<button class="ql-indent" value="-1" />
+											<button class="ql-indent" value="+1" />
+										</span>										
+										<span class="ql-formats">
+											<button class="ql-link" />
+										</span>
+					  				</f:facet>
+					  			</p:textEditor>		
+								<p:message for="specIzisk"  display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>							
+														
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['advertisement.dopIziskDlaj']}: "/>
+							</div>
+	
+							<div class="p-col-12 p-md-10 p-lg-10">	
+								<p:textEditor id="dopIzisk" value="#{advertisementEdit.adver.addInfoNew}" height="150" secure="true">
+					  				<f:facet name="toolbar">
+					  					<span class="ql-formats"> 										
+											<select	class="ql-size" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-bold" />
+											<button class="ql-italic" />
+											<button class="ql-underline" />
+											<button class="ql-strike" />
+										</span>
+										<span class="ql-formats"> 
+											<select class="ql-color" />
+											<select class="ql-background" />
+										</span>
+										<span class="ql-formats">
+											<select class="ql-align" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-script" value="sub" />
+											<button class="ql-script" value="super" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-header" value="1" />
+											<button class="ql-header" value="2" />
+											<button class="ql-blockquote" />
+											<button class="ql-code-block" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-list" value="ordered" />
+											<button class="ql-list" value="bullet" />
+											<button class="ql-indent" value="-1" />
+											<button class="ql-indent" value="+1" />
+										</span>										
+										<span class="ql-formats">
+											<button class="ql-link" />
+										</span>
+					  				</f:facet>
+					  			</p:textEditor>			
+								<p:message for="dopIzisk"  display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.nachinPodbor']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-10 p-lg-10">
+								<p:inputTextarea id="nachinPodbor" value="#{advertisementEdit.adver.selectionMode}" rows="3" />	
+								<p:message for="nachinPodbor"  display="tooltip">
+									<p:autoUpdate/>
+								</p:message>																		                        
+							</div>							
+			  			
+			  			</div>
+			  			
+			  		</p:panel>			  		
+			  		
+			  		<p:panel style="margin-bottom:10px">
+			  			<f:facet name="header">
+							<h:outputText value="#{labels['advertisement.kratkoOpisDlaj']}" styleClass="req"/>
+						</f:facet>
+			  			<p:textEditor id="opisanieDlaj" value="#{advertisementEdit.adver.description}" height="250" secure="true">
+			  				<f:facet name="toolbar">
+			  					<span class="ql-formats"> 										
+									<select	class="ql-size" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-bold" />
+									<button class="ql-italic" />
+									<button class="ql-underline" />
+									<button class="ql-strike" />
+								</span>
+								<span class="ql-formats"> 
+									<select class="ql-color" />
+									<select class="ql-background" />
+								</span>
+								<span class="ql-formats">
+									<select class="ql-align" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-script" value="sub" />
+									<button class="ql-script" value="super" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-header" value="1" />
+									<button class="ql-header" value="2" />
+									<button class="ql-blockquote" />
+									<button class="ql-code-block" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-list" value="ordered" />
+									<button class="ql-list" value="bullet" />
+									<button class="ql-indent" value="-1" />
+									<button class="ql-indent" value="+1" />
+								</span>										
+								<span class="ql-formats">
+									<button class="ql-link" />
+								</span>
+			  				</f:facet>
+			  			</p:textEditor>	
+						<p:message for="opisanieDlaj" display="tooltip">
+							<p:autoUpdate/>
+						</p:message>
+			  		</p:panel>	
+			  		
+			  		<p:panel header="#{labels['advertisement.miastoSrokPodavane']}" style="margin-bottom:10px">	
+			  		
+			  			<div class="p-grid">			  				
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.datePubl']}:" styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								 <p:calendar id="datePublic" value="#{advertisementEdit.adver.dateFrom}" pattern="dd.MM.yyyy" mask="true"  showOn="button" 
+										timeZone="#{advertisementEdit.timeZone}" size="10" locale="bg" label="#{labels['advertisement.datePubl']}">								          	
+							      </p:calendar>
+							      <p:message for="datePublic" showDetail="true" showSummary="true" display="tooltip">
+							      		<p:autoUpdate/>
+								  </p:message>
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.srokPodavDocum']}:" styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:calendar id="dateSrokPodav" value="#{advertisementEdit.adver.dateTo}" pattern="dd.MM.yyyy" mask="true" showOn="button" 
+									timeZone="#{advertisementEdit.timeZone}" size="10" locale="bg" label="#{labels['advertisement.srokPodavDocum']}">						          	
+							     </p:calendar>  	
+							     <p:message for="dateSrokPodav" showDetail="true" showSummary="true" display="tooltip"> 
+							     		<p:autoUpdate/>
+								 </p:message>
+							</div> 
+						</div>			  		
+			  			
+			  			<div class="p-grid">
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+			  					<h:outputText value="#{labels['general.oblast']}: " styleClass="req"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3">
+			  					<p:selectOneMenu id="oblast" value="#{advertisementEdit.adver.region}" autoWidth="false" filter="true" filterMatchMode="contains">
+			  					    <f:selectItem itemLabel="" itemValue="" />
+						            <f:selectItems value="#{advertisementEdit.oblastList}" var="oblastJ" itemLabel="#{oblastJ.tekst}" itemValue="#{oblastJ.code}"/>
+                                    <p:ajax event="change" update="formAdvertisement:panelData" listener="#{advertisementEdit.actionChangeOblast}" process="@all"/>	
+						        </p:selectOneMenu>
+						       
+						        <p:tooltip for="oblast" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('oblast', view).clientId)}" >
+									<p:message for="oblast"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+			  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+			  					<h:outputText value="#{labels['general.obshtina']}: " styleClass="req"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3">
+			  					<p:selectOneMenu id="obshtina" value="#{advertisementEdit.adver.municipality}" autoWidth="false" filter="true" filterMatchMode="contains">
+			  						<f:selectItem itemLabel="" itemValue="" />
+						            <f:selectItems value="#{advertisementEdit.obshtiniList}" var="obshtinaJ" itemLabel="#{obshtinaJ.tekst}" itemValue="#{obshtinaJ.code}"/>
+                                    <p:ajax event="change" update="panelData" listener="#{advertisementEdit.actionChangeObshtina}" process="@all"/>
+						        </p:selectOneMenu>
+						        
+						        <p:tooltip for="obshtina" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('obshtina', view).clientId)}" >
+									<p:message for="obshtina"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+			  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+			  					<h:outputText value="#{labels['general.nasMiasto']}: " styleClass="req"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3">
+			  					<p:selectOneMenu id="nasMesto" value="#{advertisementEdit.adver.town}" autoWidth="false" filter="true" filterMatchMode="contains">
+						             <f:selectItem itemLabel="" itemValue="" />
+						             <f:selectItems value="#{advertisementEdit.nasMestoList}" var="nasMestoJ" itemLabel="#{nasMestoJ.tekst}" itemValue="#{nasMestoJ.code}"/>
+						        </p:selectOneMenu>
+						        
+						        <p:tooltip for="nasMesto" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('nasMesto', view).clientId)}" >
+									<p:message for="nasMesto"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+			  			</div>
+			  			
+			  			<div class="p-grid">
+			  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+			  					<h:outputText value="#{labels['general.adress']}: " styleClass="req"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-6 p-lg-6">
+								<p:inputText id="adres" value="#{advertisementEdit.adver.address}" />
+								<p:message for="adres" showDetail="true" showSummary="true" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.email']}: " />
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">								
+								<p:inputText value="#{advertisementEdit.adver.locationEmail}" />								                        
+							</div>							
+			  			</div>
+			  			
+			  			<div class="p-grid">
+			  				<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+			  					<span style="white-space: nowrap;">
+									<h:outputText value="#{labels['advertisement.adminZveno']}: " styleClass="req"/>
+								</span>
+							</div>
+	
+							<div class="p-col-12 p-md-10 p-lg-10">	
+								<div class="ibg-modal-button">						
+									<p:inputText value="#{advertisementEdit.adminZvenoText}" id="adminZveno" readonly="true" />
+									<p:message for="adminZveno" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>   
+				                	<ibg:selectDirAdmStruct header="#{labels['advertisement.adminZveno']}" userId="#{advertisementEdit.userId}" lang="#{advertisementEdit.currentLang}" 
+								 	 		saveStateTree="true" isSelectNode="true" withBtnClear="true" codeClassif="#{advertisementEdit.adver.administration}"     
+							 				update="formAdvertisement:adminZveno" selectedCode="#{advertisementEdit.adminZveno}" selectedText="#{advertisementEdit.adminZvenoText}" />	
+								</div>							
+							</div>
+						</div>
+						
+						<div class="p-grid">
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['general.iziskvaniDokumenti']}: "/>
+							</div>
+	
+							<div class="p-col-12 p-md-10 p-lg-10">
+								<p:textEditor id="dopInfoPodavane" value="#{advertisementEdit.adver.addInfo}" height="250" secure="true">
+					  				<f:facet name="toolbar">
+					  					<span class="ql-formats">
+											<select	class="ql-size" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-bold" />
+											<button class="ql-italic" />
+											<button class="ql-underline" />
+											<button class="ql-strike" />
+										</span>
+										<span class="ql-formats"> 
+											<select class="ql-color" />
+											<select class="ql-background" />
+										</span>
+										<span class="ql-formats">
+											<select class="ql-align" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-script" value="sub" />
+											<button class="ql-script" value="super" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-header" value="1" />
+											<button class="ql-header" value="2" />
+											<button class="ql-blockquote" />
+											<button class="ql-code-block" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-list" value="ordered" />
+											<button class="ql-list" value="bullet" />
+											<button class="ql-indent" value="-1" />
+											<button class="ql-indent" value="+1" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-link" />
+										</span>
+					  				</f:facet>
+					  			</p:textEditor>
+					  			<p:message for="dopInfoPodavane"  display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+							
+						</div>
+			  			
+			  		</p:panel>
+			  		
+			  		<p:panel header="#{labels['advertisement.liceKontakt']} " style="margin-bottom:10px">
+			  			<div class="p-grid">
+			  				<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.imena']}: " />
+							</div>
+							<div class="p-col-12 p-md-11 p-lg-11">								
+								<p:inputText value="#{advertisementEdit.adver.contactPerson}" />								                        
+							</div>	
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.telefon']}: " />
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">								
+								<p:inputText value="#{advertisementEdit.adver.contactPhone}" />								                        
+							</div>	
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.email']}: " />
+							</div>
+							<div class="p-col-12 p-md-6 p-lg-6">								
+								<p:inputText value="#{advertisementEdit.adver.contactEmail}" />								                        
+							</div>
+						</div>
+			  		</p:panel>
+			  		
+			  		<p:panel header="#{labels['general.attachedDoc']}" style="margin-bottom:10px">
+					
+						<div class="p-grid">
+						
+						<div class="p-col-12 p-md-12 p-lg-12">
+							<p:fileUpload id="filesUpload" listener="#{advertisementEdit.uploadFileListener}" label="" skinSimple="true" update="fileList" auto="true"
+											  allowTypes="#{systemData.getSettingsValue('fileExtensionsForAttaching')}" invalidSizeMessage="#{labels['general.invalidFileSize']}" 
+					    					  invalidFileMessage="#{labels['general.invalidFileTypeAt']}" mode="advanced"/>
+											  							
+							<p:tooltip for="filesUpload" value="#{labels['file.upload']}" />
+							
+						</div>	
+
+						<div class="p-col-12 p-md-12 p-lg-12">	
+							
+							 <p:dataTable id="fileList" var="row" value="#{advertisementEdit.filesList}" reflow="true" 
+							 			  rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" rows="10" style="margin-bottom:10px" paginator="true" 
+							 			  paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+							      
+							        <p:column headerText="#{labels['general.No-symbol']}" width="40">
+										<h:outputText value="#{rkv + 1}" />
+									</p:column>
+									
+									 <p:column headerText="" width="60">									           	
+								        <p:commandButton ajax="false" actionListener="#{advertisementEdit.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+								     </p:column>
+									
+							       	<p:column headerText="#{labels['file.filename']}" width="30%" >
+							       		 <h:outputText value="#{row.filename}" />     
+							         </p:column>
+							       	
+							       <p:column headerText="#{labels['file.description']}" width="60%" >									   
+							            <p:inputText value="#{row.description}" />									            								           
+							       </p:column>				       
+											
+									<p:column headerText="" width="60" exportable="false">
+										<p:commandButton action="#{advertisementEdit.remove(row)}" update="fileList" icon="fa fa-fw fa-trash" style="color: #d90000;" title="#{labels['general.delete']}"
+														 onclick="if(!confirm('#{labels['file.confirmDeleteFile']}'))return false;">
+											<f:param name="idObjDel" value="#{row.id}" />																					
+										</p:commandButton>
+									</p:column>
+							  
+							   </p:dataTable>
+							   
+							    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fas fa-check" />
+							        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fas fa-times" />
+							   </p:confirmDialog>	
+								
+							</div>
+						</div>
+					</p:panel>					
+				
+			 	</p:outputPanel>
+			 	
+			 	<p:toolbar>
+					<f:facet name="left">
+						<p:commandButton id="bntSaveDown" update="formAdvertisement:panelData formAdvertisement:bntDelete" action="#{advertisementEdit.actionSave}" icon="fa fa-save" value="#{labels['general.save']}" ajax="false">
+							<p:autoUpdate />
+						</p:commandButton>		   
+					</f:facet>
+					
+					<f:facet name="right">
+						<p:commandButton id="bntDelete" update="formAdvertisement:panelData" action="#{advertisementEdit.actionDelete}" icon="fa fa-fw fa-trash"  
+								value="#{labels['general.delete']}" rendered="#{advertisementEdit.adver.id != null}" 
+								onclick="if(!confirm('#{beanMessages['general.confirmDeleteMsg']}'))return false;">
+						</p:commandButton>						
+					</f:facet>						
+				
+				</p:toolbar>
+				
+				</div>
+			 	
+		  		</div>
+		  	 
+		</h:form>
+		
+			<script>
+				$(document).ready(function() {
+					attachTabClickListeners();
+				});
+			</script>
+		
+	</ui:define>
+
+</ui:composition>
+		
+</html>	

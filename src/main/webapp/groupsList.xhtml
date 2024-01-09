@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	<f:metadata>
+		<f:viewAction action="#{userData.hasAccessPage(7,8)}" />
+	</f:metadata>
+	
+	<ui:composition template="/templateExt/mainExt.xhtml">
+	
+		<ui:define name="title"> #{labels['groupsList.tittle']} </ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+	
+		<ui:define name="content">
+	
+			<h:form id="formGroupList">
+			
+			  <p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  	  <p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+	
+			  <p:tooltip />
+			
+			  <!-- PAGE TITLE -->
+			  <div class="title-page">
+				 <div class="container">	 
+					<h3>#{labels['groupsList.tittle']} </h3>
+				 </div>
+			  </div>
+			 
+			  <div class="container-white">				  	
+	
+			  <p:outputPanel id="panelData">
+			  
+			  		<p:panel style="margin-bottom:10px" id="panelTable">	
+	
+						<p:dataTable id="tableGroups" var="row" value="#{groupsList.listGrops}" rowIndexVar="rkv"  widgetVar="groupWV"
+							emptyMessage="#{labels['general.norows']}" rows="10" style="margin-bottom:20px" paginator="true" paginatorPosition="bottom" 
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" >							
+
+							<p:column headerText="#{labels['general.No-symbol']}" style="text-align: center" width="5">
+								<h:outputText value="#{rkv + 1}" />
+							</p:column>
+
+							 <p:column style="text-align: center" width="32" exportable="false">
+								<p:commandButton action="#{groupsList.actionEdit}" update="formGroupList:panelDopData" icon="fa fa-fw fa-edit"
+									title="#{labels['general.edit']}" rendered="#{row.dateDo == null}" onclick="highlightElement(this ,'tr');" oncomplete="scrollToData();">
+									<f:param name="idObj" value="#{row.id}" />
+									<f:param name="rkvIndexG" value="#{rkv}" />
+								</p:commandButton>
+								<p:commandButton action="#{groupsList.actionEdit}" update="formGroupList:panelDopData" icon="fa fa-fw fa-eye"
+									title="#{labels['general.view']}" rendered="#{row.dateDo != null}" onclick="highlightElement(this ,'tr');" oncomplete="scrollToData();">
+									<f:param name="idObj" value="#{row.id}" />
+									<f:param name="rkvIndexG" value="#{rkv}" />
+								</p:commandButton>
+							</p:column>
+
+							<p:column headerText="#{labels['groupsList.nameGroup']}" width="200" sortBy="#{row.groupName}" filterBy="#{row.groupName}" filterMatchMode="contains">
+								<h:outputText value="#{row.groupName}" />
+							</p:column>
+
+							<p:column headerText="#{labels['groupsList.nameComment']}" width="200" sortBy="#{row.groupComment}" filterBy="#{row.groupComment}" filterMatchMode="contains">
+								<h:outputText value="#{row.groupComment}" />
+							</p:column>
+
+							<p:column headerText="#{labels['groupsList.dateOt']}" width="70" sortBy="#{row.dateOt}">
+								<h:outputText value="#{row.dateOt}">
+									<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{groupsList.timeZone}" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="#{labels['groupsList.dateDo']}" width="70" sortBy="#{row.dateDo}">
+								<h:outputText value="#{row.dateDo}">
+									<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{groupsList.timeZone}" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="" width="32" exportable="false">
+								<p:commandButton action="#{groupsList.actionChangeActivate}" update="formGroupList:panelData" icon="fa fa-fw fa-times-circle" 
+									title="#{labels['groupsList.activ']}" style="color: #d90000;" rendered="#{row.dateDo != null}" >
+									<f:param name="idObjAct" value="#{row.id}" />
+								</p:commandButton>
+
+								<p:commandButton action="#{groupsList.actionChangeDeactivate}" update="formGroupList:panelData" icon="fa fa-fw fa-check"
+									title="#{labels['groupsList.deactiv']}" style="color: green;" rendered="#{row.dateDo == null}" >
+									<f:param name="idObjDeact" value="#{row.id}" />
+								</p:commandButton>
+							</p:column>
+
+							<p:column headerText="" width="32" exportable="false">
+								<p:commandButton action="#{groupsList.actionDelete}" update="formGroupList:panelData" icon="fa fa-fw fa-trash"
+									style="color: #d90000;" title="#{labels['general.delete']}" >
+									<f:param name="idObjDel" value="#{row.id}" />
+									<p:confirm header="#{labels['general.delete']}" message="#{labels['groupsList.confirmDeleteGroup']}" icon="fas fa-exclamation-triangle" />
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
+							<p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fas fa-times" />
+						</p:confirmDialog>
+					
+					</p:panel>
+					
+					<p:focus context="panelDopData"/>	
+					
+					<p:panel header="#{labels['groupsList.dataForGrUsers']}" style="margin-bottom:10px" id="panelDopData">
+
+						<f:facet name="actions">
+							<p:commandButton id="bntNew" action="#{groupsList.actionNew}" update="formGroupList:panelData" icon="fa fa-fw fa-plus"
+								value="#{labels['groupsList.new']}" styleClass="button-green" onclick="scrollToData()"/>
+						</f:facet>
+
+						<p:outputPanel id="panelDataGroup" rendered="#{groupsList.fromEdit}">
+						
+							<p:toolbar>
+								<f:facet name="left">
+									<p:commandButton id="bntSave" update="formGroupList:panelData " action="#{groupsList.actionSave}" icon="fa fa-fw fa-save"
+									value="#{labels['general.save']}" disabled="#{groupsList.group.dateDo != null}" />
+								</f:facet>
+								<f:facet name="right">
+									<h:panelGroup id="pJGr" rendered="#{groupsList.group.id != null}">
+										<ibg:compObjAudit id="compJGr" idObj="#{groupsList.group.id}" codeObj="#{IBConstants.CODE_OBJECTS_GROUPUSER}" />
+									</h:panelGroup>
+								</f:facet>																
+							</p:toolbar>							
+
+							<div class="p-grid" id="basicDataforGr">
+
+								<div class="section-separator"></div>
+									
+									<div class="p-col-12">
+
+										<div class="title-box">
+											<h:outputText value="#{labels['groupsList.basicDataforGr']}" style="font-weight: bold;" />
+										</div>
+										
+										<div class="p-grid">
+										
+											<div class="p-col-6">
+											
+												<div class="p-col-12 p-md-3 p-lg-3">
+													<h:outputText value="#{labels['groupsList.nameGroup']}: " styleClass="req" />
+												</div>
+			
+												<div class="p-col-12 p-md-12 p-lg-12">
+													<p:inputText value="#{groupsList.group.groupName}" id="nameGr" disabled="#{groupsList.group.dateDo != null}" />
+												</div>
+											
+											</div>
+										
+											<div class="p-col-6">
+		
+												<div class="p-col-12 p-md-3 p-lg-3">
+													<h:outputText value="#{labels['groupsList.nameComment']}: " />
+												</div>
+			
+												<div class="p-col-12 p-md-12 p-lg-12">
+													<p:inputText value="#{groupsList.group.groupComment}" disabled="#{groupsList.group.dateDo != null}" />
+												</div>
+											
+											</div>										
+									</div>
+
+								</div>			
+
+								<div class="p-col-4">
+
+									<div class="section-separator"></div>
+
+									<div class="title-box">
+										<h:outputText value="#{labels['groupsList.usersInGroup']}" style="font-weight: bold;" />
+									</div>
+
+									<h:panelGroup id="groupModal">
+
+										<p:toolbar id="tootlbar_footer" width="100%" styleClass="toolBarHeaderCustom" contentClass="sub_menu" contentStyle="padding:3px">
+
+											<f:facet name="left">
+
+												<p:commandButton action="#{groupsList.actionDeleteUsersList}"
+													update="formGroupList:tableSlujiteli " icon="fa fa-fw fa-trash" style="color: #d90000;"
+													value="#{labels['general.deleteAll']}" rendered="#{groupsList.group.dateDo == null}">
+													<p:confirm header="#{labels['general.deleteAll']}" message="#{labels['groupsList.confirmDeleteAllUsers']}" icon="fas fa-exclamation-triangle" />
+												</p:commandButton>
+
+												<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+													<p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
+													<p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fas fa-times" />
+												</p:confirmDialog>
+
+											</f:facet>
+
+											<f:facet name="right">
+												<h:inputHidden value="#{groupsList.usersName}" id="userNames" readonly="true" />
+												<ibg:selectManyModal
+													header="#{labels['groupsList.izborUchastnici']}"
+													update="formGroupList:userNames formGroupList:tableSlujiteli"
+													userId="#{groupsList.userId}"
+													selectedText="#{groupsList.usersName}"
+													codeClassif="#{groupsList.codeClassifUser}"
+													selectedCodes="#{groupsList.usersList}"
+													rendered="#{groupsList.group.dateDo == null}"
+													titleLoadBtn="#{labels['groupsList.izborUchastnici']}"
+													titleSearchBtn="#{labels['general.searchByText']}"
+													titleRefreshBtn="#{labels['general.refresh']}"
+													showRadioBtn="true"
+													headerSelectedValues="#{labels['general.name']}"
+													titleClearAll="#{labels['general.deleteAll']}"
+													titleClear="#{labels['general.delete']}"
+													valueConfirmBtn="#{labels['general.potvardi']}" />
+											</f:facet>
+										</p:toolbar>
+
+										<p:dataTable id="tableSlujiteli" value="#{groupsList.usersImena}" var="rowU"
+											rowIndexVar="rkvU" width="100%" emptyMessage="#{labels['general.norows']}" rows="10"
+											paginator="true" paginatorPosition="bottom" style="margin-bottom:20px">
+
+											<p:column headerText="#{labels['general.No-symbol']}" width="5">
+												<h:outputText value="#{rkvU + 1}" />
+											</p:column>
+
+											<p:column headerText="#{labels['general.name']}" width="250" >
+												<h:outputText value="#{rowU}" />
+											</p:column>
+
+											<p:column headerText="" width="32" exportable="false">
+												<p:commandButton action="#{groupsList.actionDeleteUser}" update="formGroupList:tableSlujiteli"
+													icon="fa fa-fw fa-trash" style="color: #d90000;" title="#{labels['general.delete']}" rendered="#{groupsList.group.dateDo == null}">
+													<f:param name="selectedName" value="#{rowU}" />
+													<f:param name="idObjUserDel" value="#{rkvU}" />
+												</p:commandButton>
+											</p:column>
+
+										</p:dataTable>
+
+									</h:panelGroup>
+									
+								</div>
+
+								<div class="p-col-8">
+
+									<div class="section-separator"></div>
+
+									<div class="title-box">
+										<h:outputText value="#{labels['groupsList.accessDostap']}" style="font-weight: bold;" />
+									</div>
+
+									<div class="p-grid">
+										
+										<div class="p-col-6">
+
+											<p:dataTable id="tableDostap" value="#{groupsList.sysClassifList}" var="rowD" rowIndexVar="rkvD" 
+												width="100%" emptyMessage="#{labels['general.norows']}" rows="10" rowKey="#{rowD[0]}" widgetVar="dostapWV"
+												paginator="true" paginatorPosition="bottom" style="margin-bottom:20px" >
+
+												<p:column headerText="#{labels['general.No-symbol']}" width="20">
+													<h:outputText value="#{rkvD + 1}" />
+												</p:column>
+
+												<p:column headerText="" width="32" exportable="false">
+
+													<p:commandButton action="#{groupsList.actionLoadTree}"
+														update="formGroupList:treeDostap" icon="fa fa-fw fa-edit" title="#{labels['general.edit']}"
+														rendered="#{groupsList.group.dateDo == null}" onclick="highlightElement(this ,'tr');">
+														<f:param name="idObjAccEdit" value="#{rowD[0]}" />
+														<f:param name="rkvIndexD" value="#{rkvD}" />
+													</p:commandButton>
+
+													<p:commandButton action="#{groupsList.actionLoadTree}"
+														update="formGroupList:treeDostap" icon="fa fa-fw fa-eye" title="#{labels['general.view']}"
+														rendered="#{groupsList.group.dateDo != null}" onclick="highlightElement(this ,'tr');">
+														<f:param name="idObjAccEdit" value="#{rowD[0]}" />
+														<f:param name="rkvIndexD" value="#{rkvD}" />
+													</p:commandButton>
+												</p:column>
+
+												<p:column headerText="#{labels['general.name']}" width="250" >
+													<h:outputText value="#{rowD[1]}" />
+												</p:column>
+
+											</p:dataTable>
+
+										</div>
+
+										<div class="p-col-6" >
+											
+											<p:scrollPanel mode="native" style="width:100%;height:100%">
+												
+												<p:tree value="#{groupsList.rootNode}" var="node" selectionMode="checkbox" 
+													selection="#{groupsList.selectedNode}" style="width:100%;border:none" id="treeDostap" 
+													styleClass="#{groupsList.group.dateDo ne null?'not-clickable':''}" >
+													<p:ajax event="select" listener="#{groupsList.actionNodeSelect}"  />
+													<p:ajax event="unselect" listener="#{groupsList.actionNodeUnselect}" />
+													<p:treeNode>
+														<h:outputText value="#{node.tekst}" />
+													</p:treeNode>
+												</p:tree>
+												
+											</p:scrollPanel>
+
+										</div>
+
+									</div>
+
+								</div>
+
+							</div>
+
+						</p:outputPanel>
+
+					</p:panel>
+	
+				</p:outputPanel>
+				
+				</div>
+				
+			</h:form>
+	
+			<script type="text/javascript" language="JavaScript">	
+					
+			 	function scrollToData() {
+				   const element = document.getElementById('formGroupList:panelDopData');
+				   if (element) {
+				  	 element.scrollIntoView();
+				   }
+				}				
+	              
+			</script>
+	
+		</ui:define>
+	
+	</ui:composition>
+
+</html>

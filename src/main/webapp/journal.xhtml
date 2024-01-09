@@ -1,0 +1,309 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,108)}" />   
+ </f:metadata>
+<ui:composition template="/templateExt/mainExt.xhtml">
+		
+		<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 75, environment.currentLang, null, null)} </ui:define> 
+		
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">		
+			
+			
+			<h:form id="formJournal">
+			<!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+
+					     <div class="p-col">  
+							<h3 class="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 75, environment.currentLang, null, null)}</h3>
+						 </div>
+					</div>
+				<p:focus context="panelFilter"/>	
+					<!-- ФИЛТЪР -->
+				<h:panelGroup id="panelFilter">
+					<div class="card" onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('formJournal:btnSearch').click()}">
+						<div class="p-grid p-align-end ">
+
+							<!--ПОТРЕБИТЕЛ-->
+							<div class="p-col-12 p-sm-12 p-md-12 p-lg-3 p-xl-3 ui-fluid">
+								<h:outputText value="#{labels['journal.jUser']}" styleClass="form-label" /> 
+								<ibg:selectOneModalA
+									codeClassif="#{IBConstantsSys.CODE_CLASSIF_USERS}"
+									selectedCode="#{journal.userId}"
+									withBtnClear="true" saveStateTree="true" 
+									styleAutoComp="width:99%;" compType="2" />
+							</div>
+
+							<!--ПЕРИОД-->
+							<div class="p-col-12 p-sm-12 p-md-4 p-lg-3 p-xl-3  ui-fluid">
+								<h:outputText value="#{labels['general.period']}"
+									styleClass="form-label" />
+								<p:selectOneMenu id="idPerR" value="#{journal.periodR}">
+									<f:selectItem value="#{null}" itemValue="#{null}" />
+									<f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_CLASSIF_PERIOD_NOFUTURE, now, journal.currentLang,userData.userId)}"
+										var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+									<p:ajax event="change" update="idPerR dateOtReg dateDoReg" listener="#{journal.changePeriodR()}" />
+								</p:selectOneMenu>
+							</div>
+
+							<!--ДАТА ОТ-->
+							<div class="p-col-12 p-sm-4 p-md-3 p-lg-3 p-xl-3  ui-fluid">
+								<h:outputText value="#{labels['general.dataOt']}"
+									styleClass="form-label" />
+								<p:datePicker id="dateOtReg" pattern="dd.MM.yyyy" mask="true"
+									showIcon="true" locale="bg" value="#{journal.dateFrom}">
+									<p:ajax event="change" update="idPerR" listener="#{journal.changeDate()}" />
+									<p:ajax event="dateSelect" update="idPerR" listener="#{journal.changeDate}" />
+								</p:datePicker>
+							</div>
+
+							<!--ДАТА ДО-->
+							<div class="p-col-12 p-sm-4 p-md-3 p-lg-3 p-xl-3  ui-fluid">
+								<h:outputText value="#{labels['general.dataDo']}" styleClass="form-label" />
+								<p:datePicker id="dateDoReg" pattern="dd.MM.yyyy" mask="true"
+									showIcon="true" locale="bg" value="#{journal.dateTo}">
+									<p:ajax event="change" update="idPerR" listener="#{journal.changeDate}" />
+									<p:ajax event="dateSelect" update="idPerR" listener="#{journal.changeDate}" />
+								</p:datePicker>
+							</div>
+
+							<!--ДЕЙСТВИЕ-->
+							<div class="p-col-12 p-sm-4 p-md-3 p-lg-3 p-xl-3  ui-fluid">
+								<h:outputText value="#{labels['journal.jAct']}" styleClass="form-label" />
+								<p:selectCheckboxMenu id="mActions"
+									value="#{journal.selectedActions}" multiple="true" filter="true">
+									<f:selectItems value="#{journal.actionsList}" />
+								</p:selectCheckboxMenu>
+							</div>
+
+							<!--ОБЕКТ-->
+							<div class="p-col-12 p-sm-4 p-md-3 p-lg-3 p-xl-3  ui-fluid">
+								<h:outputText value="#{labels['journal.jObj']}" styleClass="form-label" />
+								<p:selectCheckboxMenu id="mObj" value="#{journal.selectedObj}" multiple="true" filter="true">
+									<f:selectItems value="#{journal.objList}" />
+								</p:selectCheckboxMenu>
+							</div>
+
+							<!--ИД ОБЕКТ-->
+							<div class="p-col-12 p-sm-12 p-md-12 p-lg-3 p-xl-3 ui-fluid">
+								<h:outputText value="#{labels['journal.idObj']}" styleClass="form-label" />
+								<p:inputText value="#{journal.objectId}" id="objId" />
+							</div>
+
+							<!--ИД ЖУРНАЛ-->
+							<div class="p-col-12 p-sm-12 p-md-12 p-lg-3 p-xl-3 ui-fluid">
+								<h:outputText value="#{labels['journal.jId']}" styleClass="form-label" />
+								<p:inputText value="#{journal.journalId}" id="jId" />
+							</div>
+							
+							<!--ДОПЪЛНИТЕЛНА ИНФОРМАЦИЯ-->
+							<div class="p-col-12 p-sm-12 p-md-12 p-lg-6 p-xl-6 ui-fluid">
+								<h:outputText value="#{labels['journal.dopalnitelnaInformacia']}" styleClass="form-label" />
+								<p:inputText value="#{journal.identObj}" id="jIdentObj" />
+							</div>
+							
+						</div>
+
+
+						<div class="filter-buttons">
+							<p:commandButton icon="fas fa-search"
+								value="#{labels['general.search']}" id="btnSearch"
+								update="jResult" partialSubmit="true"
+								process="@this panelFilter" action="#{journal.actionSearch}" styleClass="p-mr-3"/>
+
+							
+
+							<p:commandButton icon="fas fa-eraser"
+								value="#{labels['general.clear']}" id="btnClear"
+								update="jResult panelFilter" partialSubmit="true"
+								process="@this panelFilter" action="#{journal.actionClear}" tabindex="-1"
+								styleClass="ui-button-warning" />
+						</div>
+
+					</div>
+				</h:panelGroup>
+				</div>
+			</div>	
+			
+			
+
+
+
+
+			<h:panelGroup id="jResult" layout="block" styleClass="margin-top">
+				<h:panelGroup layout="block" rendered="#{journal.resultList != null}" styleClass="card">
+					
+					<h:panelGroup id="joResult" rendered="#{journal.resultList != null}" layout="block">
+						<br/>
+						<h:outputText value="#{labels['general.reportResult']} #{journal.resultList.rowCount}"/>
+							
+						<p:dataTable id="tblJournal" var="row"
+							value="#{journal.resultList}" lazy="true" rowIndexVar="idx"
+							sortMode="single" reflow="true"
+							emptyMessage="#{labels['journal.emptyMsg']}"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rows="15" rowsPerPageTemplate="5,15,20,25"
+							paginatorPosition="bottom" paginatorAlwaysVisible="true"
+							paginator="true">
+							
+							<f:facet name="{Exporters}">
+
+								<div style="float: left">
+									<p:commandLink id="excel" update="tblJournal" process="tblJournal" partialSubmit="true"
+										rendered="#{journal.resultList.rowCount le IBConstants.ROW_LIMITS_REPORTS and (mask eq null or mask.contains('excel'))}">
+										<h:graphicImage library="images" name="excel2.png" />
+										<p:dataExporter type="xls" target="tblJournal"
+											fileName="journalList"
+											postProcessor="#{journal.postProcessXLS}" />
+									</p:commandLink>
+
+									<p:commandLink id="pdf" update="tblJournal" process="tblJournal" partialSubmit="true"
+										rendered="#{journal.resultList.rowCount le IBConstants.ROW_LIMITS_REPORTS and (mask eq null or mask.contains('pdf'))}">
+										<h:graphicImage library="images" name="pdf.png" />
+										<p:dataExporter type="pdf" target="tblJournal"
+														fileName="journalList" 	 encoding="windows-1251"
+					        							preProcessor="#{journal.preProcessPDF}" options="#{journal.pdfOptions()}"/>
+									</p:commandLink>
+
+									<p:commandLink id="csv"  update="tblJournal" process="tblJournal" partialSubmit="true" 
+										rendered="#{journal.resultList.rowCount le IBConstants.ROW_LIMITS_REPORTS and (mask eq null or mask.contains('csv'))}" >
+										<h:graphicImage library="images" name="csv.png" />
+										<p:dataExporter type="csv" target="tblJournal"
+											fileName="journalList" encoding="CP1251" />
+									</p:commandLink>
+								</div>
+							</f:facet>	
+
+							
+							<p:column style="text-align: center;" width="60" exportable="false">
+								<p:commandButton id="btn_audit" icon="fas fa-eye" update="formJournal:pgAudit2" 
+									title="#{labels['journal.showInfo']}" action="#{journal.actionShowDetails(row[0])}" oncomplete="PF('mAudit2').show();"/>
+								
+							</p:column>
+							
+							<p:column  headerText="#{labels['journal.jId']}"
+								sortBy="#{row.a0}" width="135">
+								<h:outputText value="#{row[0]}" escape="false" />
+							</p:column>
+
+							<p:column width="130" headerText="#{labels['audit.actionDate']}" sortBy="#{row.a1}">
+								<h:outputText value="#{row[1]}">
+									<f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss"
+										timeZone="#{journal.timeZone}" />
+								</h:outputText>
+							</p:column>
+
+							<p:column width="140" headerText="#{labels['journal.jUser']}"
+								sortBy="#{row.a2}">
+								<h:outputText
+									value="#{systemData.decodeItem(IBConstantsSys.CODE_CLASSIF_USERS, row[2], journal.currentLang, null ,null)}" />
+							</p:column>
+
+							<p:column width="145" headerText="#{labels['journal.jAct']}"
+								sortBy="#{row.a3}">
+								<h:outputText
+									value="#{systemData.decodeItem(IBConstantsSys.CODE_CLASIF_DEINOSTI, row[3], journal.currentLang,null , null)}" />
+							</p:column>
+
+							<p:column width="140" headerText="#{labels['journal.jObj']}"
+								sortBy="#{row.a4}">
+								<h:outputText
+									value="#{systemData.decodeItem(IBConstantsSys.CODE_CLASSIF_OBJECTS, row[4], journal.currentLang, null ,null)}" />
+							</p:column>
+							
+							<p:column headerText="#{labels['journal.idObj']}"
+								sortBy="#{row.a5}" width="120" >
+								<h:outputText value="#{row[5]}" escape="false" />
+							</p:column>
+
+							<p:column headerText="#{labels['journal.dopInfo']}"
+								sortBy="#{row.a6}" >
+								<h:outputText value="#{row[6].length()&gt;255?row[6].substring(0,255).concat('...'):row[6]}" title="#{row[6]}"/>
+							</p:column>
+
+						</p:dataTable>
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:panelGroup>	
+	
+		<h:panelGroup id="pgAudit2">	
+	
+		<p:dialog closeOnEscape="true"  appendTo="@form" 
+		    header="Some text for header" focus="eventDetails"
+		    fitViewport="true"	
+		    responsive="true" 
+		    resizable="true"
+		    position="center"	
+			widgetVar="mAudit2" dynamic="true" id="mAuditId2" 
+			modal="true" maximizable="true">
+		
+			<f:facet name="header">
+				<h:outputText value="#{journal.selectedEvent.dateAction}" id="dd">
+					<f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss" timeZone="#{journal.timeZone}"/>
+				</h:outputText>
+			</f:facet>
+			
+
+
+			<div class="container" >
+			
+			<h:panelGrid columns="2" > 
+				<h:outputText value="#{labels['audit.action']}:" styleClass="form-label" id="sss" />
+				<h:outputText value="#{systemData.decodeItem(IBConstantsSys.CODE_CLASIF_DEINOSTI, journal.selectedEvent.codeAction, journal.currentLang,now , null)}" />
+								
+				<h:outputText value="#{labels['audit.object']}:" styleClass="form-label" />
+				<h:outputText value="#{systemData.decodeItem(IBConstantsSys.CODE_CLASSIF_OBJECTS, journal.selectedEvent.codeObject, journal.currentLang,now , null)}"/>
+				
+				<h:outputText value="#{labels['audit.user1']}:" styleClass="form-label" />
+				<h:outputText value="#{systemData.decodeItem(IBConstantsSys.CODE_CLASSIF_USERS,  journal.selectedEvent.idUser, journal.currentLang, now ,null)}"/>
+				
+				<h:outputText value="#{labels['audit.info']}:" styleClass="form-label" />
+				<h:outputText value="#{journal.selectedEvent.identObject}"/>
+				
+				
+			</h:panelGrid>		
+			<p:treeTable value="#{journal.rootEvent}" var="event" id="eventDetails" emptyMessage="Няма променени данни" rendered="#{journal.rootEvent.data!=null}">
+				
+				<p:column headerText="#{labels['audit.attribute']}" style="font-weight: bold;">
+					<h:outputText value="#{event.fieldName}" />
+				</p:column>
+				<p:column headerText="#{journal.compareEvent ? labels['audit.attrOld'] : labels['audit.value']}"  >
+					<p:inputText value="#{event.oldVal}" readonly="true" style="width: 100%" rendered="#{event.oldVal ne null}" />
+				</p:column>
+				<p:column width="10" rendered="#{journal.compareEvent}">
+						<i jsf:rendered="${not empty event.newVal and not empty event.oldVal}" class="fas fa-angle-double-right" style="color:green" ></i>
+						<i jsf:rendered="${not empty event.newVal and empty event.oldVal}" class="fas fa-plus-circle" style="color:blue" ></i>
+						<i jsf:rendered="${empty event.newVal and not empty event.oldVal}" class="fas fa-minus-circle" style="color:red" ></i>
+					
+				</p:column>
+				<p:column headerText="#{labels['audit.attrNew']}"  rendered="#{journal.compareEvent}">
+					<p:inputText value="#{event.newVal}" readonly="true" style="width: 100%" rendered="#{event.newVal ne null}" />
+				</p:column>
+			</p:treeTable>
+			
+			
+			</div>
+		</p:dialog>
+		</h:panelGroup>
+	
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>
+
+</html>

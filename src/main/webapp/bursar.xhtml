@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,66)}" />		   
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 36, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:tooltip />
+		<h:form id="bursarForm">
+		 
+		 			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			
+			<!-- TITLE -->
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 36, environment.currentLang, null, null)}</h3>
+				</div>
+			</div>	
+					
+			<div class="container">
+				<p:focus context="panelBursar"/>
+				<p:outputPanel id="panelData">
+					<div class="container-white">
+					<br />
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton id="bntSave" action="#{bursarBean.actionSave}" rendered="#{bursarBean.visButtSave}" update="bursarForm:panelData "  icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+					</p:toolbar>					
+					<br />
+					
+					<p:panel header="" style="margin-bottom:10px" id="panelBursar">
+						<div class="p-grid">
+						
+							<div class="p-col-12 p-md-12 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['general.pin']}:"/>
+							</div>
+							<div class="p-col-12 p-md-12 p-lg-2">
+								<p:inputText id="spec" value="#{bursarBean.pin}" label="#{labels['general.pin']}"/>  
+  
+	                        </div>
+	                        <div class="p-col-12 p-md-12 p-lg-7 cc-left" >
+	                            <p:commandButton action="#{bursarBean.actionSearch()}" value="#{labels['general.search']}" icon="fa fa-search" id="btnSearch" update="bursarForm:panelData" />
+	                        </div>
+	                        <div class="p-col-12 p-md-12 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['general.imena']}:"/>
+							</div>
+							<div class="p-col-12 p-md-12 p-lg-9" >
+								<h:outputText value="#{bursarBean.bursar[2]} "/>
+								<h:outputText value="#{bursarBean.bursar[3]} "/>
+								<h:outputText value="#{bursarBean.bursar[4]} "/>
+							</div>
+	                        
+	                    </div>
+	                 </p:panel>
+					
+					<p:panel style="margin-bottom:10px">
+						<div class="p-grid">
+	                         <div class="p-col-12 p-md-6 p-lg-3 cc-right" >
+									<h:outputText value="#{labels['bursary.bursaryTerm']}: " styleClass="req"/>
+							 </div>
+	
+							 <div class="p-col-12 p-md-6 p-lg-9">											
+	    							<p:inputNumber id="bursaryTerm" min="0" maxlength="4" decimalPlaces="0" thousandSeparator="" value="#{bursarBean.usersBursar.bursaryTerm}" label="#{labels['bursary.bursaryTerm']}"/>
+	    							<p:message for="bursaryTerm" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>  	    							 	 							                      
+							 </div>  
+							 <div class="p-col-12 p-md-6 p-lg-3 cc-right" >
+									<h:outputText value="#{labels['bursary.graduationTerm']}: " styleClass="req"/>
+							 </div>
+	
+							 <div class="p-col-12 p-md-6 p-lg-9">											
+	    							<p:inputNumber id="gradTerm" min="0" maxlength="4" decimalPlaces="0" thousandSeparator="" value="#{bursarBean.usersBursar.graduationTerm}" label="#{labels['bursary.graduationTerm']}" />  	
+	    							<p:message for="gradTerm" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>     							 	 							                      
+							 </div> 
+							 
+							 <ui:remove> <!-- Отпада - кандидата няма да се явява задължително на тест -->
+							 <div class="p-col-12 p-md-6 p-lg-3 cc-right" >
+									<h:outputText value="#{labels['bursary.testTerm']}: " styleClass="req"/>
+							 </div>
+	
+							 <div class="p-col-12 p-md-6 p-lg-9">											
+	    							<p:inputNumber id="testTerm" min="0" decimalPlaces="0" thousandSeparator="" maxlength="4" value="#{bursarBean.usersBursar.testTerm}" label="#{labels['bursary.testTerm']}"/>
+									<p:message for="testTerm" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>  	    							 	 							                      
+							 </div>
+							 </ui:remove> 
+							 <div class="p-col-12 p-md-6 p-lg-3 cc-right" >
+									<h:outputText value="#{labels['bursary.jobTerm']}: " styleClass="req"/>
+							 </div>
+	
+							 <div class="p-col-12 p-md-6 p-lg-9">											
+	    							<p:inputNumber id="jobTerm" min="0" decimalPlaces="0" thousandSeparator="" maxlength="4" value="#{bursarBean.usersBursar.jobTerm}" label="#{labels['bursary.jobTerm']}"/>  	
+	    							<p:message for="jobTerm" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>     							 	 							                      
+							 </div> 
+						</div>
+							
+					</p:panel>	 				
+										
+					<br/>
+					
+					<p:toolbar>
+					
+						<f:facet name="left">
+							<p:commandButton id="bntSaveDown" rendered="#{bursarBean.visButtSave}" action="#{bursarBean.actionSave}" update="bursarForm:panelData "  icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+						
+			
+					</p:toolbar>
+					</div>
+				</p:outputPanel>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

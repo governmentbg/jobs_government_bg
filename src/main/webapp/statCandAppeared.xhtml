@@ -1,0 +1,184 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+
+	
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 54, environment.currentLang, null, null)}</ui:define>
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	
+		<style>
+		
+			.search-main {
+				height: auto !important;
+				width: auto !important;
+				flex-grow: 1;
+			}
+			
+			.search-main .ui-inputtext {
+				height: 40px;
+			}
+			
+			.clear-button {
+				display: inline-block;
+				margin-left: 0.5em;
+			}
+			
+			.clear-button a {
+				color: #005E8B;
+			}
+			
+			.search {
+			    background-color: #005e8b;
+			    color: white;
+			    height: 100%;
+			    width: 40px;
+			    text-shadow: none;
+			    box-shadow: none;
+			}
+			
+			.ui-calendar,
+			.ui-calendar input,
+			.ui-calendar button {
+				height: 100%;
+			}
+			
+			@media only screen and (max-width: 991px) {
+				.search-main {
+					width: 100% !important;
+				}
+				
+				.search-main .ui-inputtext {
+					height: 32px;
+				}	
+				
+				.search {
+					margin-left: 0.5em;
+				}			
+			}
+			
+		</style>
+
+		<h:form id="statisticForm" >
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+				
+			<p:tooltip/>
+				
+			<!-- SEARCH FILTER -->		
+			<div class="search-filter">
+			
+				<div class="container">
+				
+					<h3 class="search-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 54, environment.currentLang, null, null)}</h3>
+								
+					<div style="display: flex; flex-wrap: wrap; align-items: center;">
+						<div class="search-main p-grid p-align-stretch">
+						
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.period']}:"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">
+								<p:selectOneMenu id="idPer" value="#{statCandAppeared.period}" >
+		                             <f:selectItem value="#{null}" itemValue="#{null}"/>          
+		                             <f:selectItems  value="#{statCandAppeared.periodList}"  var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+		                             <p:ajax event="change" update="statisticForm:idPer statisticForm:dateOt statisticForm:dateDo" listener="#{statCandAppeared.changePeriod}"/>   
+		                        </p:selectOneMenu>
+	                        </div>
+	                                
+	                        <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.dataOt']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								 <p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true"  showOn="button" timeZone="#{statCandAppeared.timeZone}" size="10" locale="bg" 
+							         	value="#{statCandAppeared.dateFrom}" label="#{labels['publ.dateFrom']}" styleClass="form-control #{statCandAppeared.hasMessages('statisticForm:dateOt') ? 'cc-red ': '' }" />
+							      <p:message for="dateOt" showDetail="true" showSummary="true" display="tooltip">
+							      		<p:autoUpdate/>
+							      </p:message>
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.dataDo']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{statCandAppeared.timeZone}" size="10" locale="bg" 
+						         	value="#{statCandAppeared.dateTo}" label="#{labels['publ.dateTo']}"  styleClass="form-control #{statCandAppeared.hasMessages('statisticForm:dateDo') ? 'cc-red' : '' }" />
+							     <p:message for="dateDo" showDetail="true" showSummary="true" display="tooltip">
+							     	 <p:autoUpdate/>
+							     </p:message> 
+							</div>
+		
+			                
+						</div>
+						       	 				
+						<p:commandButton id="bnt_search" styleClass="search" update="statisticForm" action="#{statCandAppeared.actionSearch}" icon="fa fa-fw fa-search" />
+
+					</div>
+					
+					<!-- ADDITIONAL FIELDS -->
+					<div class="search-add" jsf:id="panelSearchAdd">
+						
+					<!-- TOGGLE BUTTON -->	
+					<div class="clear-button">
+						<p:commandLink action="#{statCandAppeared.actionClear}" update="statisticForm" id="btnClear">
+							<h:outputText value="#{labels['general.clear']}" /><i class="fas fa-trash-alt" style="margin-left: 6px;"></i>
+						</p:commandLink>
+					</div>
+				</div>
+									
+			</div>
+			</div>
+			<br/>
+	
+			<div class="container" style="padding: 0 4px;"> 
+				<p:outputPanel id="panelData2">
+					<h:panelGroup class="results-summary p-grid p-align-center p-justify-between" layout="block" rendered="#{statCandAppeared.broiYavili.size() > 0}">
+	       				<div class="results-count bolded">
+	       					<h:outputText value="#{labels['statCandNum.kandidati']}" />
+	       				</div>
+	       				
+
+       			
+	       			</h:panelGroup>
+					<p:dataTable id="tblStat2" var="row" value="#{statCandAppeared.broiYavili}"  layout="grid" rows="6"  paginator="false"
+							rendered="#{statCandAppeared.broiYavili.size()>0}" lazy="true" emptyMessage="#{labels['general.norows']}" 					        
+					        styleClass="datagrid no-border no-background padding-between" >
+					        		
+							<p:column width="110">
+								
+									<h:outputText value="#{row[0]}" />
+							</p:column>
+							
+							<p:column width="80">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['statCandNum.broiKandidati']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[1]}" />	
+							</p:column>		
+					        		
+			    		</p:dataTable>
+
+				</p:outputPanel>
+			</div>
+			
+				
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

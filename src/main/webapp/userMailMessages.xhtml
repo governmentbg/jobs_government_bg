@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+	 <f:metadata>
+	 	<f:viewAction action="#{userData.hasAccessPage(7,59)}" />		   
+	 </f:metadata>
+	  
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 29, environment.currentLang, null, null)}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+	<ui:define name="content">
+		
+		<style>
+			
+			.title-page {
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.graphic {
+				font-size: 4em;
+				color: #b8b8b8;
+				position: absolute;
+				right: 1rem;
+				top: 50%;
+				opacity: 0;
+				animation-name: rise;
+			    animation-duration: 1s;
+			    animation-iteration-count: 1;
+			    animation-fill-mode: forwards;
+			    animation-delay: 0.5s;
+			}
+			
+			@media screen and (max-width: 767px) {
+				.graphic {
+					font-size: 3em;
+				}
+			}
+			
+			@keyframes rise {
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, 50%, 0);
+					-ms-transform: translate3d(0, 50%, 0);
+					transform: translate3d(0, 50%, 0);
+				}
+				100% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, -50%, 0);
+					-ms-transform: translate3d(0, -50%, 0);
+					transform: translate3d(0, -50%, 0);
+				}
+			}			
+			
+		</style>
+	
+		<h:form id="formUserMails">
+			
+			  <p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  	  <p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+		  	  
+		  	  <!-- PAGE TITLE -->
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 29, environment.currentLang, null, null)} </h3>
+				</div>
+				
+				<i class="fas fa-envelope-open-text graphic"></i>
+ 			</div>
+						  			  
+			  <div class="container">
+			  	
+			  	<div class="container-white">
+
+				<p:outputPanel id="panelData">	
+					
+					<div class="title-box small-caps">#{labels['userMailMess.title']}: #{userMailMessages.userMailsList.rowCount}</div>									
+						
+					 	 <p:dataTable id="tbl" var="row" value="#{userMailMessages.userMailsList}" lazy="true" rows="15"
+							rowIndexVar="idx" sortMode="single" reflow="true" emptyMessage="#{labels['general.norows']}"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+							rowsPerPageTemplate="10,20,30" paginatorPosition="bottom"
+							paginator="true" style="margin-bottom:20px; border:0px">
+							
+							<p:column style="width:25px">
+					            <p:rowToggler />
+					        </p:column>
+							
+							<p:column width="30%" sortBy="#{row.A1}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.admStruc']}" />
+								</f:facet>
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, row[1], userMailMessages.currentLang, now, userMailMessages.userId)}" />
+							</p:column>
+							
+							<p:column width="120" sortBy="#{row.A2}">
+								 <f:facet name="header">
+									 <h:outputText value="#{labels['general.imena']}" />
+								 </f:facet>
+								 <h:outputText value="#{row[2]}" />
+							 </p:column>
+							 
+							 <p:column width="150" sortBy="#{row.A3}">
+								 <f:facet name="header">
+									 <h:outputText value="#{labels['userMailMess.subject']}" />
+								 </f:facet>
+								 <h:outputText value="#{row[3]}" />
+							 </p:column>
+							
+							<p:column width="90" sortBy="#{row.A4}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['userMailMess.dateSent']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[4]}">
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{userMailMessages.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:rowExpansion>							
+								<h:outputText value="#{labels['admMailList.msgMail']}: " style="font-weight: bold;"/>
+								<br /> <br />						 
+								<p:outputLabel value="#{row[5]}" escape="false"/>
+								<br />
+							</p:rowExpansion>	
+						
+						</p:dataTable>
+			        
+				</p:outputPanel>
+				
+				</div>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+		
+</html>	

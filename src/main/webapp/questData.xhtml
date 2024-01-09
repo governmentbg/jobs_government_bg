@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">  #{labels['quest.vaprosi']} </ui:define> 
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	<style>
+	    .box {
+	        background-color: #cce4f7;
+	        text-align: center;
+	        padding-top: 1em;
+	        padding-bottom: 1em;
+	        border-radius: 4px;
+	    }	    .definition {
+	    	display: inline-block;
+	    	margin-right: 20px;
+	    	font-weight: bold;
+	    }
+	    .red {
+	    	color: #E3170A;
+	    }
+	    
+	    .container li {
+	    	margin: 0.5em auto;
+	    }
+	    
+		
+		.marker .ui-icon-carat-1-s {
+		   	background-position: -16px -80px;
+		}
+		</style>
+		
+		<script type="text/javascript">
+			function confirmAction(message){
+				if(confirm(message)){
+					return true;
+				}else{
+					return false;
+				}
+			}
+
+		</script>	
+	
+		<h:form id="formQuestData">
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			
+			<div class="title-page back">
+				 <div class="container">
+				 	<div class="p-grid p-align-center">
+				 		<div class="p-col-fixed back-col">
+							<p:link outcome="questDataList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					    <div class="p-col">  	 
+							<h3 class="title">#{labels['quest.quest']}</h3>
+						</div>
+					</div>
+				 </div>
+			 </div>
+			
+			
+			<p:tooltip/>
+			
+			<div class="container"> 
+			
+				<div class="container-white">
+				<p:toolbar>
+					<f:facet name="left">
+						<div class="ui-inputgroup">
+							<p:commandButton id="idNew" value="#{labels['quest.new']}" action="#{questData.actionClear}" icon="ui-icon-document" 
+								update="formQuestData" />
+						</div>
+					</f:facet>
+       				<f:facet name="right">
+				    	<div class="ui-inputgroup">
+				    		<p:commandButton  value="#{labels['general.save']}" action="#{questData.actionSave}" 
+					     		icon="fa fa-fw fa-save" />
+			            </div>
+	            	</f:facet>
+		            
+	            </p:toolbar>
+				<br/>					
+				<p:panel header="#{labels['quest.vaprosi']}:" styleClass="marker" >
+				 <div>
+				    	
+				    	<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="#{labels['publ.langVersion']}:" styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-2" align="left">
+								<p:selectOneMenu id="idLang" value="#{questData.question.lang}">
+	                               <f:selectItems value="#{systemData.getSysClassification(IBConstantsSys.CODE_CLASSIF_LANG, questData.currentDate, questData.question.lang, questDataData.idUser)}"  
+	                               		var="clLang" itemLabel="#{clLang.tekst}" itemValue="#{clLang.code}" />
+		                        </p:selectOneMenu>
+							</div>
+						</div>
+				    	
+				    	<div class="p-grid">
+					    	<div class="p-col-12 p-md-2" align="right" >
+								<h:outputLabel for="idGrupaText" value="#{labels['quest.grupa']}:" styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+				           		<div class="ui-inputgroup">
+				           			<p:inputText value="#{questData.grupaText}"  id="idGrupaText" readonly="true"  tabindex="1"/>
+									<ibg:selectOneModal  
+										header="#{labels['quest.izbGrupa']}"   
+										userId="#{questData.idUser}"  
+										lang="1"   
+						 	            saveStateTree="true"  
+						 	            isSelectNode="true"  
+						 	            withBtnClear="true"
+						 	            expanded="false"
+						 	            id="idOneModGrupa"
+						 		        codeClassif="#{IBConstants.CODE_SYSCLASS_QUEST_GRUPA}"     
+						 		        update="formQuestData:idGrupaText"  
+						 		        selectedCode="#{questData.codeGrupa}" 
+						 		        selectedText="#{questData.grupaText}"/>
+								</div>
+							</div>
+				    	
+					    </div>	
+				    	
+				    	<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="#{labels['quest.quest']}:" />
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<p:inputTextarea id="idQuest" value="#{questData.question.quest}"   
+									rows="4"  />
+								<p:message for="idQuest" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="Отговор:"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<p:inputTextarea id="idAnswer" value="#{questData.question.answer}"   
+									rows="4"  />
+								<p:message for="idAnswer" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<p:outputLabel  value="#{labels['quest.ready']}:" styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<p:selectBooleanCheckbox value="#{questData.question.statusB}" id="idStatus"/>
+							</div>
+						</div>
+						
+					</div>	
+			  	</p:panel>
+			  	
+				<br/>
+			  			    
+			    <p:toolbar>
+	      			<f:facet name="left">
+				    	<div class="ui-inputgroup">
+				    		<p:commandButton  value="#{labels['general.save']}" action="#{questData.actionSave}"  update="formQuestData"
+					     		icon="fa fa-fw fa-save" />
+			            </div>
+	            	</f:facet>
+	            	<f:facet name="right">
+				    	<div class="ui-inputgroup">
+				    		<p:commandButton  id="btnDelF" value="#{labels['general.delete']}" action="#{questData.actionDelete}"  update="formQuestData"
+					     		icon="fa fa-fw fa-trash" rendered="#{questData.question.id != null}" onclick="return confirmAction('#{beanMessages['general.confirmDeleteMsg']}')">
+					     	</p:commandButton>
+			            </div>
+	            	</f:facet>
+	            </p:toolbar>
+				</div>
+			</div>
+		
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+		        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+	   		</p:confirmDialog>
+	   					
+					
+
+		</h:form>
+		
+			
+	</ui:define>
+
+	</ui:composition>
+	
+</html>	 

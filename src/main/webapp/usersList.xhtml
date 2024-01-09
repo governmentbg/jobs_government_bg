@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+<f:metadata>
+	<f:viewAction action="#{userData.hasAccessPage(7,7)}" />
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title"> #{labels['groupsList.tittle']} </ui:define>
+
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+	
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{usersList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+
+		<h:form id="formUsersList">
+
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			
+			 <h:inputHidden value="#{usersList.pageHidden}" />
+
+			<p:tooltip />
+
+			<!-- PAGE TITLE -->
+			<div class="title-page">
+				<div class="container">
+					<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 60, environment.currentLang, null, null)}</h3>
+				</div>
+			</div>
+
+			<div class="container">
+
+				<div class="container-white" onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('formUsersList:btnSearch').click()}">
+				
+				  <p:focus context="panellFilter"/>
+
+					<p:outputPanel id="panellFilter">
+
+						<p:panel header="#{labels['general.search']}" style="margin-bottom:10px">
+
+							<div class="p-grid">
+
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+									<h:outputText value="#{labels['usersList.periodReg']}:" />
+								</div>
+
+								<div class="p-col-12 p-md-3 p-lg-3">
+									<p:selectOneMenu id="idPer" value="#{usersList.period}">
+										<f:selectItem value="#{null}" itemValue="#{null}" />
+										<f:selectItems value="#{usersList.periodList}" var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+										<p:ajax event="change" update="formUsersList:idPer formUsersList:dateOt formUsersList:dateDo"
+											listener="#{usersList.changePeriod}" />
+									</p:selectOneMenu>
+								</div>
+
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+									<h:outputText value="#{labels['general.dataOt']}:" />
+								</div>
+								
+								<div class="p-col-12 p-md-2 p-lg-2">
+									<p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{usersList.timeZone}" size="10" locale="bg" 
+										value="#{usersList.dateOt}" label="#{labels['general.dataOt']}" styleClass="form-control #{applicationFilter.hasMessages('formUsersList:dateOt') ? 'cc-red ': '' }" />
+									<p:message for="dateOt" showDetail="true" showSummary="true" display="tooltip">
+										<p:autoUpdate />
+									</p:message>
+								</div>
+
+								<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+									<h:outputText value="#{labels['general.dataDo']}:" />
+								</div>
+								
+								<div class="p-col-12 p-md-2 p-lg-2">
+									<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{usersList.timeZone}" size="10" locale="bg" value="#{usersList.dateDo}"
+										label="#{labels['general.dataDo']}" styleClass="form-control #{applicationFilter.hasMessages('formUsersList:dateDo') ? 'cc-red' : '' }" />
+									<p:message for="dateDo" showDetail="true" showSummary="true" display="tooltip">
+										<p:autoUpdate />
+									</p:message>
+								</div>
+
+							</div>
+
+							<div class="p-grid">
+
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+									<h:outputText value="#{labels['userList.login']}:" />
+								</div>
+
+								<div class="p-col-12 p-md-4 p-lg-4">
+									<div class="ui-inputgroup">
+										<p:inputText value="#{usersList.username}" id="inLogin" autocomplete="false">
+											<p:ajax event="change" update="@this" />
+										</p:inputText>
+										<p:selectBooleanButton id="checkEQ1" value="#{usersList.loginEQ}" title=" #{labels['userEdit.loginEQ']}"
+											onLabel="#{labels['general.yes']}" offLabel="#{labels['general.no']}" 
+											onIcon="fas fa-check" offIcon="fas fa-times" style="width:60px" />											
+									</div>
+								</div>
+
+								<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+									<h:outputText value="#{labels['general.imena']}:" />
+								</div>
+
+								<div class="p-col-12 p-md-5 p-lg-5">
+									<p:inputText value="#{usersList.imena}" autocomplete="false">
+										<p:ajax event="change" update="@this" />
+									</p:inputText>
+								</div>
+
+							</div>
+
+							<div class="p-grid">
+
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{usersList.sysNames['status']?'':'display:none'}">
+									<h:outputText value="#{labels['general.status']}:" />
+								</div>
+
+								<div class="p-col-12 p-md-4 p-lg-4" style="#{usersList.sysNames['status']?'':'display:none'}">
+									<p:selectOneMenu id="stat" value="#{usersList.statP}" autoWidth="false">
+										<f:selectItem value="#{null}" itemValue="#{null}" />
+										<f:selectItems value="#{systemData.getSysClassification(usersList.classifStat, usersList.currentDate, usersList.lang,usersList.idUser)}"
+											var="clStat" itemLabel="#{clStat.tekst}" itemValue="#{clStat.code}" />
+										<p:ajax event="change" update="stat" />
+									</p:selectOneMenu>
+								</div>
+								
+								<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+									<h:outputText value="#{labels['usersList.tipPotr']}:" />
+								</div>
+
+								<div class="p-col-12 p-md-2 p-lg-2">
+									<p:selectOneMenu id="tip" value="#{usersList.tipP}" autoWidth="false">
+										<f:selectItem value="#{null}" itemValue="#{null}" />
+										<f:selectItems value="#{systemData.getSysClassification (usersList.classifTip, usersList.currentDate, usersList.lang, usersList.idUser)}"
+											var="clVid" itemLabel="#{clVid.tekst}" itemValue="#{clVid.code}" />
+										<p:ajax event="change" update="tip" />
+									</p:selectOneMenu>
+								</div>
+								
+								<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+									<h:outputText value="#{labels['general.pin']}:" />
+								</div>
+								
+								<div class="p-col-12 p-md-2 p-lg-2">
+									<p:inputText id="pin" value="#{usersList.pin}" onkeyup="onlyNumbersNoRestr('formUsersList:pin')" />
+								</div>
+								
+							</div>
+
+							<div class="p-grid">
+							
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(usersList.lstGroups != null and !usersList.lstGroups.isEmpty())?'':'display:none' }">
+									<h:outputText value="#{labels['usersList.izbGrupa']}:" />
+								</div>
+
+								<div class="p-col-12 p-md-4 p-lg-4" style="#{(usersList.lstGroups != null and !usersList.lstGroups.isEmpty())?'':'display:none' }">
+									<p:selectOneMenu id="gr" value="#{usersList.grupa}" autoWidth="false">
+										<f:selectItem value="#{null}" itemValue="#{null}" />
+										<f:selectItems value="#{usersList.lstGroups}" var="grup"
+											itemLabel="#{grup.groupName}" itemValue="#{grup.id}" />
+										<p:ajax event="change" update="gr" />
+									</p:selectOneMenu>
+								</div>
+
+								<div class="p-col-12 p-md-1 p-lg-1 cc-right" style="#{usersList.sysNames[usersList.nameWorkAdmStr]?'':'display:none'}" >
+									<h:outputText value="#{labels['usersList.admZveno']}: " />
+								</div>
+
+								<div class="p-col-12 p-md-5 p-lg-5" style="#{usersList.sysNames[usersList.nameWorkAdmStr]?'':'display:none'}" >
+
+									<div class="ibg-modal-button">
+										<p:inputText value="#{usersList.admZvText}" id="textZv" readonly="true" />
+										<ibg:selectOneModal header="#{labels['advertisement.adminZveno']}"
+											userId="#{usersList.idUser}" lang="#{usersList.lang}"
+											saveStateTree="true" isSelectNode="true" withBtnClear="true"
+											codeClassif="#{usersList.codeClassifWorkAdm}" update="formUsersList:textZv"
+											selectedCode="#{usersList.admZv}" selectedText="#{usersList.admZvText}" />
+									</div>
+
+								</div>
+
+							</div>
+
+							<div class="p-grid">
+
+								<div class="p-col-6 p-md-10 p-lg-10 cc-left">
+									<p:commandButton action="#{usersList.clearAll}" value="#{labels['general.clear']}" update="formUsersList" tabindex="-1"/>
+								</div>
+
+								<div class="p-col-6 p-md-2 p-lg-2 cc-rightAll">
+									<p:commandButton action="#{usersList.actionSearch}" value="#{labels['general.search']}" icon="fa fa-search" update="formUsersList" id="btnSearch" ajax="true" />
+								</div>
+
+							</div>
+
+						</p:panel>
+
+					</p:outputPanel>
+
+				</div>
+			</div>
+
+			<br />
+
+			<div class="container-white">
+
+				<p:panel id="panelTable">
+
+					<f:facet name="header">
+						
+						<h:outputText value="#{labels['general.result']}: #{usersList.tablList.rowCount} " styleClass="form-label" rendered="#{usersList.tablList.rowCount > 0}"/>
+						
+						<span class="p-mx-2" jsf:rendered="#{usersList.tablList.rowCount > 0}"> 
+							<span class="fas fa-ellipsis-v" />
+						</span>	
+						
+						<p:spacer width="5"/>		
+
+						<p:commandButton icon="fa fa-fw fa-plus" action="userEdit.jsf" ajax="false" title="#{labels['userEdit.newPotr']}" value="#{labels['userEdit.newPotr']}" styleClass="button-green" />						
+						
+					</f:facet>
+
+					<p:dataTable id="tbl" var="row" rendered="#{usersList.tablList.getRowCount() > 0}" value="#{usersList.tablList}" lazy="true" 
+						rows="20" rowIndexVar="idx" widgetVar="usersF" sortMode="single" rowsPerPageTemplate="10,15,20,25,30"
+						paginatorTemplate="{RowsPerPageDropdown}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						paginator="true" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+						style="width:100%;margin-bottom:20px" emptyMessage="#{labels['general.norows']}">
+
+						<f:facet name="{Exporters}">
+							<h:commandLink>
+								<p:graphicImage library="images" name="excel.png" width="24" />
+								<p:dataExporter type="xls" target="tbl" fileName="users" encoding="utf-8" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="csv.png" width="24" />
+								<p:dataExporter type="csv" target="tbl" fileName="users" encoding="utf-8" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="xml.png" width="24" />
+								<p:dataExporter type="xml" target="tbl" fileName="users" encoding="utf-8" />
+							</h:commandLink>
+
+						</f:facet>
+
+						<p:column style="text-align: center" width="5">
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.No-symbol']}" />
+							</f:facet>
+							
+							<h:outputText value="#{idx + 1}" />
+						</p:column>
+						
+						<p:column style="text-align: center" width="25" exportable="false">
+
+							<p:commandButton action="userEdit" ajax="false" update="tbl" icon="fa fa-fw fa-edit" title="#{labels['general.edit']}" rendered="#{usersList.param != 2}">
+								<f:param name="idObj" value="#{row[0]}" />
+								<f:param name="par" value="#{usersList.param}" />
+							</p:commandButton>
+							
+							<p:commandButton action="userEdit" ajax="false" update="tbl" icon="fas fa-eye" title="#{labels['general.view']}" rendered="#{usersList.param == 2}">
+								<f:param name="idObj" value="#{row[0]}" />
+								<f:param name="par" value="#{usersList.param}" />
+							</p:commandButton>
+
+						</p:column>
+
+						<!-- Потребителско име -->
+						<p:column sortBy="#{row.loginn}" width="100">
+							<f:facet name="header">
+								<h:outputText value="#{labels['userList.login']}" />							
+							</f:facet>
+
+							<h:outputText value="#{row[1]}" />
+						</p:column>
+						
+						<!-- ПИН -->
+						<p:column sortBy="#{row.uapin}" width="80" >
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.pin']}" />
+							</f:facet>
+							
+							<h:outputText value="#{row[10]}" />
+						</p:column>
+
+						<!-- Имена -->
+						<p:column sortBy="#{row.unames}" width="150">
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.imena']}" />
+							</f:facet>
+							
+							<h:outputText value="#{row[2]}" />
+						</p:column>
+
+						<!--   Тип потребител -->
+						<p:column sortBy="#{row.tip}" width="100" style="10px; height: 10px;">
+							<f:facet name="header">
+								<h:outputText value="#{labels['usersList.tipPotr']}" />
+							</f:facet>
+							
+							<h:outputText value="#{systemData.decodeItem (usersList.classifTip, row[4], usersList.lang, usersList.currentDate,  usersList.idUser)}" />
+							<h:outputText value=" - #{labels['usersList.admZveno']}: #{systemData.decodeItem (usersList.codeClassifWorkAdm,  row[8], usersList.lang, usersList.currentDate,  usersList.idUser)}" style="white-space:pre-line;" rendered="#{row[4] !=  usersList.tipVanshen and row[8] != null and usersList.sysNames[usersList.nameWorkAdmStr]}" />
+							<h:outputText value=" - #{labels['usersList.admZveno']}:  row[9]" style="white-space:pre-line;" rendered="#{row[4] !=  usersList.tipVanshen and row[8]==null and row[9] != null and usersList.sysNames[usersList.nameWorkAdmStr]}" />
+						</p:column>
+
+						<!-- Статус -->
+						<p:column sortBy="#{row.stat}" width="100" rendered="#{usersList.sysNames['status']}">
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.status']}" />
+							</f:facet>
+							
+							<h:outputText value="#{systemData.decodeItem (usersList.classifStat, row[5], usersList.lang, usersList.currentDate,  usersList.idUser)}" />
+						</p:column>
+
+						<!--   Ел. поща -->
+						<p:column width="110" rendered="#{usersList.sysNames['email']}">
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.email']}" />
+							</f:facet>
+							
+							<h:outputText value="#{row[3]}" />
+						</p:column>
+
+
+						<!--   Дата регистрация -->
+						<p:column style="text-align:center" sortBy="#{row.dreg}" width="70">
+							<f:facet name="header">
+								<h:outputText value="#{labels['usersList.registrNa']}" />
+							</f:facet>
+							
+							<h:outputText value="#{row[7]}">
+								<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{usersList.timeZone}" />
+							</h:outputText>
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panel>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

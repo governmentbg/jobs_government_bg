@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">  #{labels['publ.lable']} </ui:define> 
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	<style>
+	    .box {
+	        background-color: #cce4f7;
+	        text-align: center;
+	        padding-top: 1em;
+	        padding-bottom: 1em;
+	        border-radius: 4px;
+	    }
+	    .definition {
+	    	display: inline-block;
+	    	margin-right: 20px;
+	    	font-weight: bold;
+	    }
+	    .red {
+	    	color: #E3170A;
+	    }
+	    
+	    .container li {
+	    	margin: 0.5em auto;
+	    }
+	    
+	    .ui-fileupload-buttonbar {
+		    margin: 0px 0px 0px 0px !important;
+		    padding: 0px 0px 0px 0px !important;
+		    border: none;
+		    position: relative;				   
+		}
+		
+		.ui-fileupload {
+		    margin: 0px 0px 0px 0px !important;
+		    padding: 0px 0px 0px 0px !important;
+		    display: inline-block;
+		    border: none;			   
+		}
+		
+		.ui-fileupload-content { 
+		   border: none;
+		   padding: 0px !important;
+		}
+		.ui-fileupload-files {display:none;}
+		
+		.ui-selectonemenu-filter-container {
+		    width: 98% !important;
+		}	
+		
+		.marker .ui-icon-carat-1-s {
+	    	background-position: -16px -80px;
+		}
+		</style>
+		
+		<script type="text/javascript">
+			function confirmAction(message){
+				if(confirm(message)){
+					return true;
+				}else{
+					return false;
+				}
+			}
+
+		</script>	
+	
+		<h:form id="formPublData">
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			<!-- PAGE TITLE -->
+		  <div class="title-page back">
+			 <div class="container">
+			 	<div class="p-grid p-align-center">
+			 		<div class="p-col-fixed back-col">
+						<p:link outcome="publDataList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+					  		<i class="fas fa-caret-left" ></i>								
+					    </p:link>
+				    </div>
+				    <div class="p-col">  	 
+						
+						<h3 class="title">#{labels['publ.lable']}</h3>
+						
+					</div>
+				</div>
+			 </div>
+		  </div>
+			
+
+			<p:tooltip/>
+			<div class="container"> 
+			<div class="container-white">	
+				
+				<p:toolbar>
+					<f:facet name="left">
+						<div class="ui-inputgroup">
+							<p:commandButton  value="#{labels['general.save']}" action="#{publData.actionSave}" update="formPublData" icon="fa fa-save" />
+						</div>
+					</f:facet>
+       				<f:facet name="right">
+				    	<div class="ui-inputgroup">
+				    		<p:commandButton id="idNew" value="#{labels['publ.newData']}" action="#{publData.actionClear}" icon="fa fa-fw fa-plus" 
+								 styleClass="button-green" update="formPublData" />				    		
+			            </div>
+	            	</f:facet>
+	            	
+       				<ui:remove><f:facet name="right">
+				    	<div class="ui-inputgroup">
+				    		<ui:remove><p:graphicImage id="idIcon" name="#{publData.langIcon.get(publData.lang)}"/></ui:remove>
+				    		<p:selectOneMenu id="idLang" value="#{publData.lang}">
+                               <f:selectItems value="#{systemData.getSysClassification(IBConstantsSys.CODE_CLASSIF_LANG, publData.currentDate, publData.lang, publData.idUser)}"  
+                               		var="clLang" itemLabel="#{clLang.tekst}" itemValue="#{clLang.code}" />
+                               	<p:ajax event="change" update="formPublData" listener="#{environment.changeLanguage(publData.langHM[publData.lang])}" process="@form"/>	
+                               	<p:ajax event="change" update="formPublData" listener="#{publData.changeLang}" process="@form"/>
+	                        </p:selectOneMenu>
+			            </div>
+	            	</f:facet></ui:remove>
+		            
+	            </p:toolbar>
+				<br/>
+				<p:focus context="pData"/>
+				<p:outputPanel id="pData">					
+				<p:panel header="#{labels['publ.lable']}:" styleClass="marker" >
+        			
+					<div>
+					
+						<div class="p-grid" >
+							<div class="p-col-12 p-md-2" align="right" >
+								<h:outputText for="idPublTypeText" value="#{labels['publ.typePubl']}:" styleClass="req" />
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<p:selectOneMenu id="idSelPublType" value="#{publData.publication.typePub}" style="width:250px;" disabled="#{null != publData.publication.id and null != publData.publication.typePub}">
+	                               <f:selectItem value="#{null}" itemValue="#{null}"/> 
+	                               <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_PUBL_TYPE, publData.currentDate, publData.lang, publData.idUser)}"  
+	                               		var="clPType" itemLabel="#{clPType.tekst}" itemValue="#{clPType.code}" />
+	                               	<f:ajax render="@form" execute="@all" event="change" />
+		                        </p:selectOneMenu>
+								
+
+							</div>
+					    </div>
+					
+					
+					    <div class="p-grid" >
+							<div class="p-col-12 p-md-2" align="right" >
+								<h:outputText for="idSectionText" value="#{labels['general.section']}:" styleClass="req" />
+								
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+				           		<div class="ui-inputgroup">
+				           			<p:inputText value="#{publData.sectionText}"  id="idSectionText" readonly="true"  />	
+				           			<p:message for="idSectionText" display="tooltip"> <p:autoUpdate/> </p:message>
+									<ibg:selectOneModal  
+										header="#{labels['publ.izbSection']}"   
+										userId="#{publData.idUser}"  
+										lang="#{publData.lang}" 
+						 	            saveStateTree="true"  
+						 	            isSelectNode="true"  
+						 	            withBtnClear="true" 
+						 	            expanded="false"
+						 	            id="idOneMod"
+						 		        codeClassif="#{IBConstants.CODE_SYSCLASS_SECT_PUBL}"     
+						 		        update="formPublData:idSectionText"  
+						 		        selectedCode="#{publData.codeSection}" 
+						 		        selectedText="#{publData.sectionText}"/>
+						 		        
+						 		</div>
+							</div>
+					    </div>
+					    
+					    <div class="p-grid">
+							
+	                        <div class="p-col-12 p-md-2" align="right" >     
+								<h:outputText id="datFromL" value="#{labels['general.dataOt']}:" styleClass="req" />
+								
+							</div>
+							<div class="p-col-12 p-md-4">
+								<p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true"  showOn="button" 
+									timeZone="#{publData.timeZone}" size="10" locale="bg"
+						         	value="#{publData.publication.dateFrom}" label="#{labels['publ.dateFrom']}" >
+						          	<p:ajax event="dateSelect" listener="#{publData.checkDates(1)}"  update="formPublData:dateOt formPublData:dateDo " />
+						          	<p:ajax event="change" listener="#{publData.checkDates(1)}" update="formPublData:dateOt formPublData:dateDo " />
+						        </p:calendar>
+						        
+						        <p:message for="dateOt" showDetail="true" showSummary="true" display="tooltip">
+						        	<p:autoUpdate/>
+						        </p:message>
+						        
+							</div>
+							<div class="p-col-12 p-md-1" >
+								<h:outputText value="#{labels['general.dataDo']}:"/>
+							</div>
+							<div class="p-col-12 p-md-5">
+								<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button" 
+									timeZone="#{publData.timeZone}" size="10" locale="bg" 
+						         	value="#{publData.publication.dateTo}" label="#{labels['general.dataDo']}">
+						          	<p:ajax event="dateSelect" listener="#{publData.checkDates(2)}" update="formPublData:dateOt formPublData:dateDo " />
+						          	<p:ajax event="change" listener="#{publData.checkDates(2)}" update="formPublData:dateOt formPublData:dateDo " />
+							     </p:calendar>
+							     
+						        <p:message for="dateDo" showDetail="true" showSummary="true" display="tooltip">
+						        	<p:autoUpdate/>
+						        </p:message>  	
+							     
+							</div> 
+							
+					
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="#{labels['publ.Image']}:"  for="filesUpload"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<div class="ui-inputgroup">
+									<div jsf:id="idImage">
+										<p:graphicImage id="idImage_" value="#{publData.imageCont}" stream="false" height="130px" rendered="#{publData.imageCont!=null}"/>
+									</div>
+									<p:tooltip for="filesUpload" id="idImTt" value="#{labels['file.upload']}"/>
+									<p:fileUpload listener="#{publData.handleFileUpload}" 
+										skinSimple="true" 
+								    	update="formPublData:idImage " 
+								    	mode="advanced"
+								    	id="filesUpload" 
+								    	multiple="false" 
+								    	sizeLimit="1048576" 
+								    	auto="true" 
+								    	label="#{labels['file.upload']}"
+								    	widgetVar="filesUpload" 
+								    	invalidSizeMessage="#{labels['general.FileSizeTo1MB']}" 
+								    	invalidFileMessage="#{labels['general.invalidTypeFile']}"
+								    	allowTypes="/(\.|\/)(gif|jpe?g|png|bmp)$/">
+								    </p:fileUpload>
+								    
+						    	
+								</div>
+							</div>
+							<ui:remove><div class="p-col-12 p-md-9" align="left">
+								<p:graphicImage id="idImage" value="#{publData.imageCont}" stream="false" height="130px" />
+							</div></ui:remove>
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right" >
+								<h:outputText value="#{labels['publ.notes']}:" />
+							</div>
+							<div class="p-col-12 p-md-10" align="left" >
+								<p:inputText id="idNote" value="#{publData.publication.note}" />
+								
+							</div>
+							
+						</div>
+						
+						
+				    </div>
+		          </p:panel>
+		          <br/>
+		          <p:panel header="#{labels['publ.langVersion']}:" styleClass="marker" > 
+			   		<p:toolbar>
+					   	<f:facet name="left">
+					    	<div class="ui-inputgroup">
+					    		<ui:remove><p:graphicImage id="idIcon" name="#{publData.langIcon.get(publData.lang)}"/></ui:remove>
+					    		<p:selectOneMenu id="idLang" value="#{publData.lang}">
+	                               <f:selectItems value="#{systemData.getSysClassification(IBConstantsSys.CODE_CLASSIF_LANG, publData.currentDate, publData.lang, publData.idUser)}"  
+	                               		var="clLang" itemLabel="#{clLang.tekst}" itemValue="#{clLang.code}" />
+	                               	<ui:remove><p:ajax event="change" update="formPublData" listener="#{environment.changeLanguage(publData.langHM[publData.lang])}" process="@form"/></ui:remove>	
+	                               	<p:ajax event="change" update="formPublData" listener="#{publData.changeLang}" process="@form"/>
+		                        </p:selectOneMenu>
+				            </div>
+		            	</f:facet>
+		            </p:toolbar>
+
+				   	<div>
+				    	<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								
+								<h:outputText value="#{labels['publ.title']}:" styleClass="req"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<p:inputText id="idTitle" value="#{publData.publSelLang.title}"  />
+								
+							</div>
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="#{labels['general.anotation']}:"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<p:inputTextarea id="idAnot" value="#{publData.publSelLang.annotation}"   
+									rows="4"  />
+								
+								<p:message for="idAnot" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="#{labels['general.fullText']}:"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<p:inputTextarea id="idFullText" value="#{publData.publSelLang.fullText}"  
+									rows="4"/>
+									
+								<p:message for="idFullText"  display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+						</div>
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="#{labels['general.dopInfo']}:" />
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+								<p:inputTextarea id="idOther" value="#{publData.publSelLang.otherInfo}"  
+									 rows="2"/>
+										
+								<p:message for="idOther" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+						</div>
+						
+					</div>	
+			  	</p:panel>
+			  	</p:outputPanel>
+				<br/>
+		  	
+			  	<p:panel header="#{publData.titleAttach.get(publData.publication.typePub)}" toggleable="true"  
+			  			toggleOrientation="vertical" styleClass="marker" >
+			  			
+			  		<h:panelGroup id="idPgYT" 
+								rendered="#{publData.publication.typePub == IBConstants.CODE_ZNACHENIE_TYPE_PUBL_VIDEO}">
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<p:outputLabel value="Видео от YouTube"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+				           		<div class="ui-inputgroup">
+				           			<p:selectBooleanCheckbox value="#{publData.codeYT}" disabled="#{!empty publData.filesListHM.get(publData.lang)}">
+				           				<f:ajax render="@form" execute="@this" event="change" listener="#{publData.prepareYouTube()}"/>
+				           			</p:selectBooleanCheckbox>
+								</div>
+								
+							</div>
+					    </div>
+				    </h:panelGroup>
+				    
+				    <h:panelGroup id="pgURL" rendered="#{publData.publication.typePub == IBConstants.CODE_ZNACHENIE_TYPE_PUBL_VIDEO and publData.codeYT}">
+					<div class="p-grid" >
+						<div class="p-col-12 p-md-2" align="right">
+							<h:outputText value="URL YouTube:" />
+						</div>
+						<div class="p-col-12 p-md-10" align="left">
+							<p:inputText id="idUrl" value="#{publData.publSelLang.urlPub}">
+								<f:ajax render="@form" execute="@this" />
+							</p:inputText>
+							<p:message for="idUrl" display="tooltip">
+								<p:autoUpdate/>
+							</p:message>
+						</div>
+					</div> 
+					</h:panelGroup>
+				    
+			  		<p:outputPanel  id="idFilesTabl"  rendered="#{!publData.codeYT or publData.publication.typePub != IBConstants.CODE_ZNACHENIE_TYPE_PUBL_VIDEO}">
+			  	
+						     <p:fileUpload id="filesUploadA" 
+						     	listener="#{publData.uploadFileListener}"  
+						     	invalidSizeMessage="#{labels['general.invalidFileSize']}" 
+					    		invalidFileMessage="#{publData.typeFilesMessages.get(publData.publication.typePub)}"
+						     	label="#{labels['file.upload']}" 
+						     	skinSimple="true" 
+						     	sizeLimit="#{systemData.getSettingsValue('maxFileUploadSize')}" 
+						     	allowTypes="#{publData.typeFilesAttach.get(publData.publication.typePub)}"  
+						     	disabled="#{null==publData.publication.typePub or (publData.publication.typePub==IBConstants.CODE_ZNACHENIE_TYPE_PUBL_VIDEO and (publData.codeYT or !empty publData.filesListHM.get(publData.lang)))}"			
+								update="fileList idFilesTabl idPgYT" 
+								auto="true" 
+								/>
+								
+							 <p:tooltip for="filesUploadA" value="#{labels['file.upload']}" />
+						
+					
+					<div class="p-grid">
+
+						<div class="p-col-12 p-md-12" align="right">
+							<p:dataTable id="fileList" var="row" value="#{publData.filesListHM[publData.lang]}" editable="true" 
+								editMode="cell" widgetVar="cellAtt" rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" 
+								rows="10" style="margin-bottom:20px" paginator="true" reflow="true"	paginatorPosition="bottom" 
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+		
+								<p:ajax event="cellEdit" listener="#{publData.changeDescription}" update="formPublData:fileList" />
+								
+						       	<p:column headerText="#{labels['general.No-symbol']}" width="4%" >
+									<h:outputText value="#{rkv + 1}" />
+								</p:column>
+								
+								<p:column headerText="" width="4%" style="text-align:center;">									           	
+						           <p:commandButton  id="download" ajax="false" actionListener="#{publData.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+						       	</p:column>
+						 
+						       	<p:column headerText="#{labels['file.filename']}" width="44%" >
+						             <h:outputText value="#{row.filename}" escape="false" />									             
+						        </p:column>
+						       	
+						       	<p:column headerText="#{labels['file.description']}" width="44%" >									   
+						            
+							        <p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{row.description}" />
+										</f:facet>
+										<f:facet name="input">
+											<h:inputText value="#{row.description}" />
+										</f:facet>
+									</p:cellEditor>
+							        
+						       	</p:column>
+				
+								<p:column headerText="" width="4%" exportable="false" style="text-align:center;" >
+									<p:commandButton action="#{publData.remove(row)}" style="color: #d90000;" icon="fa fa-fw fa-trash" update="formPublData" title="#{labels['general.delete']}" 
+										onclick="return confirmAction('#{beanMessages['general.confirmDeleteMsg']}')" >
+										<ui:remove><p:confirm header="#{labels['general.delete']}" message="#{labels['file.confirmDeleteFile']}" icon="ui-icon-alert" /></ui:remove>
+									</p:commandButton>
+								</p:column>
+						  
+						   </p:dataTable>
+						 </div>
+					</div>
+					</p:outputPanel>
+				</p:panel>	
+		    	<br/>
+			    <p:toolbar>
+	      			<f:facet name="left">
+				    	<div class="ui-inputgroup">
+				    		<p:commandButton  value="#{labels['general.save']}" action="#{publData.actionSave}"  update="formPublData"
+					     		icon="fa fa-fw fa-save" />
+			            </div>
+	            	</f:facet>
+	            	<f:facet name="right">
+				    	<div class="ui-inputgroup">
+				    		<p:commandButton  id="btnDelF" value="#{labels['general.delete']}" action="#{publData.actionDelete}"  update="formPublData"
+					     		icon="fa fa-fw fa-trash" rendered="#{publData.publication.id != null}" onclick="return confirmAction('#{beanMessages['general.confirmDeleteMsg']}')">
+					     	</p:commandButton>
+			            </div>
+	            	</f:facet>
+	            </p:toolbar>
+				</div>
+			</div>
+		
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+		        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+	   		</p:confirmDialog>
+	   					
+			
+		</h:form>
+		
+			
+	</ui:define>
+
+	</ui:composition>
+	
+</html>

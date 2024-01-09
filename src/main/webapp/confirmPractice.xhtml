@@ -1,0 +1,247 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{labels['confirmPractice.title']}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+
+		
+
+		<p:tooltip />
+		<h:form id="practiceForm">
+		 
+		 			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			
+			<!-- PAGE TITLE -->
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{labels['confirmPractice.title']}: <span style="margin-left: 1em;">#{profileBean.user.username}</span></h3>
+				</div>
+ 			</div>
+		
+			<div class="container">
+
+				<p:outputPanel id="panelData">
+					<div class="container-white">
+				
+								
+					
+                        
+						<div class="p-grid" >	
+							<div class="p-col-12">
+										<p:selectOneRadio id="activePractices" value="#{confirmPractice.active}">
+											<f:selectItem itemValue="true" itemLabel="#{labels['confirmPractice.active']}"/>
+											<f:selectItem itemValue="false" itemLabel="#{labels['confirmPractice.all']}"/>
+											<p:ajax event="change" update="practiceForm: practices_tbl" 
+				                           		listener="#{confirmPractice.actionSeachPractices}" />	
+										</p:selectOneRadio>
+										
+							</div>
+							<p:dataTable id="practices_tbl" rowIndexVar="index" var="row" value="#{confirmPractice.practiceList}" 
+							emptyMessage="#{labels['profile.noPracitces']}" reflow="true">
+								
+								<p:ajax event="rowToggle" listener="#{confirmPractice.onRowToggle}"  />
+
+								<p:column style="width:35px">
+							           <p:rowToggler >
+							            	
+							           </p:rowToggler>
+							    </p:column>
+				        			
+											<p:column headerText="#{labels['general.No-symbol']}"  width="50" responsivePriority="4">
+												<h:outputText value="#{row[0]}" />
+											</p:column>
+											
+											<!-- Бутонът се вижда при потвърждаване на първо и второ класитане. Статусът НЕ трябва да е "Приел".
+											За първо класиране classification = 1 и текущата дата да е в периода на начална и крайна дата на потвърждаване.
+											За второ класиране ranked2= 1 и текущата дата да е в периода на начална и крайна дата на потвърждаване за второ класиране -->
+											<p:column width="160" style="text-align: center;">
+												<p:commandButton actionListener="#{confirmPractice.actionConfPractice}" title="#{labels['general.potvardi']}"  value="#{labels['general.potvardi']}"
+													rendered="#{((row[10] and row[7]==1) or (row[11] and row[12]==1)) and row[14] ne IBConstants.CODE_ZNACHENIE_TYPE_STATUS_CAND_ACCEPTED and row[8] ne IBConstants.CODE_ZNACHENIE_TYPE_STATUS_CAND_ACCEPTED}" update="practiceForm:practices_tbl">
+													<p:confirm header="" message="#{row[13]==1?labels['profile.confApllyCentral']:labels['profile.confAplly']}" icon="fa fa-exclamation-triangle" />
+													<f:param name="idObj" value="#{row[9]}" />
+												</p:commandButton>
+												<br/>
+												<h:panelGroup rendered="#{row[10] and row[7]==1 and row[14] ne IBConstants.CODE_ZNACHENIE_TYPE_STATUS_CAND_ACCEPTED and row[8] ne IBConstants.CODE_ZNACHENIE_TYPE_STATUS_CAND_ACCEPTED}">
+													<h:outputText value="#{labels['confirmPractice.srokDo']}: "/>
+													<h:outputText value="#{row[6]}">
+														<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+													</h:outputText>
+												</h:panelGroup>
+												
+												<h:panelGroup rendered="#{row[11] and row[12]==1 and row[14] ne IBConstants.CODE_ZNACHENIE_TYPE_STATUS_CAND_ACCEPTED and row[8] ne IBConstants.CODE_ZNACHENIE_TYPE_STATUS_CAND_ACCEPTED}">
+													<h:outputText value="#{labels['confirmPractice.srokDo']}: "/>
+													<h:outputText value="#{row[16]}">
+														<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+													</h:outputText>
+												</h:panelGroup>
+											</p:column>
+											
+											<p:column  headerText="#{labels['general.name']}">
+												<h:outputText value="#{row[1]}"/>
+											</p:column>
+											
+											<p:column width="120" >
+												<f:facet name="header">
+													<h:outputText value="#{labels['general.status']}" />
+												</f:facet>
+													<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_CANDIDATE, row[8], confirmPractice.currentLang, confirmPractice.today, confirmPractice.userId)}" />
+												
+														<p:commandLink rendered="#{row[8] eq IBConstants.CODE_ZNACHENIE_TYPE_STATUS_APPROVED_FOR_INTERVIEW}" value="" title="#{labels['practiceProcess.dateInterview']}: #{row[17]} #{labels['confirmPractice.placeInterview']}: #{row[18]}">
+															<i class="fas fa-info-circle" aria-hidden="true"> </i>
+														</p:commandLink>
+												
+											</p:column>
+											
+											<p:column width="100"  headerText="#{labels['practiceProcess.numClassif']}">
+												<h:outputText value="#{row[7]}"/>
+											</p:column>										
+										 
+											<p:column width="120" headerText="#{labels['practice.begDatePract']}">
+												<h:outputText value="#{row[2]}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+												</h:outputText>
+											</p:column>
+											
+											<p:column width="120" headerText="#{labels['practice.endDatePractice']}">
+												<h:outputText value="#{row[3]}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+												</h:outputText>
+											</p:column>
+											
+											<p:rowExpansion >							 																					 
+												 <div class="p-grid">
+													 																										
+										  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+															<h:outputText value="#{labels['general.admStruc']}: " style="font-weight: bold;"/>
+														</div>
+								
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, confirmPractice.selectedPractice.administration, 
+															confirmPractice.currentLang,confirmPractice.today, Constants.PORTAL_USER)}"/>						 		
+													 	</div>
+													 	
+													 	<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+															<h:outputText value="#{labels['advertisement.zveno']}: " style="font-weight: bold;"/>
+														</div>
+								
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, confirmPractice.selectedPractice.unit, confirmPractice.currentLang, confirmPractice.today, Constants.PORTAL_USER)}"/>						 		
+													 	</div>
+							
+														<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+															<h:outputText value="#{labels['practiceList.numPositions']}: " style="font-weight: bold;"/>
+														</div>
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<p:outputLabel value="#{confirmPractice.selectedPractice.num}"/>																	                        
+														</div>
+														
+														<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+															<h:outputText value="#{labels['practice.educationArea']}: " style="font-weight: bold;"/>
+														</div>
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, confirmPractice.selectedPractice.educationArea, confirmPractice.currentLang, confirmPractice.today, Constants.PORTAL_USER)}"/>						 		
+														</div>	
+														
+														<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+															<h:outputText value="#{labels['practiceExtView.srokKand']}: " style="font-weight: bold;"/>
+														</div>
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<h:outputText value="#{confirmPractice.selectedPractice.dateFrom}">
+												        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+												            </h:outputText>
+												             - 
+												            <h:outputText value="#{confirmPractice.selectedPractice.dateTo}">
+												        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+												            </h:outputText>
+														</div>	
+														
+																								
+														<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+															<h:outputText value="#{labels['confirmPractice.confirmFirst']}: " style="font-weight: bold;"/>
+														</div>
+														
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<h:outputText value="#{confirmPractice.selectedPractice.confirmDateFrom}">
+												        			<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+												            </h:outputText>
+												            -
+												            <h:outputText value="#{confirmPractice.selectedPractice.confirmDateTo}">
+												        			<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+												            </h:outputText>
+														</div>	
+																																			
+														<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+															<h:outputText value="#{labels['confirmPractice.confirmSecond']}: " style="font-weight: bold;"/>
+														</div>
+														
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<h:outputText value="#{confirmPractice.selectedPractice.confirmDateFrom2}">
+												        			<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+												            </h:outputText>
+												            -													
+															<h:outputText value="#{confirmPractice.selectedPractice.confirmDateTo2}">
+												        			<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{confirmPractice.timeZone}"/>
+												            </h:outputText>
+														</div>	
+																																																
+														<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+															<h:outputText value="#{labels['general.oblast']}: " style="font-weight: bold;"/>
+														</div>
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, confirmPractice.selectedPractice.region, confirmPractice.currentLang, confirmPractice.today, Constants.PORTAL_USER)}"/>						 		
+														</div>	
+														
+														<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+															<h:outputText value="#{labels['general.obshtina']}: " style="font-weight: bold;"/>
+														</div>
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, confirmPractice.selectedPractice.municipality, confirmPractice.currentLang, confirmPractice.today, Constants.PORTAL_USER)}"/>						 		
+														</div>		
+														
+															<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+															<h:outputText value="#{labels['general.nasMiasto']}: " style="font-weight: bold;"/>
+														</div>
+														<div class="p-col-12 p-md-9 p-lg-9">
+															<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, confirmPractice.selectedPractice.town, confirmPractice.currentLang, confirmPractice.today, Constants.PORTAL_USER)}"/>						 		
+														</div>											
+														 
+																								  
+												</div>
+											</p:rowExpansion>			
+										</p:dataTable> 	
+															
+						</div>
+										
+							
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
+				    </div>
+				</p:outputPanel>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

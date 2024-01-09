@@ -1,0 +1,338 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+	<!-- <f:metadata> TODO constant
+		<f:viewAction action="#{userData.hasAccessPage(7,62)}" />		   
+	</f:metadata> -->
+	
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		<ui:define name="title">#{labels['general.systemClassifEdit']}</ui:define>
+		
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">
+			
+			<style type="text/css">
+				
+			</style>
+			
+			<h:form id="systemClassifForm">
+			
+				<p:importEnum type="indexbg.pjobs.bean.SystemClassifParentBean$NodeTypes" var="NodeTypes" />
+				
+				<div class="title-page back">
+					<div class="container-fluid" style="padding: 0.5em 1em;">
+				 		<div class="p-grid p-align-center">
+				 			<div class="p-col-fixed back-col">
+								<p:link outcome="systemClassifList.jsf" 
+									title="#{labels['general.back']}" 
+									styleClass="back-button">
+							  		<i class="fas fa-caret-left" ></i>								
+							    </p:link>
+					    	</div>
+						    <div class="p-col">
+								<h3 class="title">#{labels['general.systemClassifEdit']}</h3>
+							</div>
+						</div>
+				 	</div>
+			  	</div>
+			  	
+			  	<div jsf:id="panelData" class="container-fluid">
+					<div class="container-white">
+						<div class="bolded">
+							<h:outputText value="#{systemClassifEdit.textNameClassif} (#{systemClassifEdit.codeClassif})"/>
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-5">
+								<div class="p-grid">
+									<div class="p-col-12">
+										<div class="ui-inputgroup">
+									    	<p:inputText value="#{systemClassifEdit.searchText}"/> 
+									    	<p:commandButton action="#{systemClassifEdit.actionSearch}"
+										    	update="systemClassifForm:systemTree"
+										    	icon="fas fa-search"
+										    	title="#{labels['general.search']}"/>
+									    </div>
+									    
+									    <p:scrollPanel mode="native" style="width:100%;height:595px" id="treePanel">
+									    	<p:tree id="systemTree" value="#{systemClassifEdit.rootNode}" 
+								    			var="node" nodeVar="rowNode"
+									    		selectionMode="single" selection="#{systemClassifEdit.selectedNode}" 
+									    		dynamic="true"  widgetVar="treeSingleWidget"
+									    		style="border:none; width:100%;"> 
+									    		
+									    		<p:ajax event="select"  
+									    			update="systemClassifForm:panelDataItem systemClassifForm:panelMenuBar" 
+									    			listener="#{systemClassifEdit.processSelection}" />
+									    		<p:ajax event="expand"
+									    			update=":systemClassifForm:systemTree"
+									    			listener="#{systemClassifEdit.nodeExpand}" />
+    											<p:ajax event="collapse"
+    												update=":systemClassifForm:systemTree"
+    												listener="#{systemClassifEdit.nodeCollapse}" />
+				    							<p:ajax event="unselect"
+					    							update=":systemClassifForm:systemTree"
+					    							listener="#{systemClassifEdit.nodeUnselect}" />
+						    		 
+									    		<p:treeNode type="default" 
+									    			expandedIcon="fas fa-folder-open" collapsedIcon="fas fa-folder" 
+									    			icon="#{rowNode.leaf ? 'far fa-file' : 'fas fa-folder'}">
+													<h:outputText escape="false" value="#{node.tekst}" />
+													<h:outputText value=" (#{node.code}) "/>
+										        </p:treeNode>
+							        
+										        <p:treeNode type="#{NodeTypes.SELECTED.text}" 
+										        	expandedIcon="fas fa-folder-open" collapsedIcon="fas fa-folder" 
+										        	icon="#{rowNode.leaf ? 'far fa-file' : 'fas fa-folder'}">
+													<h:outputText value="#{node.tekst}" style="font-style: italic;" escape="false"/>
+													<h:outputText value=" (#{node.code}) " style="font-style: italic;"/>
+													<i class="fas fa-check" style="color:green" aria-hidden="true"></i>
+										             
+													<p:commandLink title="Отказ от преместване" 
+														action="#{systemClassifEdit.actionClearNodeForMove}" 
+														update="systemClassifForm:systemTree systemClassifForm:menuTree" 
+														rendered="#{systemClassifEdit.selectedCodeItemForMove==node.code}">
+														<i class="fas fa-remove" style="color:red" aria-hidden="true"></i>
+													</p:commandLink>
+										        </p:treeNode>
+							       
+										        <p:treeNode type="#{NodeTypes.NEW.text}" 
+										        	expandedIcon="fas fa-folder-open" collapsedIcon="fas fa-folder"
+										        	icon="#{rowNode.leaf ? 'far fa-file' : 'fas fa-folder'}">
+													<h:outputText value="#{node.tekst}" escape="false"/>
+													<h:outputText value=" (#{node.code}) "/>
+													<i class="fas fa-map-pin" style="color:red" aria-hidden="true"></i>
+										        </p:treeNode>
+										    </p:tree>
+									    </p:scrollPanel>
+									    
+									    <p:contextMenu for="systemTree" style="width:240px" id="menuTree" 
+								    		rendered="#{systemClassifEdit.rootNode.childCount > 0 and !systemClassifEdit.sysClassifOpis.dynamic and systemClassifEdit.sysClassifOpis.userEditable}">
+								    		
+								    		<p:menuitem id="saveBefore" 
+									    		value="#{labels['general.newItemBefore']}" 
+									    		update="systemClassifForm:systemTree systemClassifForm:panelDataItem systemClassifForm:panelMenuBar" 
+									    		actionListener="#{systemClassifEdit.actionSaveDistp}" 
+									    		icon="ui-icon-arrowthickstop-1-n" />
+									        <p:menuitem id="saveAfter"
+										        value="#{labels['general.newItemAfter']}"
+										        update="systemClassifForm:systemTree systemClassifForm:panelDataItem systemClassifForm:panelMenuBar"
+										        actionListener="#{systemClassifEdit.actionSaveDistp}"
+										        icon="ui-icon-arrowthickstop-1-s" />
+									        <p:menuitem id="saveChild"
+										        value="#{labels['general.newItemChild']}"
+										        update="systemClassifForm:systemTree systemClassifForm:panelDataItem systemClassifForm:panelMenuBar"
+										        actionListener="#{systemClassifEdit.actionSaveDistp}"
+										        icon="ui-icon-arrowthickstop-1-e" />
+
+							        		<p:separator />
+							        
+							        		<p:menuitem value="#{labels['general.rememberMove']}"
+								        		update="systemClassifForm:panelDataItem systemClassifForm:menuTree systemClassifForm:systemTree"
+								        		actionListener="#{systemClassifEdit.actionSelectForMove}"
+								        		icon="ui-icon-check" />
+							       
+									        <p:submenu label="#{labels['general.moved']}"
+										        icon="ui-icon-transferthick-e-w"
+										        rendered="#{systemClassifEdit.selectedCodeItemForMove != null}">
+										    	<p:menuitem id="moveBefore"
+											    	value="#{labels['general.before']}"
+											    	update="systemClassifForm:panelDataItem systemClassifForm:menuTree systemClassifForm:systemTree"
+											    	actionListener="#{systemClassifEdit.actionMoveItem}"
+											    	icon="ui-icon-arrowthickstop-1-n" />
+										        <p:menuitem id="moveAfter"
+											        value="#{labels['general.after']}"
+											        update="systemClassifForm:panelDataItem systemClassifForm:menuTree systemClassifForm:systemTree"
+											        actionListener="#{systemClassifEdit.actionMoveItem}"
+											        icon="ui-icon-arrowthickstop-1-s" />
+										        <p:menuitem id="moveChild"
+											        value="#{labels['general.child']}"
+											        update="systemClassifForm:panelDataItem systemClassifForm:menuTree systemClassifForm:systemTree"
+											        actionListener="#{systemClassifEdit.actionMoveItem}"
+											        icon="ui-icon-arrowthickstop-1-e" />
+									       		<p:menuitem id="moveChildOnly"
+										       		value="#{labels['general.childOnly']}"
+										       		update="systemClassifForm:panelDataItem systemClassifForm:menuTree systemClassifForm:systemTree"
+										       		actionListener="#{systemClassifEdit.actionMoveItem}"
+										       		icon="ui-icon-arrowthickstop-1-e"  
+									        		rendered="#{!systemClassifEdit.selectedForMoveIsLeaf}"/>
+									        </p:submenu>
+							        
+							        		<p:separator />
+							        
+									        <p:menuitem value="#{labels['general.delete']}"
+										        update="panelData"
+										        ajax="true"
+									        	actionListener="#{systemClassifEdit.actionDeleteItem}"
+									        	icon="ui-icon-close" >
+									        	<p:confirm header="#{labels['general.delete']}" message="#{labels['general.confirm']}" icon="ui-icon-alert" />
+									        </p:menuitem>
+								    	</p:contextMenu>
+									</div>
+								</div>
+							</div>
+							
+							<div class="p-col-12 p-md-7">
+								<div class="p-grid">
+									<div class="p-col-12">
+										<p:toolbar id="panelMenuBar">
+											<p:toolbarGroup>
+												<p:commandButton id="bnt_save"
+													update="panelData" 
+									            	action="#{systemClassifEdit.actionSave}"
+									            	icon="fas fa-save" 
+									            	title="#{labels['general.save']}"
+									            	rendered="#{systemClassifEdit.itemNew}"/>
+									            <p:commandButton id="bnt_update"
+									            	update="panelData" 
+							            			action="#{systemClassifEdit.actionEditNoHistory}"
+							            			icon="fas fa-edit" 
+							            			title="#{labels['general.update']}"
+							            			rendered="#{!systemClassifEdit.itemNew}"/>
+									            <p:commandButton id="bnt_update_history"
+									            	update="panelData" 
+							            			action="#{systemClassifEdit.actionEditHistory}"
+							            			icon="fas fa-database" 
+							            			title="#{labels['general.update_history']}"
+							            			rendered="#{!systemClassifEdit.itemNew}"/>
+									            <p:commandButton id="bnt_delete"
+									            	update="systemClassifForm:panelData"
+							            			actionListener="#{systemClassifEdit.actionDeleteItem}"
+							            			icon="fas fa-remove"
+							            			style="color: #d90000;"
+							            			rendered="#{!systemClassifEdit.itemNew}"
+							            			title="#{labels['general.delete']}" >
+									            	<p:confirm header="#{labels['general.delete']}"
+										            	message="#{labels['general.confirm']}"
+										            	icon="ui-icon-alert" />
+									            </p:commandButton>
+											</p:toolbarGroup>
+											
+											<p:toolbarGroup align="right">
+												<p:selectOneMenu value="#{systemClassifEdit.lang}" style="width:200px;">
+													<f:selectItems value="#{systemClassifEdit.sysLangs}" 
+														var="langs" itemLabel="#{langs.tekst}" itemValue="#{langs.code}" />
+													<p:ajax event="change" update="panelData" listener="#{systemClassifEdit.actionChangeLang}" />
+												</p:selectOneMenu>
+											</p:toolbarGroup>
+										</p:toolbar>
+									</div>
+								</div>
+								
+								<div jsf:id="panelDataItem" rendered="#{!systemClassifEdit.sysClassifOpis.dynamic}">
+									<div class="p-grid ui-fluid">
+										<div class="p-col-12">
+											<p:panel>
+												<f:facet name="header">
+													<h:outputText value="#{labels['general.extCode']}" styleClass="#{systemClassifEdit.sysClassifOpis.external ? 'req' : ''}"/>
+												</f:facet>
+												<p:inputText id="extCode" value="#{systemClassifEdit.extCode}" style="width:180px"/>	
+												<p:message for="extCode" display="tooltip"/>
+											</p:panel>
+										</div>
+										
+										<div class="p-col-12">
+											<p:panel>
+												<f:facet name="header">
+													<h:outputText value="#{labels['general.name']} / #{labels['general.opis']}" styleClass="req"/>
+												</f:facet>
+												
+												<p:dataTable var="myRow" value="#{systemClassifEdit.sysLangs}" id="itemNameTbl">
+					 		
+									 				<p:column width="100" style="text-align:left" rendered="#{systemClassifEdit.multipleLang}">
+												        <h:outputText value="#{myRow.tekst}" />	
+												    </p:column>
+												    
+												    <p:column headerText="#{labels['general.name']}">
+											 			<p:inputText id="nameItem" value="#{systemClassifEdit.textNode[myRow.code][0]}"/>
+											 			<p:message for="nameItem" display="tooltip"/>
+											 		</p:column>
+											 		
+											 		<p:column headerText="#{labels['general.opis']}">
+											 			<p:inputText id="nameItemO" value="#{systemClassifEdit.textNode[myRow.code][1]}"/>
+											 			<p:message for="nameItemO" display="tooltip"/>
+											 		</p:column>
+											 		
+												</p:dataTable>
+											</p:panel>
+										</div>
+										
+										<div class="p-col-12">
+											<p:panel header="#{labels['general.dopInfo']}">
+												<p:inputTextarea id="dopInfo" value="#{systemClassifEdit.dopInfoNode}" rows="3"/>	
+												<p:message for="dopInfo" display="tooltip"/>
+											</p:panel>
+										</div>
+										
+										<div class="p-col-12">
+											<p:panel>
+												<f:facet name="header">
+													<h:outputText value="#{labels['general.changeDate']}" styleClass="req"/>
+												</f:facet>
+											
+												<p:calendar id="dateEvent"
+													pattern="dd.MM.yyyy"
+													mask="true"
+													showOn="button" 
+										         	label="#{labels['general.changeDate']}" 
+										         	value="#{systemClassifEdit.dateEvent}"
+										          	styleClass="cc-cal #{systemClassifEdit.hasMessages('appForm:dateFlightSearch') ? 'invalid-cal' : ''}" />
+										       <p:message for="dateEvent"  showDetail="true" showSummary="true" display="tooltip"/> 		
+										       <div>
+											       #{labels['general.dateLastChange']}:
+											       <h:outputText value="#{systemClassifEdit.dateFor}">
+														<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{systemClassifEdit.timeZone}"/>
+												   </h:outputText>
+											   </div>
+											</p:panel>
+										</div>
+										
+										<div class="p-col-12">
+											<p:panel header="#{labels['general.notEditable']}">
+												<p:selectBooleanButton id="value2"
+													value="#{systemClassifEdit.notEditable}"
+													onLabel="#{labels['general.yes']}" offLabel="#{labels['general.no']}" 
+													onIcon="ui-icon-check" offIcon="ui-icon-close" 
+													style="width:60px"/>
+											</p:panel>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<p:dialog header="#{labels['general.delete']}" widgetVar="modalCustomMess" 
+						modal="true" resizable="false" width="550">
+					    <p:outputPanel id="modalItemDeletePanel">
+					    	<div>
+						    	<i class="fa fa-exclamation-triangle" style="color:red"/>
+						    	<h:outputText value="#{beanMessages['general.objectInUseInLogicClass']}" />
+					    	</div>
+							<p:scrollPanel mode="native" style="width:500; height:250px; border :none">
+								<h:outputText value="#{systemClassifEdit.customMess}" escape="false"/>	
+							</p:scrollPanel>
+						</p:outputPanel>
+					</p:dialog>	
+				</div>
+			  	
+			  	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			    </p:confirmDialog>
+			
+			</h:form>
+			
+		</ui:define>
+	</ui:composition>
+</html>

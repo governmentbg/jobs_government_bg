@@ -1,0 +1,690 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+<f:metadata>
+	<f:viewAction action="#{userData.hasAccessPage(7,7)}" />
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{labels['userEdit.titleNew']}" rendered="#{userEdit.user.id == null}"/> 
+		<h:outputText value="#{labels['userEdit.titleEdit']}" rendered="#{userEdit.user.id != null}"/>	
+	</ui:define>
+		
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+		
+	<ui:define name="content">
+	
+		<style>	
+		
+		.ui-fileupload-buttonbar {
+		    margin: 0px 0px 0px 0px !important;
+		    padding: 0px 0px 0px 0px !important;
+		    border: none;
+		    position: relative;  
+		    background-color: #fff;
+		}
+		
+		.ui-fileupload {
+		    margin: 0px 0px 0px 0px !important;
+		    padding: 0px 0px 0px 0px !important;
+		    display: inline-block;
+		    border: none;
+		   
+		}
+		
+		.ui-fileupload-content { 
+		   border: none;
+		   padding: 0px !important;
+		}
+		.ui-fileupload-files {display:none;}
+		
+		.ui-selectonemenu-filter-container {
+		    width: 98% !important;
+		}
+		
+		.button-align {
+			margin: calc(0.45em - 2px) auto;
+		}
+			
+	</style>
+
+	<h:form id="formUserEdit">
+
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+
+			<p:tooltip />
+			
+			<!-- PAGE TITLE -->
+			  <div class="title-page back">
+				 <div class="container">
+				 	<div class="p-grid p-align-center">
+				 		<div class="p-col-fixed back-col">
+							<p:link outcome="usersList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					    <div class="p-col">  	 
+							<h3 class="title">
+								<h:outputText value="#{labels['userEdit.titleNew']}" rendered="#{userEdit.user.id == null}"/> 
+								<h:outputText value="#{labels['userEdit.titleEdit']}" rendered="#{userEdit.user.id != null}"/>	
+							</h3>
+						</div>
+					</div>
+				 </div>
+			  </div>
+
+			<div class="container">
+
+			<div class="container-white">
+			
+			<p:focus context="panelEdit"/>
+
+			<p:outputPanel id="panelEdit">
+
+				<p:toolbar>
+					<f:facet name="left">
+						<p:commandButton id="btnSaveUser" action="#{userEdit.actionSaveOrig}" icon="fa fa-save" update="formUserEdit:panelEdit formUserEdit:btnDelete"
+							value="#{labels['general.save']}" ajax="false" rendered="#{userEdit.param != 2}"
+							styleClass="#{userEdit.user.id != null ? 'button-align' : ''}" />
+					</f:facet>
+					<f:facet name="right">
+						<h:panelGroup id="pJUser" rendered="#{userEdit.user.id != null}">									
+							<ibg:compObjAudit id="compJUser" idObj="#{userEdit.user.id}" codeObj="#{IBConstants.CODE_OBJECTS_USERS}" />										
+						</h:panelGroup>
+						
+						<span class="p-mx-2" jsf:rendered="#{userEdit.viewNastrMail}" > 
+							<span class="fas fa-ellipsis-v SoftGray" />
+						</span>	
+						
+						<p:commandButton action="#{userEdit.setNastrMail(1)}" oncomplete="PF('nastrMailDialog').show()" rendered="#{userEdit.viewNastrMail}"
+							value="#{labels['userEdit.nastroikaposhta']}" icon="fas fa-cog" ajax="true" update="formUserEdit:nastrMail" />
+												
+						<span class="p-mx-2" jsf:rendered="#{userEdit.viewNastrMail}" > 
+							<span class="fas fa-ellipsis-v SoftGray" />
+						</span>
+						
+						<p:commandButton id="btnNew" action="#{userEdit.clearAll}" value="#{labels['userEdit.newPotr']}" icon="fa fa-fw fa-plus" 
+								styleClass="button-green" ajax="true" update="formUserEdit:panelEdit" rendered="#{userEdit.user.id == null and userEdit.param != 2}" />						
+					</f:facet>
+				</p:toolbar>
+
+				<br />
+				
+				<p:panel header="#{labels['userEdit.basicDataUser']}" style="margin-bottom:10px" id="description">
+			  		
+			  		<div class="p-grid" jsf:id="inpP">
+			  			
+			  				<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['userList.login']}:" title="#{labels['userEdit.titleForLoginN']}" styleClass="#{userEdit.param!=2 ? 'req': ''}"/>								
+							</div>
+	
+							<div class="p-col-12 p-md-4 p-lg-4">
+								<div class="ui-inputgroup">	
+									<p:inputText value="#{userEdit.user.username}"  id="inLogin" readonly="#{userEdit.param==2?'true':'false'}" >								
+											<p:ajax event="change" listener="#{userEdit.provUserName}" update="@this " />
+									</p:inputText>
+									
+									<p:commandButton actionListener="#{userEdit.actionViewChangePass}" icon="fas fa-lock" rendered="#{userEdit.param == 1 and !userEdit.viewChangePass}" 
+										title="#{labels['userEdit.passChange']}" update="formUserEdit:inpP" />									
+									
+									<p:commandButton actionListener="#{userEdit.actionViewChangePass}" icon="fas fa-lock-open" rendered="#{userEdit.param == 1 and userEdit.viewChangePass}" 
+										title="#{labels['userEdit.noPassChange']}" update="formUserEdit:inpP" />								
+										
+								</div>
+							</div>
+							
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+								<h:outputText value="#{labels['userEdit.imena']}:" styleClass="#{userEdit.param!=2 ? 'req': ''}"/>
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-5 p-lg-5">
+			  					<p:inputText value="#{userEdit.user.names}" id="usernames"  readonly="#{userEdit.param==2 ? 'true' : 'false'}"/>
+								
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(userEdit.param==0 or (userEdit.param ==1 and userEdit.viewChangePass))?'':'display:none'}">
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-10 p-lg-10" style="#{(userEdit.param==0 or (userEdit.param ==1 and userEdit.viewChangePass))?'':'display:none'}">
+			  					<h:outputText value="#{labels['userEdit.helpPass']}" style="color: #005E8B;"/>			  					
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(userEdit.param==0 or (userEdit.param ==1 and userEdit.viewChangePass))?'':'display:none'}">
+								<h:outputText value="#{labels['general.password']}:" title="#{labels['userEdit.titleForPass']}"  styleClass="#{userEdit.param!=2 ? 'req': ''}"/>
+							</div>
+	
+							<div class="p-col-12 p-md-4 p-lg-4" style="#{(userEdit.param==0 or (userEdit.param ==1 and userEdit.viewChangePass))?'':'display:none'}">
+								<div class="ui-inputgroup">	
+								
+									<p:password value="#{userEdit.passInp}" id="password" inline="true" redisplay="true" rendered="#{!userEdit.viewPass}">
+										<p:ajax event="change" listener="#{userEdit.provPassInp}" update="formUserEdit:password " />
+									</p:password>
+	
+									<p:inputText value="#{userEdit.passInp}" readonly="true" rendered="#{userEdit.viewPass}" />
+	
+									<p:commandButton action="#{userEdit.actionViewPass}" title="#{labels['userEdit.viewPass']} - #{labels['userEdit.noInpPass']}"
+										icon="fas fa-eye-slash" rendered="#{!userEdit.viewPass}" update="formUserEdit:inpP" />	
+									
+									<p:commandButton action="#{userEdit.actionViewPass}" title="#{labels['userEdit.noViewPass']}" icon="fas fa-eye" 
+										rendered="#{userEdit.viewPass}" update="formUserEdit:inpP" />
+																			
+								</div>	
+								
+									<h:outputText value="#{userEdit.ocenkaPass}" style="color:red;" rendered="#{userEdit.ocenkaPass != null}" />							
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(userEdit.param==0 or (userEdit.param ==1 and userEdit.viewChangePass))?'':'display:none'}">
+								<h:outputText value="#{labels['general.passconfirm']}:" styleClass="#{userEdit.param!=2 ? 'req': ''}"/>
+							</div>
+	
+							<div class="p-col-12 p-md-4 p-lg-4" style="#{(userEdit.param == 0 or (userEdit.param == 1 and userEdit.viewChangePass))?'':'display:none'}">
+								<p:password value="#{userEdit.passPovt}" id="povtPass" inline="true" redisplay="true">
+									<p:ajax event="change" listener="#{userEdit.provPassPovt}" update="@this" />
+								</p:password>
+							</div>	
+							
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" style="#{(userEdit.param == 2 and userEdit.user!=null and userEdit.user.dateReg!=null)?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.registrNa']}:" />								
+							</div>
+	
+							<div class="p-col-12 p-md-1 p-lg-1" style="#{(userEdit.param == 2 and userEdit.user!=null and userEdit.user.dateReg!=null)?'':'display:none'}">
+								<p:outputLabel value="#{userEdit.user.dateReg}">
+									<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{userEdit.timeZone}" />
+								</p:outputLabel>
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['userEdit.tipPotr']}:" styleClass="#{userEdit.param!=2 ? 'req': ''}"/>							
+							</div>
+	
+							<div class="p-col-12 p-md-3 p-lg-3">
+								<p:selectOneMenu id="tip" value="#{userEdit.user.userType}" rendered="#{userEdit.param!=2}" autoWidth="false">
+									<f:selectItems value="#{systemData.getSysClassification (userEdit.classifTip, userEdit.currentDate, userEdit.lang, userEdit.idUser)}"
+										var="clVid" itemLabel="#{clVid.tekst}" itemValue="#{clVid.code}" />
+									<p:ajax event="change" listener="#{userEdit.changeTipPotreb}" update="@this admZvL admZvInp zvenoL zvenoInp" />
+								</p:selectOneMenu>
+								<p:inputText value="#{userEdit.userTypeText}" readonly="true" rendered="#{userEdit.param==2}" />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(userEdit.sysNames['status'])?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.stat']}:" styleClass="#{userEdit.param!=2 ? 'req': ''}"/>							
+							</div>
+	
+							<div class="p-col-12 p-md-3 p-lg-3" style="#{(userEdit.sysNames['status'])?'':'display:none'}">
+								<p:selectOneMenu id="stat" value="#{userEdit.user.status}" rendered="#{userEdit.param!=2}" autoWidth="false">
+									<f:selectItem value="#{null}" itemValue="#{null}" />
+									<f:selectItems value="#{systemData.getSysClassification (userEdit.classifStat, userEdit.currentDate, userEdit.lang,userEdit.idUser)}"
+										var="clStat" itemLabel="#{clStat.tekst}" itemValue="#{clStat.code}" />
+									<p:ajax event="change" listener="#{userEdit.actionChangeStatus}" update="@this statExpl" />
+								</p:selectOneMenu>
+								<p:inputText value="#{userEdit.userStatusText}" readonly="true" rendered="#{userEdit.param==2}" />
+							</div>
+							
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" style="#{(userEdit.sysNames['status'] or userEdit.sysNames['statusExplain'])?'':'display:none' }">
+								<h:outputText value="#{labels['userEdit.dateStat']}:" rendered="(userEdit.param==2  and userEdit.user!=null and userEdit.user.statusDate!=null}"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-1 p-lg-1" style="#{(userEdit.sysNames['status'] or userEdit.sysNames['statusExplain'])?'':'display:none' }">
+			  					<p:outputLabel value="#{userEdit.user.statusDate}" rendered="(userEdit.param==2  and userEdit.user!=null and userEdit.user.statusDate!=null}">
+									<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{userEdit.timeZone}" />
+								</p:outputLabel>
+			  				</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(userEdit.sysNames['statusExplain'])?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.prStat']}:" styleClass="#{userEdit.param != 2 and userEdit.zadStatExpl ? 'req': ''}"/>							
+							</div>
+	
+							<div class="p-col-12 p-md-10 p-lg-10" style="#{(userEdit.sysNames['statusExplain'])?'':'display:none'}">
+								<p:inputText value="#{userEdit.user.statusExplain}" id="statExpl"  readonly="#{userEdit.param == 2?'true':'false'}" />							
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" jsf:id="admZvL" style="#{(userEdit.sysNames['workAdmCode'] and userEdit.param != 2  and  userEdit.user.userType != userEdit.tipVanshen )?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.admZv']}:" styleClass="#{userEdit.param!=2 and userEdit.zadWAdmCode ? 'req': ''}"/>	
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-10 p-lg-10" jsf:id="admZvInp" style="#{(userEdit.sysNames['workAdmCode'] and userEdit.param != 2  and  userEdit.user.userType != userEdit.tipVanshen)?'':'display:none'}">
+			  					<div class="ui-inputgroup">
+									<p:inputText value="#{userEdit.admZvText}" id="textZv" readonly="true" rendered="#{userEdit.param != 2  and  userEdit.user.userType != userEdit.tipVanshen }" />
+									<ibg:selectOneModal header="#{labels['general.izbor']}"
+										userId="#{userEdit.idUser}" lang="#{userEdit.lang}"
+										rendered="#{userEdit.param != 2  and  userEdit.user.userType != userEdit.tipVanshen }"
+										saveStateTree="true" isSelectNode="false" withBtnClear="true"
+										codeClassif="#{userEdit.codeClassifWorkAdm}"
+										update="formUserEdit:textZv"
+										selectedCode="#{userEdit.admZv}"
+										selectedText="#{userEdit.admZvText}" />
+								</div>							
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" jsf:id="zvenoL" style="#{(userEdit.sysNames['workAdmCode'] and userEdit.param != 2  and  userEdit.user.userType != userEdit.tipVanshen )?'':'display:none'}">
+								<h:outputText value="#{labels['advertisement.zveno']}:" />	
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-10 p-lg-10" jsf:id="zvenoInp" style="#{(userEdit.sysNames['workAdmCode'] and userEdit.param != 2  and  userEdit.user.userType != userEdit.tipVanshen)?'':'display:none'}">
+			  					<div class="ui-inputgroup">
+									<p:inputText value="#{userEdit.admZvenoText}" id="textZveno" readonly="true" rendered="#{userEdit.param != 2  and  userEdit.user.userType != userEdit.tipVanshen }" />
+									<ibg:selectDirAdmStruct header="#{labels['userEdit.izbZv']}"
+											userId="#{userEdit.idUser}" lang="#{userEdit.lang}" 
+							 	 			saveStateTree="false" isSelectNode="true" withBtnClear="true" 
+							 	 			codeClassif="#{userEdit.admZv}"     
+							 				update="formUserEdit:textZveno" 
+							 				selectedCode="#{userEdit.admZveno}"
+											selectedText="#{userEdit.admZvenoText}" 
+											rendered="#{userEdit.param != 2  and  userEdit.user.userType != userEdit.tipVanshen }"/>
+								
+								</div>							
+							</div>
+							
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(userEdit.sysNames['workOrg'])?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.org']}:" styleClass="#{userEdit.param!=2 and userEdit.zadWOrg ? 'req': ''}" rendered="#{userEdit.sysNames['workOrg']}"/>
+							</div>
+	
+							<div class="p-col-12 p-md-4 p-lg-4" style="#{(userEdit.sysNames['workOrg'])?'':'display:none'}">
+								<div class="ui-inputgroup" jsf:id="orgDelButon">
+								
+									<p:inputText value="#{userEdit.nameOrg}" id="textOrg" readonly="true" />
+
+									<p:commandButton id="btnizbOrg" action="organizations.jsf"
+										title="#{labels['userEdit.izbOrg']}" ajax="false"
+										icon="fa fa-fw fa-list-ul" rendered="#{userEdit.param != 2}">
+										<f:param name="user" value="1" />
+									</p:commandButton>
+
+									<p:commandButton icon="fa  fa-remove" id="BtnClear"
+										actionListener="#{userEdit.clearIzbrOrg ()}"
+										rendered="#{userEdit.param!=2 and  userEdit.user != null and  (userEdit.idOrg != null)}"
+										title="#{labels['userEdit.noOrg']}" update="formUserEdit:orgDelButon" />
+										
+								</div>								
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(userEdit.sysNames['position'])?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.dlajn']}:" styleClass="#{userEdit.param!=2 and userEdit.zadPos ? 'req': ''}"/>
+							</div>
+	
+							<div class="p-col-12 p-md-4 p-lg-4" style="#{(userEdit.sysNames['position'])?'':'display:none'}">
+								<div class="ui-inputgroup">
+									<p:inputText value="#{userEdit.posDlajnText}" id="textDl" readonly="true" />
+									<ibg:selectOneModal header="#{labels['userEdit.izbDl']}"
+										userId="#{userEdit.idUser}" lang="#{userEdit.lang}"
+										rendered="#{userEdit.param != 2}" saveStateTree="true"
+										isSelectNode="true" withBtnClear="true"
+										codeClassif="#{userEdit.classifDlajn}"
+										update="formUserEdit:textDl"
+										selectedCode="#{userEdit.posDlajn}"
+										selectedText="#{userEdit.posDlajnText}" />
+								</div>																
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{(userEdit.sysNames['positionText'])?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.dlajnText']}:" styleClass="#{userEdit.param!=2 and userEdit.zadPosText ? 'req': ''}"/>
+							</div>
+	
+							<div class="p-col-12 p-md-4 p-lg-4" style="#{(userEdit.sysNames['positionText'])?'':'display:none'}">
+								<p:inputText value="#{userEdit.user.positionText}" id="textP"  readonly="#{userEdit.param==2?'true':'false'}" />																						
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{( userEdit.sysNames['workplace']  and  !(((userEdit.sysNames['workOrg']  and !userEdit.sysNames['workAdmCode'] ) or (!userEdit.sysNames['workOrg']  and  userEdit.sysNames['workAdmCode'])) or ((userEdit.sysNames['position']  and !userEdit.sysNames['positionText']) or ( !userEdit.sysNames['position']  and userEdit.sysNames['positionText'] )  ) )   )?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.orgText1']}:" styleClass="#{userEdit.param!=2 and userEdit.zadWPlace ? 'req': ''}"/>
+							</div>
+	
+							<div class="p-col-12 p-md-4 p-lg-4" style="#{( userEdit.sysNames['workplace']  and  !(((userEdit.sysNames['workOrg']  and !userEdit.sysNames['workAdmCode'] ) or (!userEdit.sysNames['workOrg']  and  userEdit.sysNames['workAdmCode'])) or ((userEdit.sysNames['position']  and !userEdit.sysNames['positionText']) or ( !userEdit.sysNames['position']  and userEdit.sysNames['positionText'] )  ) )   )?'':'display:none'}">
+								<p:inputText value="#{userEdit.user.orgText}" id="textO"  readonly="#{userEdit.param==2?'true':'false'}" />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" style="#{( userEdit.sysNames['email'])?'':'display:none'}">
+								<h:outputText value="#{labels['userEdit.email']}:" styleClass="#{userEdit.param!=2 and userEdit.zadEmail ? 'req': ''}"/>
+							</div>
+							
+							<div class="p-col-12 p-md-4 p-lg-4" style="#{( userEdit.sysNames['email'])?'':'display:none'}">
+								<p:inputText id="usermail" value="#{userEdit.user.email}" readonly="#{userEdit.param==2?'true':'false'}" >
+									<p:ajax event="change" listener="#{userEdit.provEMail}" update="@this " />
+								</p:inputText>
+							</div>
+							
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" style="#{( userEdit.sysNames['phone'])?'':'display:none'}">
+								<h:outputText value="#{labels['general.telefon']}:" styleClass="#{userEdit.param!=2 and userEdit.zadPhone ? 'req': ''}"/>
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3" style="#{( userEdit.sysNames['phone'])?'':'display:none'}">
+								<p:inputText value="#{userEdit.user.phone}" id="phone2" readonly="#{userEdit.param==2?'true':'false'}">
+									<p:ajax event="change" listener="#{userEdit.provPhone(2)}" update="@this " />
+								</p:inputText>
+							</div>			  			
+			  			
+			  			</div>
+			  			
+			  		</p:panel>
+			  		
+			  		
+			  		<p:panel header="#{labels['general.attachedDoc']}" style="margin-bottom:10px" >
+			  		
+			  			<div class="p-grid">
+						
+						<div class="p-col-12 p-md-12 p-lg-12">
+							<p:fileUpload id="filesUpload" listener="#{userEdit.uploadFileListener}" label="" skinSimple="true" update="fileList" auto="true"
+											  allowTypes="#{systemData.getSettingsValue('fileExtensionsForAttaching')}" invalidSizeMessage="#{labels['general.invalidFileSize']}" 
+					    					  invalidFileMessage="#{labels['general.invalidFileTypeAt']}" mode="advanced"/>
+											  							
+							<p:tooltip for="filesUpload" value="#{labels['file.upload']}" />
+							
+						</div>	
+
+						<div class="p-col-12 p-md-12 p-lg-12">	
+							
+							 <p:dataTable id="fileList" var="row" value="#{userEdit.filesList}" reflow="true" 
+							 			  rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" rows="5" style="margin-bottom:10px" paginator="true" 
+							 			  paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+							      
+							        <p:column headerText="#{labels['general.No-symbol']}" width="40">
+										<h:outputText value="#{rkv + 1}" />
+									</p:column>
+									
+									 <p:column headerText="" width="60" exportable="false">									           	
+								        <p:commandButton id="download" ajax="false" actionListener="#{userEdit.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+								     </p:column>
+									
+							       	<p:column headerText="#{labels['file.filename']}" width="30%" >
+							       		 <h:outputText value="#{row.filename}" />     
+							         </p:column>
+							       	
+							       <p:column headerText="#{labels['file.description']}" width="60%" >									   
+							            <p:inputText value="#{row.description}" />									            								           
+							       </p:column>				       
+											
+									<p:column headerText="" width="60" exportable="false">
+										<p:commandButton action="#{advertisementEdit.remove(row)}" update="fileList" icon="fa fa-fw fa-trash" style="color: #d90000;" title="#{labels['general.delete']}"
+														 onclick="if(!confirm('#{labels['file.confirmDeleteFile']}'))return false;">
+											<f:param name="idObjDel" value="#{row.id}" />																					
+										</p:commandButton>
+									</p:column>
+							  
+							   </p:dataTable>
+							   
+							    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fas fa-check" />
+							        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fas fa-times" />							       
+							   </p:confirmDialog>	
+								
+							</div>
+						</div>
+						
+					</p:panel>
+
+					<div class="p-grid">
+
+						<div class="p-col-4">
+
+							<div class="section-separator"></div>
+
+							<div class="title-box">
+								<h:outputText value="#{labels['userEdit.chlenstvoGrupi']}" style="font-weight: bold;" />
+							</div>
+							
+							<h:outputText value="#{labels['userEdit.noGrups']}"  rendered="#{empty userEdit.lstGroupsIzb}" />
+
+								<p:panel header="#{labels['userEdit.grIzb']}" style="margin-bottom:20px" rendered="#{!empty userEdit.lstGroupsIzb}">
+
+									<p:ajax event="close" />
+									<p:ajax event="toggle" />
+
+									<br />
+
+									<h:panelGroup id="groupModal" style="font-size: 12px; font-weight: bold;">
+
+										<p:selectManyCheckbox id="userGr" value="#{userEdit.selectedGrList}"
+											layout="responsive" columns="1" title="#{labels['userEdit.izbGr']}"
+											disabled="#{userEdit.param==2}" styleClass="grid-checkbox" >
+											<f:selectItems value="#{userEdit.lstGroupsIzb}" var="gr" itemLabel="#{gr}" itemValue="#{gr}" />											
+										</p:selectManyCheckbox>
+										
+									</h:panelGroup>
+								</p:panel>
+
+						</div>
+
+						<div class="p-col-8">
+
+							<div class="section-separator"></div>
+
+							<div class="title-box">
+								<h:outputText value="#{labels['groupsList.accessDostap']}" style="font-weight: bold;" />
+							</div>
+
+							<div class="p-grid">
+										
+								<div class="p-col-6">
+
+									<p:dataTable id="tableDostap" value="#{userEdit.sysClassifList}" var="rowD" rowIndexVar="rkvD" 
+										width="100%" emptyMessage="#{labels['general.norows']}" rows="10" rowKey="#{rowD[0]}" widgetVar="dostapWV"
+										paginator="true" paginatorPosition="bottom" style="margin-bottom:20px" >
+
+										<p:column headerText="#{labels['general.No-symbol']}" width="20">
+											<h:outputText value="#{rkvD + 1}" />
+										</p:column>
+
+										<p:column headerText="" width="45" exportable="false">
+
+											<p:commandButton action="#{userEdit.actionLoadTree}"
+												update="formUserEdit:treeDostap" icon="fa fa-fw fa-edit" title="#{labels['general.edit']}"
+												rendered="#{userEdit.param != 2}" onclick="highlightElement(this ,'tr');">
+												<f:param name="idObjAccEdit" value="#{rowD[0]}" />
+												<f:param name="rkvIndexD" value="#{rkvD}" />
+											</p:commandButton>
+
+											<p:commandButton action="#{userEdit.actionLoadTree}"
+												update="formUserEdit:treeDostap" icon="fa fa-fw fa-eye" title="#{labels['general.view']}"
+												rendered="#{userEdit.param == 2}" onclick="highlightElement(this ,'tr');">
+												<f:param name="idObjAccEdit" value="#{rowD[0]}" />
+												<f:param name="rkvIndexD" value="#{rkvD}" />
+											</p:commandButton>
+										</p:column>
+
+										<p:column headerText="#{labels['general.name']}" width="250" >
+											<h:outputText value="#{rowD[1]}" />
+										</p:column>
+
+									</p:dataTable>
+
+								</div>
+
+								<div class="p-col-6" >
+									
+									<p:scrollPanel mode="native" style="width:100%;height:100%">
+										
+										<p:tree value="#{userEdit.rootNode}" var="node" selectionMode="checkbox"  selection="#{userEdit.selectedNode}" 
+											style="width:100%;border:none" id="treeDostap" 
+											styleClass="#{userEdit.param == 2?'not-clickable':''}" >
+											<p:ajax event="select" listener="#{userEdit.actionNodeClick}"  />
+											<p:ajax event="unselect" listener="#{userEdit.actionNodeClick}" />
+											<p:treeNode>
+												<h:outputText value="#{node.tekst}" />
+											</p:treeNode>
+										</p:tree>
+										
+									</p:scrollPanel>
+
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+					
+					</p:outputPanel>				
+
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton id="btnSaveDown" action="#{userEdit.actionSaveOrig}" icon="fa fa-save"
+								update="formUserEdit:panelEdit formUserEdit:btnDelete"
+								value="#{labels['general.save']}" ajax="false" rendered="#{userEdit.param != 2}" >
+								<p:autoUpdate />
+							</p:commandButton>	
+						</f:facet>
+
+						<f:facet name="right">
+							<p:commandButton id="btnDelete" update="formUserEdit:panelEdit" action="#{userEdit.deletePotreb}"
+								icon="fa fa-fw fa-trash" value="#{labels['general.delete']}"
+								rendered="#{userEdit.param != 2 and userEdit.user != null and userEdit.user.id != null}"
+								onclick="if(!confirm('#{beanMessages['userEdit.deleteUserConfirm']}'))return false;">
+							</p:commandButton>
+						</f:facet>
+
+					</p:toolbar>
+
+				</div>
+
+			</div>
+			
+			<!--           Начало на диалогови панели 					-->
+
+			<p:outputPanel id="panelDNastr">
+				
+				<p:dialog showEffect="fade" hideEffect="fade" header="#{labels['userEdit.nastroikaposhta']}"
+					widgetVar="nastrMailDialog" modal="true" resizable="false" id="admNastrMail">
+
+					<!--    В модалния диалог се работи с работните полета за настройките -->
+					<p:outputPanel id="nastrMail" style="text-align:left;">
+						
+						<table width="700px">
+							<tr>
+								<td width="150" align="right">
+									<h:outputText value="#{labels['userEdit.serverURL']} (IMAP): " /></td>
+								<td width="*">
+									<p:inputText value="#{userEdit.mailServAddress}" style="width:99%"
+											readonly="#{userEdit.param==2?'true':'false'}" >
+											<p:ajax event="change" listener="#{userEdit.provServerAddrr1 (userEdit.mailServAddress)}" update="@this " />
+									</p:inputText>
+								</td>
+							</tr>
+							<tr>
+								<td width="150" align="right">
+									<h:outputText value="#{labels['userEdit.serverURL']} (SMTP): " /></td>
+								<td width="*">
+									<p:inputText value="#{userEdit.mailServAddress2}" style="width:99%" readonly="#{userEdit.param==2?'true':'false'}" >
+										<p:ajax event="change" listener="#{userEdit.provServerAddrr2 (userEdit.mailServAddress2)}" update="@this " />
+									</p:inputText>
+								</td>
+							</tr>
+							<tr>
+								<td width="150" align="right">
+									<h:outputText value="#{labels['general.potrebitel']}:" />
+								</td>
+								<td width="*">
+									<p:inputText value="#{userEdit.mailUser}" readonly="#{userEdit.param==2?'true':'false'}" style="width:99%">
+										<p:ajax event="change" listener="#{userEdit.provMailUser (userEdit.mailUser)}" update="@this " />
+									</p:inputText>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									<h:outputText value="#{labels['general.password']}:" />
+								</td>
+								<td width="*">
+									<h:panelGroup id="passNastr">
+										<p:password id="mailPass" value="#{userEdit.mailPass}" inline="true" redisplay="true" style="width:507px"
+											readonly="#{userEdit.param==2?'true':'false'}" rendered="#{!userEdit.viewPassNastr}" >
+											<p:ajax event="change" listener="#{userEdit.provMailPass (userEdit.mailPass)}" update="@this " />
+										</p:password>
+										<p:inputText value="#{userEdit.mailPass}" readonly="true" rendered="#{userEdit.viewPassNastr}" />
+										<h:panelGroup rendered="#{userEdit.param!=2}">
+											<p:commandButton title="#{labels['userEdit.viewPass']} - #{labels['userEdit.noInpPass']}"
+												ajax="true" style="left: -10px;" icon="fas fa-eye-slash" rendered="#{!userEdit.viewPassNastr}">
+												<p:ajax event="click" listener="#{userEdit.actionViewPassNastr()}" update="passNastr  " />
+											</p:commandButton> 
+											<p:commandButton title="#{labels['userEdit.noViewPass']}" ajax="true" style="left: -10px;"
+												 icon="fas fa-eye" rendered="#{userEdit.viewPassNastr}">
+												<p:ajax event="click" listener="#{userEdit.actionViewPassNastr()}" update="passNastr  " />
+											</p:commandButton>
+										</h:panelGroup>
+									</h:panelGroup>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									<h:outputText value="#{labels['general.email']}:" />
+								</td>
+								<td width="*">
+								<p:inputText value="#{userEdit.mailEMail}" id="mailnastr" readonly="#{userEdit.param==2?'true':'false'}" style="width:99%">
+										<p:ajax event="change" listener="#{userEdit.provEMailNastr (userEdit.mailEMail)}" update="@this " />
+									</p:inputText>
+								</td>
+							</tr>
+							<tr>
+								<td align="right" colspan="3">
+									<h:panelGroup>
+
+										<h:outputText value="#{labels['userEdit.prepratkaEmail']}:" />
+
+										<h:selectOneMenu id="mF" value="#{userEdit.mailForw}" style="width:50" rendered="#{userEdit.param != 2}" >
+											<!--  <f:selectItem value="#{null}"  itemValue="#{null}" />   -->
+											<f:selectItems value="#{systemData.getSysClassification (userEdit.classifDANE, userEdit.currentDate, userEdit.lang, userEdit.idUser)}"
+												var="clDaNe" itemLabel="#{clDaNe.tekst}" itemValue="#{clDaNe.code}" />
+											<p:ajax event="change" update="@this " />
+										</h:selectOneMenu>
+
+										<!--   За view - nastrMailForwText се зарежда при прочитане данни за потребителя в началото и не се променя   -->
+										<p:inputText value="#{userEdit.nastrMailForwText}" readonly="true" style="width:50" size="4" rendered="#{userEdit.param == 2}" />
+									</h:panelGroup>
+								</td>
+							</tr>
+
+						</table>
+
+						<table width="600px">
+							<tr>
+								<td align="left">
+									<p:commandButton value="#{labels['general.cancel']}" rendered="#{userEdit.param!=2}" icon="fas fa-times"
+										ajax="true" oncomplete="PF('nastrMailDialog').hide()">
+										<p:ajax event="click" listener="#{userEdit.clearNastrMail ()}" update="nastrMail" />
+									</p:commandButton> 
+									
+									<p:commandButton value="#{labels['general.close']}" rendered="#{userEdit.param==2}" icon="fas fa-times"
+										ajax="true" oncomplete="PF('nastrMailDialog').hide()">
+										<p:ajax event="click" listener="#{userEdit.clearNastrMail ()}" update="nastrMail" />
+									</p:commandButton> 
+									
+									<p:commandButton value="#{labels['general.clear']}" rendered="#{userEdit.param!=2}" icon="fa fa-fw fa-trash" ajax="true">
+										<p:ajax event="click" listener="#{userEdit.clearNastrMail()}" update="nastrMail" />
+									</p:commandButton>
+								</td>
+								<td align="right">
+									<p:commandButton value="#{labels['general.comfirmation']}" rendered="#{userEdit.param!=2}" icon="fa fa-fw fa-check"
+										ajax="true" oncomplete="PF('nastrMailDialog').hide()">
+										<p:ajax event="click" listener="#{userEdit.returnWithPotv ()}" update="@this" />
+									</p:commandButton>
+								</td>
+							</tr>
+
+						</table>
+
+					</p:outputPanel>
+
+				</p:dialog>
+
+			</p:outputPanel>
+			
+		<!--           Край на диалогови панели 				-->
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

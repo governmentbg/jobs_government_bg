@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+<ui:composition>
+	 	 
+	<h:form prependId="false">	
+		<p:outputPanel deferred="false">	
+			<p:autoUpdate/>
+			<!-- TOP MESSAGES -->
+			<div style="position: fixed;z-index: 1000;top: 150px;min-width: 1000px;max-width: 1260px; width: 100%;">
+				<h:messages showSummary="true"  globalOnly="false" style="list-style:none; margin-bottom: 10px;padding: 5px;border: 1px solid #9bb39b;" rendered="#{!empty facesContext.maximumSeverity and facesContext.maximumSeverity.ordinal == 0}">
+					<a onclick="$(this).parent().hide();" style="cursor:pointer;float: right;position: relative;right: 10px;top: 8px;color: red;"><span class="glyphicon glyphicon-remove"></span></a>
+				</h:messages>
+			</div>
+			
+			 
+			<!-- MODAL MESSAGES -->
+			<p:dialog widgetVar="myMessageanelModal" visible="true"  rendered="#{!empty facesContext.maximumSeverity and facesContext.maximumSeverity.ordinal != 0}"
+				 autosized="true" resizable="false" modal="true" minWidth="350" minHeight="210" header="#{labels['general.infoError']}">
+     
+		        <h:panelGroup layout="block" >
+		        	<div class="list-group">
+					  	 <ui:repeat id="datTabMessGolb_" var="innerVar" rowKeyVar="rkv" value="#{errorMsg.messages}">
+					  	 	<a href="#collapse#{rkv}" class="list-group-item list-group-item-danger" data-toggle="collapse" onclick="changeDropArrow(this);">
+					  	 		<span class="glyphicon glyphicon-remove-sign"></span> #{innerVar.summary}
+					  	 		<h:panelGroup rendered="#{innerVar.detail!=null and innerVar.detail!=''}">
+					  	 			<span class="glyphicon cc-right glyphicon-chevron-down cc-js-arrow"></span>	
+					  	 		</h:panelGroup>
+					  	 	</a>
+					  	 	<h:panelGroup rendered="#{innerVar.detail!=null and innerVar.detail!=''}">
+						  	 	<div class="collapse" id="collapse#{rkv}">
+								  <div class="well" style="height: 200px; overflow: auto;">
+								    <h:outputText value="#{innerVar.detail}" escape="false" />
+								  </div>
+								</div>
+							</h:panelGroup>	
+			       		</ui:repeat>
+					</div> 
+			      
+		        </h:panelGroup>
+
+				<br />
+				<div >
+					<p:commandLink  onclick="PF('myMessageanelModal').hide();">
+							#{labels['general.close']}
+					</p:commandLink>
+				</div>
+					
+
+			</p:dialog>		
+		</p:outputPanel>	
+	</h:form>
+</ui:composition>
+</html>

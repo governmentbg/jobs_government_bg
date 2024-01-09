@@ -1,0 +1,503 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+	 <f:metadata>
+	 	<f:viewAction action="#{userData.hasAccessPage(7,65)}" />		   
+	 </f:metadata>	   
+
+	<ui:composition template="/templateExt/mainExt.xhtml">		
+		
+		<ui:define name="title">#{labels['candidateView.title']}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>		
+		
+		<ui:define name="content">		
+			
+			<h:form id="formCandidateView">
+			
+			<!-- PAGE TITLE -->
+			  <div class="title-page back">
+				 <div class="container">	 
+				 	<div class="p-grid p-align-center">
+						<div class="p-col-fixed back-col" jsf:rendered="#{candidateView.idPrac eq null}">
+							<p:link outcome="candidatesList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					    
+					    <div class="p-col-fixed back-col" jsf:rendered="#{candidateView.idPrac ne null}">
+							<p:link outcome="practiceProcess.jsf" title="#{labels['general.back']}" styleClass="back-button">
+								<f:param name="idObj" value="#{candidateView.idPrac}" />			
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>						     
+					    </div>
+					    
+						<div class="p-col">
+					 		<h3 class="title">#{labels['candidateView.titleFor']}: <span style="margin-left: 1em;">#{candidateView.user.username}</span></h3>
+					 	</div>
+					 </div>
+				</div>
+	 		  </div>
+		
+			<div class="container">
+			
+				<!-- TAB LAYOUT -->
+				<p:remoteCommand name="updateTable" update="education_tbl experience_tbl language_tbl fileList panelBursary" /> 
+			
+				<div class="p-grid tab-layout">
+					
+					<!-- TAB DEFINITIONS -->
+					<div class="p-col-12 p-lg-3 column-tabs">
+						<div class="p-grid tabs">
+							
+							<div class="p-lg-12 tab" id="tab-main">
+								<i class="fas fa-user tab-icon"></i>
+								<div class="tab-title">#{labels['profile.description']} </div> 
+							</div>
+							
+							<div class="p-lg-12 tab" id="tab-education">
+								<i class="fas fa-scroll tab-icon"></i>
+								<div class="tab-title">#{labels['profile.eduProfExp']} </div> 
+							</div>
+							
+							<div class="p-lg-12 tab" id="tab-bursary">
+								<i class="fas fa-address-card tab-icon"></i>
+								<div class="tab-title">#{labels['profile.apprBursarData']} </div> 
+							</div>
+							
+						</div>						
+					
+					</div>
+					
+					<!-- TAB CONTENTS -->
+					<div class="p-col-12 p-lg-9 column-contents">
+						
+						<!-- TAB - MAIN -->
+						<div id="tab-content-main" class="tab-content">	
+							
+							<div class="title-box">		
+								<h:outputText value="#{labels['profile.userInfo']}" style="font-weight: bold;"/>
+							</div>
+							
+							<!-- PIN 
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['general.pin']}: " style="font-weight: bold;"/>									
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.userAdd.pin}"/>
+								</div>
+							</div> -->
+	
+							<!-- NAME -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['general.fname']}: " style="font-weight: bold;"/>			
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.userAdd.name}"/>
+								</div>
+							</div>
+							
+							<!-- FATHER'S NAME -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['general.secondName']}: " style="font-weight: bold;"/>			
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.userAdd.surname}"/>
+								</div>
+							</div>
+						
+							<!-- SURNAME -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['general.lname']}: " style="font-weight: bold;"/>			
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.userAdd.family}"/>
+								</div>
+							</div>
+							
+							<!-- APPLY FOR -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['profile.candidateFor']}: " style="font-weight: bold;"/>
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_APPLY_FOR, candidateView.userAdd.applyFor, candidateView.currentLang, now, candidateView.userId)}"/>									
+								</div>
+							</div>
+							
+							<!-- EMAIL -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['general.email']}: " style="font-weight: bold;"/>
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.user.email}"/>
+								</div>
+							</div>
+							
+							<!-- ADDRESS -->
+			<ui:remove>		<div class="p-grid">
+								<div class="p-col-12 p-lg-3 cc-right">
+									<span class="form-text"><h:outputText value="#{labels['profile.adresCoresp']}: " style="font-weight: bold;"/></span>
+								</div>
+								<div class="p-col-12 p-lg-9">
+									<!-- REGION -->
+									<div class="p-grid space-before-sm">
+										<div class="p-col-3 p-md-3">
+											<h:outputText value="#{labels['general.oblast']}: " style="font-weight: bold;"/>
+										</div>
+										<div class="p-col-9 p-md-9">
+											<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, candidateView.userAdd.region, candidateView.currentLang, now, candidateView.userId)}" id="oblast"/>											
+										</div>
+									</div>
+									
+									<div class="p-grid space-before-sm">
+										<div class="p-col-3 p-md-3">
+											<h:outputText value="#{labels['general.obshtina']}: " style="font-weight: bold;"/>
+										</div>
+										<div class="p-col-9 p-md-9">
+											<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, candidateView.userAdd.municipality, candidateView.currentLang, now, candidateView.userId)}" id="obshtina"/>											
+										</div>
+									</div>
+									<!-- TOWN -->
+									<div class="p-grid space-before-sm">
+										<div class="p-col-3 p-md-3">
+											<h:outputText value="#{labels['general.nasMiasto']}: " style="font-weight: bold;"/>
+										</div>
+										<div class="p-col-9 p-md-9">
+											<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, candidateView.userAdd.town, candidateView.currentLang, now, candidateView.userId)}" id="grad"/>											
+										</div>
+									</div>
+									
+									<!-- STREET -->
+									<div class="p-grid space-before-sm">
+										<div class="p-col-3 p-md-3">
+											<h:outputText  value="#{labels['general.adress']}: " style="font-weight: bold;"/>
+										</div>
+										<div class="p-col-9 p-md-9">
+											<p:outputLabel value="#{candidateView.userAdd.address}"/>
+										</div>
+									</div>
+								</div>
+							</div>
+			</ui:remove>
+													
+							<!-- PHONE -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['general.telefon']}: " style="font-weight: bold;"/>
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.user.phone}"/>
+								</div>
+							</div>
+							
+							<!-- LINKEDIN -->
+			<ui:remove>		<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['profile.linkedIn']}:" style="font-weight: bold;"/>
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.userAdd.linkedIn}"/>
+								</div>
+							</div>
+			
+							
+							<!-- INTERESTS -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['profile.interesi']}: " style="font-weight: bold;"/>
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.userAdd.interests}" />
+								</div>
+							</div>
+			</ui:remove>
+			
+							<!-- MOBILITY PROBLEMS -->
+							<ui:remove> <!-- ne go iskat 28.06.2019 -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['profile.motorProblems']}:"  style="font-weight: bold;"/>
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.userAdd.mobilityProblems ? labels['general.yes'] : labels['general.no']}" />									
+								</div>
+							</div>
+							</ui:remove>
+							
+							<!-- HEARING PROBLEMS -->
+							<ui:remove> <!-- ne go iskat 28.06.2019 -->
+							<div class="p-grid margin-after">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['profile.hearProblems']}:" style="font-weight: bold;"/>
+								</div>
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{candidateView.userAdd.hearingProblems ? labels['general.yes'] : labels['general.no']}" />									
+								</div>
+							</div>
+							</ui:remove>
+							<div class="section-separator"></div>
+							
+							<div class="title-box">		
+								<h:outputText value="#{labels['profile.studentData']}" style="font-weight: bold;"/>
+							</div>
+	
+							<!-- STUDENT EDUCATION DEGREE -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+										<h:outputText value="#{labels['profile.studentDegree']}: " style="font-weight: bold;"/>
+									</div>
+									<div class="p-col-12 p-md-9 p-lg-9">
+										<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, candidateView.userStudent.educationDegree, candidateView.currentLang, now, candidateView.userId)}" rendered="#{candidateView.userStudent.educationDegree != null}"/>									
+									</div>
+								</div>
+							
+							<!-- STUDENT COURSE -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['profile.studentCourse']}: " style="font-weight: bold;"/>
+								</div>								
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STUDENT_COURSE, candidateView.userStudent.course, candidateView.currentLang, now, candidateView.userId)}" rendered="#{candidateView.userStudent.course != null}"/>									
+								</div>								
+							</div>
+							
+							<!-- STUDENT UNIVERSITY -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['bursary.university']}: " style="font-weight: bold;"/>
+								</div>								
+								<div class="p-col-12 p-md-9 p-lg-9">
+									<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_UNIVERSITY, candidateView.userStudent.university, candidateView.currentLang, now, candidateView.userId)}" rendered="#{candidateView.userStudent.university != null}"/>									
+								</div>								
+							</div>							
+		
+							<!-- STUDENT SUBJECT -->
+							<div class="p-grid margin-after">
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+									<h:outputText value="#{labels['bursary.subject']}: " style="font-weight: bold;" />
+								</div>								
+								<div class="p-col-12 p-md-9 p-lg-9">									
+									<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, candidateView.userStudent.subject, candidateView.currentLang, now, candidateView.userId)}" rendered="#{candidateView.userStudent.subject != null}"/>							 		
+								</div>
+							</div>
+							
+							<div class="section-separator"></div>
+							
+							<div class="title-box">		
+								<h:outputText value="#{labels['profile.agree']}" style="font-weight: bold;"/>
+							</div>
+								
+							<!-- SEARCH AGREEMENT -->
+							<div class="p-grid">
+								<div class="p-col-12 p-md-11 p-lg-11">
+									<h:outputText value="#{labels['profile.declare']}" style="font-weight: bold;"/>									
+								</div>
+								<div class="p-col-12 p-md-1 p-lg-1">
+									<p:selectBooleanCheckbox value="#{candidateView.userAdd.searchAgreement}" disabled="true"/>
+								</div>
+							</div>
+														
+						</div>
+						
+						<!--  TAB EDUCATION, EXPERIENCE -->
+						<div id="tab-content-education" class="tab-content">
+						
+							<div class="section-separator"></div>
+							
+							<div class="title-box">		
+								<h:outputText value="#{labels['profile.education']}" style="font-weight: bold;"/>
+							</div>
+						
+							<!-- EDUCATION TABLE -->
+							<div class="p-grid">
+								<div class="p-col-12">
+									<p:dataTable id="education_tbl" rowIndexVar="index" var="row" value="#{candidateView.userEducation}" emptyMessage="#{labels['general.norows']}" reflow="true" >
+										
+										<p:column headerText="#{labels['general.No-symbol']}" width="4%">
+											<h:outputText value="#{index + 1}" />
+										</p:column>
+										<p:column headerText="#{labels['profile.eduDegree']}" width="20%">
+											<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, row.educationDegree, candidateView.currentLang, now, candidateView.userId)}" />
+										</p:column>
+									 
+										<p:column headerText="#{labels['advertisement.profNapr']}" width="38%">
+											<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row.category, candidateView.currentLang, now, candidateView.userId)}" />
+										</p:column>
+										
+										<p:column headerText="#{labels['bursary.subject']}" width="38%">
+											<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row.subject, candidateView.currentLang, now, candidateView.userId)}" />
+										</p:column>
+										
+									</p:dataTable>
+								</div>
+							</div>
+		
+							<div class="section-separator"></div>		
+							
+							<div class="title-box">		
+								<h:outputText value="#{labels['profile.expYears']}" style="font-weight: bold;"/>
+							</div>
+							
+							
+							<div class="p-grid">
+								<div class="p-col-12">
+									
+									<p:dataTable id="experience_tbl" rowIndexVar="index" var="row" value="#{candidateView.userExperience}" emptyMessage="#{labels['general.norows']}" reflow="true">
+										
+										<p:column headerText="#{labels['general.No-symbol']}" width="4%">
+											<h:outputText value="#{index + 1}" />
+										</p:column>
+										
+										<p:column headerText="#{labels['profile.years']}" width="10%">
+											<h:outputText value="#{row.years}" />
+										</p:column>
+									 
+										<p:column headerText="#{labels['advertisement.dlajnost']}" width="43%">											
+											<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_JOBS, row.position, candidateView.currentLang, now, candidateView.userId)}" />
+										</p:column>
+										
+										<p:column headerText="#{labels['profile.descInfo']}" width="43%">
+											<h:outputText value="#{row.addInfo}" />
+										</p:column>
+										
+									</p:dataTable>									
+									
+								</div>
+							</div>
+							
+							<div class="section-separator"></div>		
+							
+							<div class="title-box">		
+								<h:outputText value="#{labels['profile.forLangs']}" style="font-weight: bold;"/>
+							</div>
+							
+							<!-- LANGUAGES TABLE -->
+							<div class="p-grid">
+								<div class="p-col-12">
+									
+									<p:dataTable id="language_tbl" rowIndexVar="index" var="row" value="#{candidateView.userLanguages}" emptyMessage="#{labels['general.norows']}" reflow="true">
+										
+										<p:column headerText="#{labels['general.No-symbol']}" width="4%">
+											<h:outputText value="#{index + 1}" />
+										</p:column>
+									 
+										<p:column headerText="#{labels['profile.lang']}" width="76%">
+											<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_LANGUAGES, row.language, candidateView.currentLang, now, candidateView.userId)}"/>
+										</p:column>
+										
+										<p:column headerText="#{labels['profile.langLevel']}" width="20%">
+											<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_LANGUAGE_LEVEL, row.level, candidateView.currentLang, now, candidateView.userId)}"/>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+							
+							<div class="section-separator"></div>		
+							
+							<div class="title-box">		
+								<h:outputText value="#{labels['profile.cert']}" style="font-weight: bold;"/>
+							</div>
+							
+							<!-- LANGUAGES TABLE -->
+							<div class="p-grid">
+								<div class="p-col-12">
+							
+									<p:dataTable id="fileList" var="row" value="#{candidateView.filesList}" reflow="true" emptyMessage="#{labels['general.norows']}">
+	
+										<p:column headerText="" width="60">
+											<p:commandButton ajax="false" actionListener="#{candidateView.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+										</p:column>
+		
+										<p:column headerText="#{labels['file.filename']}">
+											<h:outputText value="#{row.description}" rendered="#{row.description != null}" />
+											<h:outputText value="#{row.filename}" rendered="#{row.description == null or row.description == ''}" />
+										</p:column>
+		
+									</p:dataTable>
+								</div>
+							</div>									
+						
+						</div>
+						
+						<!-- TAB BURSARY -->
+						<div id="tab-content-bursary" class="tab-content">
+							
+							<h:panelGroup id="panelBursary">
+							
+							<div class="p-grid">
+								<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+									<h:outputText value="#{labels['bursary.bursaryTerm']}: " style="font-weight: bold;"/>			
+								</div>
+								<div class="p-col-12 p-md-8 p-lg-8">
+									<p:outputLabel value="#{candidateView.userBursar.bursaryTerm}"/>
+								</div>
+							</div>
+							
+							<div class="p-grid">
+								<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+									<h:outputText value="#{labels['bursary.graduationTerm']}: " style="font-weight: bold;"/>			
+								</div>
+								<div class="p-col-12 p-md-8 p-lg-8">
+									<p:outputLabel value="#{candidateView.userBursar.graduationTerm}"/>
+								</div>
+							</div>
+							
+							<div class="p-grid">
+								<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+									<h:outputText value="#{labels['bursary.jobTerm']}: " style="font-weight: bold;"/>			
+								</div>
+								<div class="p-col-12 p-md-8 p-lg-8">
+									<p:outputLabel value="#{candidateView.userBursar.jobTerm}"/>
+								</div>
+							</div>
+							
+							</h:panelGroup>
+
+						</div>
+						
+					</div>
+					
+					</div>
+					
+				</div>
+	
+			
+			
+			</h:form>
+			
+			<script>
+				$(document).ready(function() {
+					attachTabClickListeners();
+					updateTable();
+					
+					$(".tab-layout").each(function() {
+						$(this).find(".tab").bind("click", function() {
+							setTimeout(function() {updateTable();}, 500);
+						})
+					});
+				});
+				
+			</script>
+			
+			
+		</ui:define>
+	</ui:composition>
+	
+</html>	

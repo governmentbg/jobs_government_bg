@@ -1,0 +1,503 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+ 
+	<ui:composition template="/templateExt/mainExt.xhtml">
+			
+	<ui:define name="title"> #{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 7, environment.currentLang, null, null)} </ui:define> 
+	
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="content">
+		
+		<style>
+		
+			.ui-datagrid.padding-between .ui-datagrid-column {
+				padding: 4px;
+			}
+
+			.search-main {
+				height: auto !important;
+				width: auto !important;
+				flex-grow: 1;
+			}
+			
+			.search-main .col {
+				padding-top: 0;
+				padding-bottom: 0;
+			}
+			
+			.search-main .ui-selectonemenu {
+				height: 40px;
+			}
+			
+			.search-main .ui-selectonemenu label {
+				height: 100%;
+				color: #333333;
+				display: flex;
+				align-items: center;
+			}
+			
+			.search-main .ui-selectonemenu .ui-selectonemenu-trigger {
+			    width: 32px !important;
+			}
+			
+			.search-main .ibg-modal-button input,
+			.search-main .ibg-modal-button button {
+				height: 40px;
+			}
+			
+			.search-main .ui-selectonemenu label,
+			.search-main .ibg-modal-button input {
+				font-size: 1em;
+			}
+					
+			
+			.search-main .ibg-modal-button button {
+				width: 32px;
+			}
+			
+			.search-filter .search-button {
+				float: right;
+				height: 40px;
+			}
+			
+			.clear-button {
+				display: inline-block;
+				margin-left: 2em;
+			}
+			
+			.clear-button a {
+				color: #005E8B;
+			}			
+			
+			.toggle {
+				padding-left: 0.5em !important;
+			}
+			
+			.panel-job .panel-heading {
+				min-height: auto;
+			}
+			
+			@media only screen and (max-width: 991px) {
+				.search-main {
+					width: 100% !important;
+				}
+				
+				.search-main .col {
+					padding-top: 0.5em;
+					padding-bottom: 0.5em;
+				}
+				
+				.search-filter .search-button {
+					margin-left: 0.5em;
+					margin-top: 0.5em;
+					height: 32px;
+				}
+				
+				.search-main .ui-selectonemenu {
+					height: 32px;
+				}
+				
+				.search-main .ibg-modal-button input,
+				.search-main .ibg-modal-button button {
+					height: 32px;
+				}	
+				
+			}
+			
+			.search-graphic {
+				position: absolute;
+				bottom: 1px;
+				opacity: 0;
+				animation-name: rise;
+			    animation-duration: 1s;
+			    animation-iteration-count: 1;
+			    animation-fill-mode: forwards;
+			}
+			
+			.search-graphic.b:nth-of-type(1) {
+				left: 10px;
+				animation-delay: 0.25s;
+			}
+			
+			.search-graphic.b:nth-of-type(2) {
+				left: 90px;
+				animation-delay: 0.5s;
+			}
+			
+			.search-graphic.b:nth-of-type(3) {
+				width: 34px;
+				right: 43px;
+				animation-delay: 1s;
+			}
+			
+			.search-graphic.b:nth-of-type(4) {
+				width: 31px;
+				right: 5px;
+				animation-delay: 0.75s;
+			}
+			
+			.search-graphic.a {
+				top: calc(50% - 55px);
+				right: 3%;
+			}
+			
+			@media screen and (max-width: 1499px) {
+				.search-graphic {
+					bottom: calc(100% - 2.75em - 28px);
+				}
+				
+				.search-graphic.b:nth-of-type(1) {
+					width: 36px;
+					left: 28vw;
+				}
+				
+				.search-graphic.b:nth-of-type(2) {
+					width: 38px;
+					left: 31.5vw;
+				}
+				
+				.search-graphic.b:nth-of-type(3) {
+					width: 30px;
+					right: 15em;
+				}
+				
+				.search-graphic.b:nth-of-type(4) {
+					width: 23px;
+					right: 13em;
+				}
+				
+				.search-graphic.a {
+					width: 54px;
+					top: auto;
+					right: calc(33%);
+				}
+			}
+			
+			@media screen and (max-width: 991px) {
+				
+				.search-graphic.b:nth-of-type(1) {
+					left: 16em;
+				}
+				
+				.search-graphic.b:nth-of-type(2) {
+					left: 19em;
+				}
+				
+				.search-graphic.b:nth-of-type(3) {
+					left: calc(100% - 3em - 34px);
+				}
+				
+				.search-graphic.b:nth-of-type(4) {
+					left: calc(100% - 1em - 23px);
+				}
+				
+				.search-graphic.a {
+					right: calc(33%);
+				}
+			}
+			
+			@media screen and (max-width: 640px) {
+				
+				.search-graphic.b:nth-of-type(1) {
+					left: 12em;
+				}
+				
+				.search-graphic.b:nth-of-type(2) {
+					left: 15em;
+				}
+				
+				.search-graphic.b:nth-of-type(3) {
+					display: none;
+				}
+				
+				.search-graphic.b:nth-of-type(4) {
+					display: none;
+				}
+				
+				.search-graphic.a {
+					right: 1em;
+				}
+			}
+			
+			@media screen and (max-width: 360px) {
+				.search-graphic.b:nth-of-type(1) {
+					display: none;
+				}
+				
+				.search-graphic.b:nth-of-type(2) {
+					display: none;
+				}
+			}
+			
+			@keyframes rise {
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, 50%, 0);
+					-ms-transform: translate3d(0, 50%, 0);
+					transform: translate3d(0, 50%, 0);
+				}
+				100% {
+					opacity: 1;
+					-webkit-transform: none;
+					-ms-transform: none;
+					transform: none;
+				}
+			}
+			
+		</style>
+		
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{adverExtList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+
+		<h:form id="formAdverExtList" >
+			
+			  <h:inputHidden value="#{adverExtList.pageHidden}" />
+			
+			<p:tooltip/>
+			
+			<p:growl id="messages" showDetail="true" />			
+			
+			<!-- SEARCH FILTER -->
+			<div class="search-filter" jsf:id="panelDataSearch">
+				
+				<div class="container">
+				
+					<h3 class="search-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 7, environment.currentLang, null, null)}</h3>
+					
+					<!-- SEARCH FIELD + BUTTON -->
+					<div style="display: flex; flex-wrap: wrap;">
+						<div class="search-main p-grid">
+							<div class="p-col-12 p-lg-6 col">								
+								<div class="ibg-modal-button">									
+					 				<p:inputText value="#{adverExtList.adminStrucText}" id="adminStruc" readonly="true" placeholder="#{labels['general.admStruc']}"/>
+					 				<ibg:selectOneModal header="#{labels['general.admStruc']}" userId="#{IBConstants.PORTAL_USER}" lang="#{adverExtList.currentLang}" 
+					 	 			saveStateTree="false" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_ADM_REGISTER}"     
+					 				update="formAdverExtList:adminStruc formAdverExtList:zveno formAdverExtList:panelSearchAdd" selectedCode="#{adverExtList.adminStruc}" selectedText="#{adverExtList.adminStrucText}"  />
+						 		</div>   
+							</div>
+							
+							<div class="p-col-12 p-lg-6 col">								
+								<p:selectOneMenu value="#{adverExtList.profField}" id="profNapr" autoWidth="false">                                     
+                               		<f:selectItem itemLabel="--#{labels['advertisement.profNapr']}--" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_PROFESSIONAL_FIELD, now, adverExtList.currentLang, IBConstants.PORTAL_USER)}"  
+                                    			   var="profNaprJ" itemLabel="#{profNaprJ.tekst}" itemValue="#{profNaprJ.code}" />			                                    
+                                </p:selectOneMenu>
+							</div>
+						</div>
+											
+						<p:commandButton id="bnt_search" styleClass="search-button" action="#{adverExtList.actionSearch}"  update="formAdverExtList:panelData" icon="fa fa-fw fa-search" />
+
+					</div>
+					
+					<!-- ADDITIONAL FIELDS -->
+					<div class="search-add" jsf:id="panelSearchAdd">
+						
+						<!-- TOGGLE BUTTON -->	
+						<div class="toggle">
+							<div onclick="toggle();">
+								<span>#{labels['publ.extSearch']}</span>
+								<i class="fas fa-caret-right arrow"></i>
+							</div>
+							<div class="clear-button">
+								<p:commandLink action="#{adverExtList.actionClear}" update="formAdverExtList:panelDataSearch formAdverExtList:panelData formAdverExtList:tableGrid" id="btnClear">
+									<h:outputText value="#{labels['general.clear']}" /><i class="fas fa-trash-alt" style="margin-left: 6px;"></i>
+								</p:commandLink>
+							</div>
+						</div>
+							
+						<!-- ADDITIONAL FILTERS -->
+						<div class="fields">
+							
+							<div class="fields-wrapper p-grid">
+							
+								<div class="p-col-12 p-md-6 p-lg-6">
+									<div class="ibg-modal-button">
+										<p:inputText value="#{adverExtList.zvenoText}" id="zveno" readonly="true" placeholder="#{labels['advertisement.zveno']}"/>										
+					                	<ibg:selectDirAdmStruct header="#{labels['advertisement.zveno']}" userId="#{IBConstants.PORTAL_USER}" lang="#{adverExtList.currentLang}" 
+								 	 			saveStateTree="false" isSelectNode="true" withBtnClear="true" codeClassif="#{adverExtList.adminStruc}" rendered="#{adverExtList.adminStruc != null}"      
+								 				update="formAdverExtList:zveno" selectedCode="#{adverExtList.zveno}" selectedText="#{adverExtList.zvenoText}" />
+						 			</div>	
+									
+								</div>
+
+								<div class="p-col-12 p-md-6 p-lg-6">
+									 <div class="ibg-modal-button">
+										<p:inputText value="#{adverExtList.dlajnostText}" id="dlajnost" readonly="true" placeholder="#{labels['advertisement.dlajnost']}"/>										
+					                	<ibg:selectOneModal header="#{labels['advertisement.dlajnost']}" userId="#{IBConstants.PORTAL_USER}" lang="#{adverExtList.currentLang}" 
+								 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_JOBS}"     
+								 				update="formAdverExtList:dlajnost" selectedCode="#{adverExtList.dlajnost}" selectedText="#{adverExtList.dlajnostText}"  />
+						 			</div>         
+									
+								</div>
+								
+							</div>
+						</div>
+							
+					</div>
+					
+				</div>
+			
+				<img src="resources/images/icons/building1.png" alt="" class="search-graphic b"/>
+				<img src="resources/images/icons/building2.png" alt="" class="search-graphic b"/>
+				<img src="resources/images/icons/building3.png" alt="" class="search-graphic b"/>
+				<img src="resources/images/icons/building4.png" alt="" class="search-graphic b"/>
+				<img src="resources/images/icons/arrows.png" alt="" class="search-graphic a"/>
+			
+			</div>
+			<div class="div-info" id="div_info">
+				<div  style="font-size: 30px; float:right; padding:10px; cursor: pointer" onclick ="readedDopInfo('dopinfomob'); $('#div_info').hide(); $('#div_info_small').show();" title="close">
+					<i class="fas fa-close" style="font-size: 30px;"> </i> 
+				</div>
+				<div  class="container" style="padding-top: 15px; padding-bottom: 20px;  padding-left:10px; padding-right:10px; border-bottom: 1px; text-align: justify;">
+					<i class="fas fa-info-circle info-icon"> </i>
+					
+					#{labels['adver.dop_info']}
+				</div>	
+			</div>
+			<div class="container" style="padding: 0 4px;">
+				
+				<p:outputPanel id="panelData">
+			
+					<!-- NUMBER OF RESULS -->
+					<h:panelGroup class="results-summary" layout="block" rendered="#{adverExtList.adversList.rowCount > 0}">
+	       				
+	       				<div class="p-grid">
+		       				<div class="p-col-8 p-md-6 p-lg-6">
+			       				<div class="results-count bolded">
+			       					<div id="div_info_small" style="cursor: pointer" onclick ="readedDopInfo('dopinfomob'); $('#div_info').show(); $('#div_info_small').hide();"><i class="fas fa-info-circle info-icon-small"> </i></div>
+			       					<h:outputText value="#{labels['advertisementList.obiavi']}: "/>
+									<h:outputText value="#{adverExtList.adversList.rowCount}"/>
+			       				</div>
+		       				</div>
+		       				<div class="p-col-4 p-md-6 p-lg-6 " style="text-align: right">
+		       					<p:commandButton icon="fa fa-list" action="#{adverExtList.actionListTable}"  update="tableGrid"/>
+			       				<p:spacer width="5"/>
+			       			    <p:commandButton icon="fa fa-th" action="#{adverExtList.actionGridTable}" update="tableGrid"/>			       			    
+		                    </div>
+	                    </div>
+	       			</h:panelGroup>	       			
+	
+					<!-- ITEMS DATA GRID -->
+					<p:dataGrid value="#{adverExtList.adversList}" id="tableGrid" var="row" columns="#{adverExtList.gridcolumn}" layout="grid" rows="6" paginator="true" 
+							rendered="#{adverExtList.adversList.rowCount > 0}" lazy="true" emptyMessage="#{labels['general.norows']}" paginatorPosition="bottom"
+					        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					        rowsPerPageTemplate="6, 12, 18" styleClass="datagrid no-border no-background paginator-custom padding-between">
+							
+							<div class="panel panel-job">
+								<div class="panel-heading">
+									<a href="advertisementView.jsf?idObj=#{row[0]}" onclick="rc()">
+										<p:outputLabel value="#{row[4]}" />
+									</a>
+								</div>
+								
+								<div class="panel-body">
+									
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-map-marker-alt panel-job-icon icon"></i>
+												<div class="text">#{labels['general.nasMiasto']}</div>
+											</div>
+										</div>
+										<div class="panel-text">
+											<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row[3], adverExtList.currentLang, now, IBConstants.PORTAL_USER)}" styleClass="panel-job-label"/>
+										</div>
+									</div>
+									
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-building panel-job-icon icon"></i>
+												<div class="text">#{labels['general.admStruc']}</div>
+											</div>
+										</div>
+										<div class="panel-text">
+											<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, row[6], adverExtList.currentLang, now, IBConstants.PORTAL_USER)}" styleClass="panel-job-label"/>
+										</div>
+									</div>
+									
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-street-view panel-job-icon icon"></i>
+												<div class="text">#{labels['advertisement.zveno']}</div>
+											</div>
+										</div>
+										<div class="panel-text">
+											<p:outputLabel value="#{adverExtList.getDirekciaForZveno(row[6], row[2])}" styleClass="panel-job-label" escape="false" style="font-style: italic;"/>
+											<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, row[2], adverExtList.currentLang, now, IBConstants.PORTAL_USER)}" styleClass="panel-job-label"/>
+										</div>
+									</div>		
+									
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-calendar-alt panel-job-icon icon"></i>
+												<div class="text">#{labels['advertisement.srokPodavDocum']}</div>
+											</div>
+										</div>
+										<div class="panel-text">
+											<p:outputLabel value="#{row[5]}" styleClass="panel-job-label">
+				        						<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{adverExtList.timeZone}"/>
+				        					</p:outputLabel>
+										</div>
+									</div>							
+											
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-wallet panel-job-icon icon"></i>
+												<div class="text">#{labels['advertisement.minRazmerNaOsnZapl']}</div>
+											</div>
+										</div>
+										<div class="panel-text panel-job-label">#{row[7]}</div>
+									</div>
+								</div>
+							</div>
+		
+			    		</p:dataGrid>
+
+				</p:outputPanel>
+			</div>
+				
+		</h:form>
+		
+		<script>
+			function toggle() {
+				$(".search-filter .fields").slideToggle();
+				$(".search-filter .toggle .arrow").toggleClass("rotated");
+			}
+
+			$(document).ready(function() {
+				animate();
+			});
+
+			function animate() {
+				$(".search-graphic").css("animation-play-state", "running");	
+			}
+		
+
+			let dopinfo = localStorage.getItem('dopinfomob');
+			if(dopinfo){
+				$('#div_info').hide(); $('#div_info_small').show();
+			} else {
+				$('#div_info_small').hide();
+			}
+			</script>	
+	</ui:define>
+
+</ui:composition>
+
+</html>

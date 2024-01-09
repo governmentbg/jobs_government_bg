@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,76)}" />   
+ </f:metadata>
+<ui:composition template="/templateExt/mainExt.xhtml">
+		
+		<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 64, environment.currentLang, null, null)}</ui:define> 
+		
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">		
+		
+			<h:form id="sysOptForm">
+			
+			<!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+
+					     <div class="p-col">  
+							<h3 class="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 64, environment.currentLang, null, null)}</h3>
+						 </div>
+					</div>
+				</div>
+			</div>	
+			
+			<div class="container">
+
+				<p:outputPanel id="panelData">
+					<div class="container-white">
+				
+						<br />
+						<p:toolbar>
+							<f:facet name="left">
+									<p:commandButton id="bntSave" update="panelData" action="#{systemOptionsEdit.actionSave}" icon="fa fa-fw fa-save" value="#{labels['general.save']}" />
+
+									<p:commandButton id="bntRefresh" update="panelData" action="#{systemOptionsEdit.actionRefresh}" icon="ui-icon-refresh" value="#{labels['systemOptions.refresh']}" />
+
+							</f:facet>
+						</p:toolbar>
+						<br />
+						<p:panel id="panelTable" style="margin-bottom:10px">
+							<div class="p-grid" >	
+									<p:dataTable var="row" value="#{systemOptionsEdit.sysOptList}" id="tableOptions"
+										rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" 
+										rows="10" paginator="true" paginatorPosition="bottom"
+										paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+										style="margin-bottom:20px">
+										
+										 <p:column style="text-align: center" width="30">
+											<f:facet name="header">
+								                 №
+								            </f:facet>
+											<h:outputText value="#{rkv+1}" />
+										</p:column>
+
+										<p:column headerText="#{labels['systemOptions.opisanie']}" width="*" sortBy="#{row.dopInfo}">
+											<h:outputText value="#{row.dopInfo}" />
+										</p:column>
+
+										<p:column headerText="#{labels['systemOptions.kod']}" width="200" sortBy="#{row.optionLabel}">
+											<h:outputText value="#{row.optionLabel}" />
+										</p:column>
+
+										<p:column headerText="#{labels['systemOptions.value']}" width="400" sortBy="#{row.optionValue}">												
+											<p:inputText value="#{row.optionValue}" style="width:100%" disabled="#{!row.userEditable}" id="optionValue"/>	
+											<p:message for="optionValue"  display="tooltip"/>											
+										</p:column>
+
+									</p:dataTable>
+							</div>
+						</p:panel>
+						
+					
+
+						<p:toolbar>
+					
+							<f:facet name="left">
+	
+									<p:commandButton id="bnt_save1" update="panelData" action="#{systemOptionsEdit.actionSave}" icon="fa fa-fw fa-save" value="#{labels['general.save']}" />
+							</f:facet>
+						</p:toolbar>
+					
+					</div>
+				
+				</p:outputPanel>
+				</div>
+			</h:form>
+		
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components"> 
+
+<h:head>
+<script type="text/javascript">
+function exportToPdf() {
+    //get your image 
+    var imageElement = PF('chart').exportAsImage();
+
+    //get the value of the 'src' attribute of this object and fill the hidden input
+    $("#testForm\\:chartImageSrc").val($(imageElement).attr("src"));
+
+    //send the image (converted in text) to your MB
+    exportToPdfRemoteCommand(); 
+}
+
+//<![CDATA[
+         function exportChart() {
+             //export image
+             $('#testForm\\:output').empty().append(PF('chart').exportAsImage());
+
+             //show the dialog
+             PF('dlg').show();
+         }
+         //]]>
+</script>
+
+
+</h:head> 
+<body> 
+aaaaaaaaaaa
+
+
+
+
+
+<h:form id="testForm">
+
+<h:inputHidden id="chartImageSrc"   value="#{proba.chartImageSrcBase64}" />
+
+<p:remoteCommand name="exportToPdfRemoteCommand"  action="#{proba.generateTestPdfExport}"/>
+
+<p:commandButton type="button"   value="Export to PDF"   onclick="exportToPdf()"/>  
+
+
+<p:commandButton type="button" value="Export" icon="pi pi-home" onclick="exportChart()"/>
+
+<p:outputPanel autoUpdate="true">
+	 <p:radarChart  widgetVar="chart" model="#{proba.radarModel}" rendered="#{proba.radarModel!=null}"/>
+</p:outputPanel>
+
+
+ 
+<p:dialog widgetVar="dlg" showEffect="fade" modal="true" header="Chart as an Image" resizable="false">
+    <p:outputPanel id="output" layout="block"/>
+</p:dialog>
+
+
+
+</h:form>
+
+</body> 
+</html>

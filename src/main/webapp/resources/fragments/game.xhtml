@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:p="http://primefaces.org/ui">
+	<ui:composition>
+	
+		<style>
+			.title-question {
+				font-variant: small-caps;
+			}
+			
+			.wizard {
+				padding: 0.5em 1em;
+			}
+			
+			.back-button {
+				width: 42px;
+				height: 42px;
+				text-align: center;
+				background-color: #0077b3;
+				font-size: 1.5em;
+				padding: 0.5em;
+				border-radius: 50%;
+				transition: background-color 0.1s linear;
+			}
+			
+			.back-button:hover {
+				background-color: #006293;
+			}
+			
+			.back-button i {
+				color: #ffffff;
+				vertical-align: middle;
+			}
+			
+			.controlls {
+				padding: 0.5em 1em;
+				display: flex;
+			}
+			
+			.progress-bar {
+				flex-grow: 1;
+				padding: 12px;
+			}
+			
+			.option {
+				background-color: #E7F2F8;
+				color: #000000;
+			}
+			
+			.option:hover {
+				background-color: #D0E6F1;
+			}
+			
+			.option .avatar {
+				color: #8FB4C7;
+			}
+			
+			.option:hover .avatar {
+				color: #004C72;
+			}
+			
+			.result {
+				background-color: #0077b3;
+				color: #ffffff;
+			}
+			
+			.result:hover {
+				background-color: #2E8FC0;
+			}
+			
+			.result .avatar {
+				color: rgba(255, 255, 255, 1);
+			}
+			
+			.card {
+				height: 100px;
+				border-radius: 0;
+				position: relative;
+				font-size: 1.25em;
+				padding: 0.5em;
+				font-variant: small-caps;
+				-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    			-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+			    -moz-border-radius: 3px;
+			    -webkit-border-radius: 3px;
+			    border-radius: 3px;
+				transition: all 0.1s linear;
+			}
+			
+			.avatar {
+				position: absolute;
+				bottom: 10px;
+				right: 10px;
+				font-size: 60px; 
+				transition: all 0.1s linear;
+			}
+			
+			.avatar .small {
+				font-size: 30px;
+			}
+			
+			body.color-blind .option,
+			body.color-blind .result {
+				background-color: transparent;
+				border: 1px solid #ffffff;
+				color: #ffffff;
+			}
+			
+			body.color-blind .option:hover,
+			body.color-blind .result:hover {
+				background-color: #333333;
+			}
+			
+			body.color-blind .card:hover {
+				box-shadow: none;
+			}
+			
+			body.color-blind .option .avatar {
+				color: #ffffff;	
+			}
+			
+			body.color-blind .result,
+			body.color-blind .result .avatar {
+				color: #ffff00;
+			}
+			
+			body.color-blind .back-button {
+				background-color: #ffff00;
+			}
+			
+			body.color-blind .back-button i {
+				color: #000000;
+			}
+			
+			body.color-blind .ui-progressbar {
+				background-color: transparent;
+				background-image: none;
+			}
+			
+			body.color-blind .ui-progressbar-value.ui-widget-header {
+				background-color: #ffff00;
+				background-image: none;
+			}
+			
+			@media all and (max-width: 640px) {
+				.avatar {
+					font-size: 45px; 
+				}
+				
+				.avatar .small {
+					font-size: 25px;
+				}
+			}
+			
+		</style>
+	
+		<!-- ROLE GAME -->
+		<h:form id="gameForm">
+		
+			<!-- QUESTION -->
+			<h:panelGroup layout="block" class="p-grid p-nogutter" id="question">
+				<div class="p-col-12 title-question scrollable">
+					<h3  style="padding-left:5px">#{gameBean.question}</h3>
+				</div>
+			</h:panelGroup>
+		
+			<div class="role-game">
+				<h:panelGroup layout="block" class="wizard" id="wizard">
+				
+					<!-- OPTIONS -->
+					<div>
+						<div class="p-grid " style="min-height: 228px;">
+							<!-- 1 MENU -->
+							<ui:repeat value="#{gameBean.choice1}" var="node" varStatus="counter">
+								<div class="p-col-12 p-md-6">
+									<p:commandLink actionListener="#{gameBean.step(node.code)}" update="gameForm:wizard gameForm:question" oncomplete="fadeTitle();">
+										<div class="option card">
+											<div>
+												<!-- STUDENT -->
+												<h:panelGroup layout="block" rendered="#{node.code == 1}" styleClass="avatar"> 
+													<i class="fas fa-university"></i>
+												</h:panelGroup>
+												
+												<!-- ZAVARSHIL, BEZ STAJ -->
+												<h:panelGroup layout="block" rendered="#{node.code == 2}" styleClass="avatar">
+													<i class="fas fa-user-graduate"></i>
+												</h:panelGroup>
+												
+												<!-- ZAVARSHIL, IMA STAJ -->
+												<h:panelGroup layout="block" rendered="#{node.code == 3}" styleClass="avatar">
+													<i class="fas fa-user-graduate"></i>
+													<i class="fas fa-briefcase small"></i>
+												</h:panelGroup>
+												
+												<!-- DARJAVEN SLUJITEL -->
+												<h:panelGroup layout="block" rendered="#{node.code == 4}" styleClass="avatar">
+													<i class="fas fa-user-tie"></i>
+												</h:panelGroup>
+												
+												<div class="label">
+													<h:outputText value="#{node.tekst}"/>
+												</div>
+											</div>
+										</div>
+									</p:commandLink>
+								</div>
+							</ui:repeat>
+							
+							<!-- 2 MENU -->
+							<ui:repeat value="#{gameBean.choice2}" var="node">
+								<div class="p-col-12 p-md-6">
+									<p:commandLink actionListener="#{gameBean.step(node.code)}" update="gameForm:wizard gameForm:question" oncomplete="fadeTitle();">
+										<div class="option card">
+											<div>
+												<!-- NEPLATEN STAJ -->
+												<h:panelGroup layout="block" rendered="#{node.code == 5}" styleClass="avatar">
+													<i class="fab fa-black-tie"></i>
+												</h:panelGroup>
+												
+												<!-- PLATEN STAJ -->
+												<h:panelGroup layout="block" rendered="#{node.code == 7 || node.code == 8}" styleClass="avatar">
+													<i class="fab fa-black-tie"></i>
+													<i class="fas fa-coins small"></i>
+												</h:panelGroup>
+												
+												<!-- RABOTA -->
+												<h:panelGroup layout="block" rendered="#{node.code == 6 || node.code == 9 || node.code == 10 || node.code == 11}" styleClass="avatar">
+													<i class="fas fa-business-time"></i>
+												</h:panelGroup>
+												
+												<div class="label">
+													<h:outputText value="#{node.tekst}"/>
+												</div>
+											</div>
+										</div>
+									</p:commandLink>
+								</div>
+							</ui:repeat>
+							
+							<!-- RESULT -->
+							<ui:repeat value="#{gameBean.choice3}" var="node">
+								<div class="p-col-12 p-md-6">
+									<a href="#{node.dopInfo}">
+										<div class="result card">
+											<div>
+												<i class="far fa-hand-point-right avatar"></i>
+												<div class="label">
+													<h:outputText value="#{node.tekst}"/>
+												</div>
+											</div>
+										</div>
+									</a>
+								</div>
+							</ui:repeat>
+							
+						</div>
+					</div>
+					
+					<!-- CONTROLLS -->
+					<div class="controlls">
+						<p:commandLink id="back-button" action="#{gameBean.back}" styleClass="back-button" disabled="#{gameBean.buttonDisabled}" update="gameForm:wizard gameForm:question"	oncomplete="fadeTitle();">
+					        <i class="fas fa-arrow-left"></i>
+					    </p:commandLink>
+					    <div class="progress-bar">
+							<p:progressBar id="progressBar" value="#{gameBean.progress}"/>
+						</div>
+					</div>
+				
+				</h:panelGroup>
+			</div>
+			
+			<h:outputScript library="jsExt" name="scrollIntoView.js"/>
+			<script>
+				$(document).ready(function() {
+					elementFromTop(document.querySelectorAll('.scrollable'),  'scrolled',  100, 'percent');
+				});
+				
+				function fadeTitle() {
+					try{
+						elementFromTop(document.querySelectorAll('.scrollable'),  'scrolled',  100, 'percent');
+					} catch (e) {
+						console.log(e);
+					}
+				}
+			</script>
+		</h:form>
+	</ui:composition>
+</html>

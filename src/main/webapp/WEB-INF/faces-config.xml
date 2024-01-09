@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+ <managed-bean>
+  <description>vmesto da pravim atribut v klasa za dneshna data "today" direktno vikame now ;)
+systemData.decodeItem(10008,11,1,now,-1)</description>
+  <managed-bean-name>now</managed-bean-name>
+  <managed-bean-class>java.util.Date</managed-bean-class>
+  <managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>userData</managed-bean-name>
+  <managed-bean-class>indexbg.pjobs.system.UserData</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <application>
+  <locale-config>
+   <default-locale>bg</default-locale>
+   <supported-locale>en</supported-locale>
+  </locale-config>
+  <message-bundle>i18n.messages</message-bundle>
+  <resource-bundle>
+   <base-name>i18n.beanMessages</base-name>
+   <var>beanMessages</var>
+  </resource-bundle>
+  <resource-bundle>
+   <base-name>i18n.labels</base-name>
+   <var>labels</var>
+  </resource-bundle>
+  <resource-bundle>
+   <base-name>i18n.navigation</base-name>
+   <var>navTexts</var>
+  </resource-bundle>
+  <system-event-listener>
+   <system-event-listener-class>indexbg.pjobs.system.MySystemListener</system-event-listener-class>
+   <system-event-class>javax.faces.event.PostConstructApplicationEvent</system-event-class>
+  </system-event-listener>
+  <system-event-listener>
+   <system-event-listener-class>indexbg.pjobs.system.MySystemListener</system-event-listener-class>
+   <system-event-class>javax.faces.event.PreDestroyApplicationEvent</system-event-class>
+  </system-event-listener>
+ </application>
+</faces-config>

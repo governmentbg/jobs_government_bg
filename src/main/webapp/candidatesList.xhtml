@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+	 <f:metadata>
+	 	<f:viewAction action="#{userData.hasAccessPage(7,65)}" />		   
+	 </f:metadata>
+	  
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 40, environment.currentLang, null, null)}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+	<ui:define name="content">
+	
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{candidatesList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+	
+		<h:form id="formCandidatsList">
+			
+			  <p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  	  <p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+		  	  
+		  	  <h:inputHidden value="#{candidatesList.pageHidden}" />
+			
+			  <p:tooltip/>	
+			  
+			  <!-- PAGE TITLE -->
+			  <div class="title-page">
+				 <div class="container">	 
+					 <h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 40, environment.currentLang, null, null)}</h3>
+				</div>
+	 		  </div>	 
+			  			  
+			  <div class="container">
+			  
+			  <div class="container-white"  onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('formCandidatsList:btnSearch').click()}">	
+			  
+			  <p:focus context="panelData"/>	
+
+				<p:outputPanel id="panelData">	
+					
+					<p:panel header="#{labels['general.search']}" style="margin-bottom:10px">
+						
+						<div class="p-grid">	
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.pin']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:inputText value="#{candidatesList.pin}" />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['profile.candidateFor']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3">
+								<p:selectOneMenu value="#{candidatesList.candidateFor}" id="kandidatZa" autoWidth="false" panelStyle="max-width: 90%;">
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_APPLY_FOR, now, candidatesList.currentLang, candidatesList.userId)}" 
+                                    	var="za" itemLabel="#{za.tekst}" itemValue="#{za.code}" />		                                    
+                                </p:selectOneMenu>
+                                <p:tooltip for="kandidatZa" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('kandidatZa', view).clientId)}">
+									<p:message for="kandidatZa"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['profile.expYears']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-1 p-lg-1">																
+								<p:inputNumber value="#{candidatesList.expYears}" id="expYears" min="0" decimalPlaces="0"/>																		                        
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.fname']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:inputText value="#{candidatesList.name}" />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.secondName']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:inputText value="#{candidatesList.surname}" />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.lname']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:inputText value="#{candidatesList.family}" />
+							</div>
+												
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.profNapr']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-4 p-lg-4">
+								<p:selectOneMenu value="#{candidatesList.profField}" id="profNapr" autoWidth="false" panelStyle="max-width: 90%;" filter="true" filterMatchMode="contains">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{candidatesList.profFieldList}" var="profNaprJ" itemLabel="#{profNaprJ.tekst}" itemValue="#{profNaprJ.code}" />
+                                    <p:ajax event="change" update="formCandidatsList:spec" listener="#{candidatesList.actionChangedCategory}"/>			                                    
+                                </p:selectOneMenu>
+                                 <p:tooltip for="profNapr" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('profNapr', view).clientId)}">
+									<p:message for="profNapr"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>                  										                        
+							</div>	
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['bursary.subject']}: " />
+							</div>
+							<div class="p-col-12 p-md-4 p-lg-4">								
+                                <div class="ibg-modal-button">															 				
+					 				<p:selectOneMenu id="spec" value="#{candidatesList.spec}" autoWidth="false" panelStyle="max-width: 90%;" filter="true" filterMatchMode="contains">												 			
+										<f:selectItem itemLabel="" itemValue="" />
+										<f:selectItems value="#{candidatesList.specList}" var="subject" itemLabel="#{subject.tekst}" itemValue="#{subject.code}"/>
+									</p:selectOneMenu>
+						 		</div>                                										                        
+							</div>								
+						</div>
+				  				
+				  		<div class="p-grid">	
+				  		
+				  			<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['practice.educationArea']}: " />
+							</div>
+							
+							<div class="p-col-12 p-md-4 p-lg-4">
+								<p:selectOneMenu id="eduArea" value="#{candidatesList.educationArea}" autoWidth="false"  >
+						             <f:selectItem itemLabel="" itemValue="" />
+						             <f:selectItems value="#{candidatesList.educationAreaList}" var="edu" itemLabel="#{edu.tekst}" itemValue="#{edu.code}"/>
+						        </p:selectOneMenu>
+                                 <p:tooltip for="eduArea" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('eduArea', view).clientId)}">
+									<p:message for="eduArea"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>                  										                        
+							</div>			
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['profile.eduDegree']}: " />
+							</div>
+							<div class="p-col-12 p-md-4 p-lg-4">
+								<p:selectOneMenu value="#{candidatesList.educDegree}" id="educDegree" autoWidth="false" >                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                     <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, now, candidatesList.currentLang, candidatesList.userId)}" 
+                                    			    var="degree" itemLabel="#{degree.tekst}" itemValue="#{degree.code}" />			                                    
+                                </p:selectOneMenu>            										                        
+							</div>
+							
+						</div>
+						
+						<div class="p-grid">
+						
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['profile.descInfo']}: " />
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">
+								<p:inputTextarea value="#{candidatesList.specIzisk}" id="specIzisk" rows="3"/>                        										                        
+							</div>
+						
+						</div>				  				
+				  		
+				  		<div class="p-grid">							
+									
+							<div class="p-col-12 p-md-10 p-lg-10 cc-left">
+				 				<p:commandButton action="#{candidatesList.actionClear}" value="#{labels['general.clear']}" update="formCandidatsList:panelData" id="btnClear" tabindex="-1"/> 
+						 	</div>						 	
+						 	
+						    <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+						        <p:commandButton action="#{candidatesList.actionSearch}" value="#{labels['general.search']}" icon="fa fa-search" update="formCandidatsList:panelData" id="btnSearch" />
+						    </div>
+						
+						</div>
+					
+					</p:panel>	
+					 
+					<br />
+					
+					<p:panel header="#{labels['candidatesList.candidates']}: #{candidatesList.candidatsList.rowCount}" id="panelTable" rendered="#{candidatesList.candidatsList ne null}">							
+			 						 	
+					 	 <p:dataTable id="tbl" var="row" value="#{candidatesList.candidatsList}" lazy="true" rows="15"
+							rowIndexVar="idx" sortMode="single" reflow="true" emptyMessage="#{labels['general.norows']}" 
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom" paginatorAlwaysVisible="false" paginator="true" style="margin-bottom:20px">
+
+                             <f:facet name="{Exporters}">
+                                 <h:commandLink >
+                                     <p:graphicImage library="images" name="excel.png" width="24"/>
+                                     <p:dataExporter type="xls" target="tbl" fileName="candidatsList" encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="csv.png" width="24"/>
+                                     <p:dataExporter type="csv" target="tbl" fileName="candidatsList"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="xml.png" width="24"/>
+                                     <p:dataExporter type="xml" target="tbl" fileName="candidatsList"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                             </f:facet>
+
+                             <p:column style="text-align: center" width="5">
+								<f:facet name="header">
+					                <h:outputText value=" #{labels['general.No-symbol']}" /> 
+					            </f:facet>
+								<h:outputText value="#{idx + 1}" />
+							
+							</p:column>	
+							
+							<p:column style="text-align: center" width="25" exportable="false">
+
+								 <p:commandButton  icon="fa fa-fw fa-search" action="candidateView.jsf" ajax="false" title="#{labels['general.izbor']}" onclick="rc()">
+								 	<f:param name="idObj" value="#{row[0]}" />
+								 </p:commandButton>
+
+					        </p:column>															
+							
+					   <!-- <p:column width="70" sortBy="#{row.A1}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.pin']}" />
+								</f:facet>
+								<h:outputText value="#{row[1]}" />
+							</p:column> -->
+							
+							<p:column width="150" sortBy="#{row.A2}">
+								 <f:facet name="header">
+									 <h:outputText value="#{labels['general.imena']}" />
+								 </f:facet>
+								 <h:outputText value="#{row[2]}" />
+							 </p:column>							
+							
+							<p:column width="150" sortBy="#{row.A3}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.nasMiasto']}" />
+								</f:facet>
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row[3], candidatesList.currentLang, now, candidatesList.userId)}, #{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row[4], candidatesList.currentLang, now, candidatesList.userId)}, #{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row[5], candidatesList.currentLang, now, candidatesList.userId)}" />
+							</p:column>												
+							
+							<p:column width="150" sortBy="#{row.A6}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['bursary.subject']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[6]}" />								    
+							</p:column>	
+
+						</p:dataTable>
+
+			         </p:panel>
+				</p:outputPanel>
+				
+				</div>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+		
+</html>	

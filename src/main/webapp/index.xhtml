@@ -1,0 +1,533 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/ibg">
+
+	
+	<f:metadata>
+	        <f:viewAction action="#{userData.hasFillProfilе}"  />		   
+	</f:metadata>
+	
+<ui:composition template="/templateExt/mainExt.xhtml">
+	<ui:define name="title">jobs.government.bg</ui:define>
+	
+	<ui:define name="metatags">
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="jobs.government.bg"/>
+		<meta property="og:site_name" content="#{labels['general.title']}" />
+		<meta property="og:url" content="#{systemData.getSettingsValue('oauth.spprovided.id.value')}" />
+		<meta property="og:image" content="./resources/images/logo.png" />
+		<ui:remove>
+			<meta property="og:description" content="" />
+			<meta property="og:locale" content="" />
+		</ui:remove>
+	</ui:define>
+
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml" />
+	</ui:define>
+
+
+	<ui:define name="content">
+	 
+		<style type="text/css">
+		
+			.title-category {
+				font-variant: small-caps;
+			}
+			
+			.title-category,
+			.title-question h3 {
+				margin-top: 0;
+			}
+			
+			.tiles-container {
+				padding-top: 2em;
+				padding-bottom: 2em;
+				background-color: #e6e6e6;			
+			}
+			
+			.role-game {
+				/* background-color: white; */
+			}
+			
+			body.color-blind .role-game {
+				background-color: transparent;
+				border: none;
+				box-shadow: none;
+			}
+			
+			.jobs-container {
+				background-color: white;
+				padding: 1em 0;
+				background-image: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.5) 25%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.5) 75%, rgba(255,255,255,1) 100%), linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.5) 25%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.5) 75%, rgba(255,255,255,1) 100%), url('./resources/images/jobs-background 3.jpg');
+			}
+			
+			.jobs-container .panel-job .panel-body {
+				background-color: #fafafa;
+			}
+			
+			body.color-blind .jobs-container {
+				background-image: none;
+			}
+			
+			.staj-container {
+				background-color: white;
+				padding: 1em 0;
+			
+			}
+			
+			.staj-container .panel-job .panel-body {
+				background-color: #fafafa;
+			}
+			
+			body.color-blind .staj-container {
+				background-image: none;
+				background-color: initial;
+			}
+			
+			
+			.game-container {
+				padding: 1em 0;
+			}
+			
+			.game-container .role-game {
+				background-color: transparent;
+				border: none;
+				box-shadow: none;
+			}
+			
+			.banner-container {
+				background-color: #ffffff;
+    			margin-bottom: -1em;
+    			padding: 1em 0;
+			}
+			
+			.banners {
+				font-size: 0;
+				display: flex;
+    			flex-wrap: wrap;
+    			justify-content: center;
+			}
+			
+			.banner-link {
+				display: inline-block;
+				margin: 2px;
+				text-align: center;
+				min-width: 120px;
+				height: 90px;
+				background: #ffffff;
+				border: 1px solid #e6e6e6;
+			}
+			
+			.banner-link img {
+				height: 100%;
+			}
+			
+			@media screen and (max-width: 575px) {
+				.banner-container {
+					margin-top: 1.25em;
+				}
+				
+				.banner-link {
+					height: 80px;
+				}
+			}
+			
+			body.color-blind .tiles-container,
+			body.color-blind .jobs-container,
+			body.color-blind .banner-container {
+				background-color: transparent;
+			}
+			
+		</style>
+
+		<!-- NAVIGATION TILES -->
+		<div class="tiles-container">
+			<div class="container"> 
+				<div class="p-grid">
+						
+					<div class="p-col-12 p-md-12 p-lg-4">
+						<div class="column-content" onclick="window.location='adverJobs.jsf?sect=6'">
+							<div class="title-icon">
+								<div class="icon fas fa-file-alt"></div>
+								<div class="title-nav">#{labels['index.compet']}</div>
+							</div>
+							<div class="content">
+								<p>#{labels['index.compet_info']}</p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="p-col-12 p-md-12 p-lg-4">
+						<div class="column-content box-green" onclick="window.location='adverExtList.jsf'">
+							<div class="title-icon">
+								<div class="icon fas fa-exchange-alt"></div>
+								<div class="title-nav">#{labels['index.mobilnost']}</div>
+							</div>
+							<div class="content">
+								<p>#{labels['index.mobilnost_info']}</p>
+							</div>
+						</div>
+					</div>
+					
+					<ui:remove>
+					<!--  otpada i se zamenq s dolnoto
+					<div class="p-col-12 p-md-12 p-lg-4">
+						<div class="column-content box-blue" onclick="window.location='bursaryExtList.jsf'">
+							<div class="title-icon">
+								<div class="icon fas fa-graduation-cap"></div>
+								<div class="title-nav">#{labels['index.prof']}</div>
+							</div>
+							<div class="content">
+								<p>#{labels['index.prof_info']} </p>
+							</div>
+						</div>
+					</div>
+					 -->
+					</ui:remove>
+					
+					<div class="p-col-12 p-md-12 p-lg-4">
+						<div class="column-content box-blue" onclick="window.location='practiceExtList.jsf'">
+							<div class="title-icon">
+								<div class="icon fas fa-graduation-cap"></div>
+								<div class="title-nav">#{labels['index.practice']}</div>
+							</div>
+							<div class="content">
+								<p>#{labels['index.practice_info']} </p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="p-col-12 p-md-12 p-lg-4">
+						<div class="column-content box-2" onclick="window.location='profile.jsf'">
+							<div class="title-icon">
+								<div class="icon fas fa-users"></div>
+								<div class="title-nav">#{labels['index.create_user']}</div>
+							</div>
+							<div class="content">
+								<p>#{labels['index.create_user_info']}</p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="p-col-12 p-md-12 p-lg-4">
+						<div class="column-content box-1" onclick="window.location='statisticList.jsf'">
+							<div class="title-icon">
+								<div class="icon fas fa-pie-chart"></div>
+								<div class="title-nav">#{labels['index.pub_stats']}</div>
+							</div>
+							<div class="content">
+								<p>#{labels['index.pub_stats_info']}</p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="p-col-12 p-md-12 p-lg-4">
+						<div class="column-content box-orange" onclick="window.location='publExtList.jsf?sect=23'">
+							<div class="title-icon">
+								<div class="icon fas fa-video"></div>
+								<div class="title-nav">#{labels['index.instruct']}</div>
+							</div>
+							<div class="content">
+								<p>#{labels['index.instruct_info']}</p>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		
+		<ui:remove>
+		<!--  При това положение няма да има визуализация на нови конкурси и обяви за мобилност на този етап. 
+		<div class="banner-container" >
+			<div class="container">
+					<iframe width="100%" height="300" style="border: 0px solid #d5857c;" src="http://iisda.government.bg/no_frame/competitions/competitions_list/all_competitions">
+								</iframe>
+			</div>
+		</div>
+		-->
+		<!-- CAROUSEL - FEATURED JOBS -->
+		
+		</ui:remove>
+		
+		<div class="jobs-container" jsf:rendered="#{indexBean.advertisements.size() > 0}">
+			<div class="container">
+				<p:outputPanel style="padding: 0.5em;">
+					<h3 class="title-category scrollable" style="padding-left:5px">#{labels['general.advertNew']}</h3>
+					<div class="carousel">
+		
+						<div class="slider-left">
+							<i class="fas fa-angle-left"></i>
+						</div>
+						<div class="slider-right">
+							<i class="fas fa-angle-right"></i>
+						</div>
+		
+						<div class="contents-container">
+							<div class="contents-wide">
+								
+								<ui:repeat value="#{indexBean.advertisements}" var="ad">
+									<div class="carousel-item">
+										<div class="panel panel-job">
+											<div class="panel-heading">
+												<a href="advertisementView.jsf?idObj=#{ad[0]}">
+													<p:outputLabel value="#{ad[3]}" />
+												</a>
+											</div>
+											
+											<div class="panel-body">
+											
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-map-marker-alt panel-job-icon icon"></i>
+															<div class="text">#{labels['general.nasMiasto']}</div>
+														</div>
+													</div>
+													<div class="p-col-9">
+														<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, ad[2], indexBean.currentLang, now, indexBean.userId)}" styleClass="panel-job-label"/>
+													</div>
+												</div>
+												
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-building panel-job-icon icon"></i>
+															<div class="text">#{labels['general.admStruc']}</div>
+														</div>
+													</div>
+													<div class="p-col-9">
+														<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, ad[5], indexBean.currentLang, now, indexBean.userId)}" styleClass="panel-job-label"/>
+													</div>
+												</div>
+												
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-street-view panel-job-icon icon"></i>
+															<div class="text">#{labels['advertisement.zveno']}</div>
+														</div>
+													</div>
+													<div class="p-col-9">
+														<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, ad[1], indexBean.currentLang, now, indexBean.userId)}" styleClass="panel-job-label"/>
+													</div>
+												</div>
+												
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-calendar-alt panel-job-icon icon"></i>
+															<div class="text">#{labels['advertisement.srokPodavDocum']}</div>
+														</div>
+													</div>
+													<div class="p-col-9">
+														<p:outputLabel value="#{ad[4]}" styleClass="panel-job-label">
+							        						<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{indexBean.timeZone}"/>
+							        					</p:outputLabel>
+													</div>
+												</div>
+												
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-wallet panel-job-icon icon"></i>
+															<div class="text">#{labels['advertisement.minRazmerNaOsnZapl']}</div>
+														</div>
+													</div>
+													<div class="p-col-9 panel-job-label">#{ad[6]} лв.</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</ui:repeat>
+								
+							</div>
+						</div>
+		
+						<div class="carousel-dots"></div>
+					</div>
+				</p:outputPanel>
+			</div>
+		</div>
+		
+		<div class="staj-container" jsf:rendered="#{indexBean.stajove.size() > 0}">
+			<div class="container">
+				<p:outputPanel style="padding: 0.5em;">
+					<h3 class="title-category scrollable" style="padding-left:5px">Студентски стажове</h3>
+					<div class="carousel">
+		
+						<div class="slider-left">
+							<i class="fas fa-angle-left"></i>
+						</div>
+						<div class="slider-right">
+							<i class="fas fa-angle-right"></i>
+						</div>
+		
+						<div class="contents-container">
+							<div class="contents-wide">
+								
+								<ui:repeat value="#{indexBean.stajove}" var="staj">
+									<div class="carousel-item">
+										<div class="panel panel-job">
+											<div class="panel-heading blue">
+												<a href="practiceExtView.jsf?idObj=#{staj[0]}">
+													<span>#{staj[1]}</span>
+												</a>
+											</div>
+											
+											<div class="panel-body">
+											
+											<div class="panel-row">
+												<div class="panel-icon">
+													<div class="popup">
+														<i class="fas fa-solid fa-hashtag"></i>
+														<div class="text">#{labels['practice.number']}</div>
+													</div>
+												</div>
+												<div class="panel-text panel-job-label">
+													 #{staj[0]} 
+												</div>
+											</div>
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-building panel-job-icon icon"></i>
+															<div class="text">#{labels['general.admStruc']}</div>
+														</div>
+													</div>
+													<div class="p-col-9">
+														<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, staj[2], indexBean.currentLang, now, indexBean.userId)}"/>
+													</div>
+												</div>
+												
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-user-friends panel-job-icon icon"></i>
+															<div class="text">#{labels['practiceList.numPositions']}</div>
+														</div>
+													</div>
+													<div class="p-col-9">
+														<span>#{labels['practiceExtList.broi']}: #{staj[5]} </span>
+													</div>
+												</div>
+									
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-map-marker-alt panel-job-icon icon"></i>
+															<div class="text">#{labels['practiceExtList.oblastObsht']}</div>
+														</div>
+													</div>
+													<div class="p-col-9">
+														<span>#{labels['general.oblast']} #{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, staj[3], indexBean.currentLang, now, indexBean.userId)},
+														#{labels['general.obshtina']} #{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, staj[4], indexBean.currentLang, now, indexBean.userId)}</span>
+													</div>
+												</div>
+																																	
+												<div class="p-grid">
+													<div class="p-col-3">
+														<div class="popup">
+															<i class="fas fa-calendar-alt panel-job-icon icon"></i>
+															<div class="text">#{labels['practiceExtView.srokKand']}</div>
+														</div>
+													</div>
+													<div class="p-col-9">
+														<p:outputLabel value="#{staj[7]}">
+							        						<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{indexBean.timeZone}"/>
+							        					</p:outputLabel>
+							        					<span jsf:rendered="#{indexBean.currentLang == IBConstants.CODE_ZNACHENIE_LANG_BG}"> г.</span>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</ui:repeat>
+								
+							</div>
+						</div>
+		
+						<div class="carousel-dots"></div>
+					</div>
+				</p:outputPanel>
+			</div>
+		</div>
+		
+		<!-- ROLE GAME -->
+		<div class="jobs-container">
+			<div class=" container">	
+				<ui:include src="/resources/fragments/game.xhtml"/>
+			</div>
+		</div>
+		
+		<!-- BANNERS -->
+		<div class="banner-container">
+			<div class="container">
+				<h3 class="title-category scrollable" style="padding-left:5px">#{labels['general.partnerSites']}</h3>
+				<div class="banners">
+					
+					<div class="banner-link">
+						<a href="https://www.strategy.bg/Default.aspx?lang=bg-BG">
+							<img alt="portal za obshtestveni konsultacii" src="#{resource['images/ok.png']}"/>
+						</a>
+					</div>
+					<div class="banner-link">
+						<a href="https://www.az.government.bg/pages/programa-start-na-karierata/">
+							<img alt="agenciya po zaetostta" src="#{resource['images/AZ_Logo.svg.png']}"/>
+						</a>
+					</div>
+					<div class="banner-link">
+						<a href="https://data.egov.bg/">
+							<img alt="portal za otvoreni danni" src="#{resource['images/open_data_banner.png']}"/>
+						</a>
+					</div>
+					<div class="banner-link">
+						<a href="http://www.gov.bg/">
+							<img alt="pravitelstven portal" src="#{resource['images/banner1.png']}"/>
+						</a>
+					</div>
+					<div class="banner-link">
+						<a href="https://pitay.government.bg/">
+							<img alt="platforma za dostap do obshtestvena informaciya" src="#{resource['images/banner2.png']}"/>
+						</a>
+					</div>
+					<div class="banner-link">
+						<a href="https://epso.europa.eu/bg">
+							<img alt="european personnel selection office" src="#{resource['images/EPSO.jpg']}"/>
+						</a>
+					</div>
+					<div class="banner-link">
+						<a href="https://www.mfa.bg/bg/aktualno/karieri">
+							<img alt="ministerstvo na vanshnite raboti karieri" src="#{resource['images/careers.png']}"/>
+						</a>
+					</div>
+					<div class="banner-link">
+						<a href="https://praktiki.mon.bg/">
+							<img alt="programa studentski praktiki mon" src="#{resource['images/LogoPraktiki.png']}"/>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<h:outputScript library="jsExt" name="scrollIntoView.js"/>
+		
+		<script>
+			$(document).ready(function() {
+				elementFromTop(document.querySelectorAll('.scrollable'),  'scrolled',  100, 'percent');
+			});
+		</script>
+	</ui:define>
+</ui:composition>
+</html>

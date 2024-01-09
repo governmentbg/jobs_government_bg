@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components"
+	template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:viewAction action="#{userData.hasAccessPage(7,105)}" />
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 73, environment.currentLang, null, null)}</ui:define>
+
+	<ui:define name="viewname">
+		<li>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION,
+			73, environment.currentLang, null, null)}</li>
+	</ui:define>
+
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+
+		<!-- TITLE -->
+		<div class="title-page">
+			<div class="container">
+				<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 73, environment.currentLang, null, null)}</h3>
+			</div>
+		</div>
+
+		<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+
+		<ui:include src="practiceListIncl.xhtml">
+
+		</ui:include>
+
+	</ui:define>
+
+</ui:composition>
+

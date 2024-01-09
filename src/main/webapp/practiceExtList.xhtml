@@ -1,0 +1,425 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 70, environment.currentLang, null, IBConstants.PORTAL_USER)}</ui:define> 
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	
+		<style>
+		
+			.search-filter {
+				position: relative;
+			}
+		
+			.ui-datagrid.padding-between .ui-datagrid-column {
+				padding: 4px;
+			}
+
+			.search-main {
+				height: auto !important;
+				width: auto !important;
+				flex-grow: 1;
+			}
+			
+			.search-main .col {
+				padding-top: 0;
+				padding-bottom: 0;
+			}
+			
+			.search-main .ibg-modal-button input,
+			.search-main .ibg-modal-button button {
+				height: 40px;
+			}
+			
+			.search-main .ibg-modal-button input,
+			.search-main .ui-inputtext {
+				font-size: 1em;
+			}
+			.ui-selectonemenu {
+				height: 40px;
+			}
+			
+			.ui-selectonemenu label {
+				height: 100%;
+				color: #333333;
+				display: flex;
+				align-items: center;
+			}
+			
+			.search-main .ui-selectonemenu .ui-selectonemenu-trigger {
+			    width: 32px !important;
+			}	
+			
+			.search-main .ibg-modal-button button {
+				width: 36px;
+			}
+			
+			.search-main .ui-inputtext {
+				height: 40px;
+			}
+			
+			.search-filter .search-button {
+				float: right;
+				height: 40px;
+				margin-top: 0.5em;
+			}
+			
+			.clear-button {
+				display: inline-block;
+				margin-left: 0.5em;
+			}
+			
+			.clear-button a {
+				color: #005E8B;
+			}
+			
+			.panel-job .panel-heading {
+				min-height: auto;
+			}
+			
+			.graphic {
+				position: absolute;
+				opacity: 0;
+				color: #b8b8b8;
+				animation-name: rise;
+			    animation-duration: 1s;
+			    animation-iteration-count: 1;
+			    animation-fill-mode: forwards;
+			}
+			
+			.graphic:nth-of-type(1) {
+				font-size: 80px;
+				bottom: 1rem;
+				left: 1rem;
+				animation-delay: 0.25s;
+			}
+			
+			.graphic:nth-of-type(2) {
+				font-size: 80px;
+				right: 1rem;
+				top: 1rem;
+				animation-delay: 0.5s;
+			}
+			
+			@media screen and (max-width: 1429px) {
+				.graphic:nth-of-type(1) {
+					font-size: 60px;
+					top: 0.5rem;
+					bottom: auto;
+					left: 40vw;
+				}
+				
+				.graphic:nth-of-type(2) {
+					font-size: 50px;
+					left: 50vw;
+					right: auto;
+					top: 1rem;
+				}
+			}
+			
+			@media only screen and (max-width: 991px) {
+				.search-main {
+					width: 100% !important;
+				}
+				
+				.search-main .col {
+					padding-top: 0.5em;
+					padding-bottom: 0.5em;
+				}
+				
+				.search-filter .search-button {
+					margin-left: 0.5em;
+					margin-top: 0.5em;
+					height: 32px;
+				}
+				
+				.search-main .ibg-modal-button input,
+				.search-main .ibg-modal-button button {
+					height: 32px;
+				}
+
+				.search-main .ibg-modal-button button {
+					width: 28px;
+				}
+				
+				.search-main .ui-inputtext {
+					height: 32px;
+				}				
+			}
+			
+			@media screen and (max-width: 767px) {
+				.graphic:nth-of-type(1) {
+					left: auto;
+					right: 4.5rem;
+				}
+				
+				.graphic:nth-of-type(2) {
+					left: auto;
+					right: 1rem;
+				}
+			}
+			
+			@media screen and (max-width: 459px) {
+				.graphic:nth-of-type(1) {
+					font-size: 50px;
+					right: 1rem;
+					top: auto;
+					bottom: 1rem;
+				}
+				
+				.graphic:nth-of-type(2) {
+					display: none;
+				}
+			}
+			
+			@keyframes rise {
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, 50%, 0);
+					-ms-transform: translate3d(0, 50%, 0);
+					transform: translate3d(0, 50%, 0);
+				}
+				100% {
+					opacity: 1;
+					-webkit-transform: none;
+					-ms-transform: none;
+					transform: none;
+				}
+			}
+			
+		</style>
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{practiceExtList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+		<h:form id="practiceListForm" >
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			
+			<h:inputHidden value="#{practiceExtList.pageHidden}" />
+			<p:tooltip/>
+				
+			<!-- SEARCH FILTER -->		
+			<div class="search-filter">
+			
+				<div class="container">
+				
+					<h3 class="search-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 70, environment.currentLang, null, null)}</h3>
+								
+					<div style="display: flex; flex-wrap: wrap;">
+						<div class="search-main p-grid ">
+						
+							<div class="p-col-12 p-lg-6 ">								
+								<div class="ibg-modal-button">		
+									<p:inputText value="#{practiceExtList.admText}" id="admStr" readonly="true" placeholder="#{labels['general.admStruc']}"/>
+							        <ibg:selectOneModal header="#{labels['general.admStruc']}"  lang="#{practiceExtList.currentLang}" 
+									 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_ADM_REGISTER}"     
+									 				update="practiceListForm:admStr" selectedCode="#{practiceExtList.admStr}" selectedText="#{practiceExtList.admText}"  />
+							    </div>
+							</div>
+								
+							<!-- Област на висше образование -->
+							<div class="p-col-12 p-lg-6 ">													
+
+				  				<p:selectOneMenu id="eduArea" value="#{practiceExtList.educationArea}" autoWidth="false"  placeholder="#{labels['practice.educationArea']}">
+							         <f:selectItem itemLabel="" itemValue="" />
+							         <f:selectItems value="#{practiceExtList.educationAreaList}" 
+							             var="edu" itemLabel="#{edu.tekst}" itemValue="#{edu.code}"/>
+							    </p:selectOneMenu> 							   
+			                </div>
+			                
+			                <!-- Област -->						
+				  			<div class="p-col-12 p-lg-6 ">	
+				  				<p:selectOneMenu id="oblast" value="#{practiceExtList.oblast}" autoWidth="false" filter="true" filterMatchMode="contains" placeholder="#{labels['general.oblast']}">
+				  					 <f:selectItem itemLabel="" itemValue="" />
+							         <f:selectItems value="#{practiceExtList.oblastList}" var="oblastP" itemLabel="#{oblastP.tekst}" itemValue="#{oblastP.code}"/>
+	                                 <p:ajax event="change" update="practiceListForm:obshtina" listener="#{practiceExtList.actionChangeOblast}" process="@all"/>	
+							    </p:selectOneMenu>
+				  			</div>
+				  				
+				  			<!-- Община -->
+				  			<div class="p-col-12 p-lg-6 ">
+				  				<p:selectOneMenu id="obshtina" value="#{practiceExtList.obshtina}" autoWidth="false" filter="true" filterMatchMode="contains" placeholder="#{labels['general.obshtina']}">
+				  					<f:selectItem itemLabel="" itemValue="" />
+							        <f:selectItems value="#{practiceExtList.obshtiniList}" var="obshtinaP" itemLabel="#{obshtinaP.tekst}" itemValue="#{obshtinaP.code}"/>	                                 
+							    </p:selectOneMenu>							        						        
+				  			</div>
+					 	</div>
+						       	 				
+						<p:commandButton id="bnt_search" styleClass="search-button" update="practiceListForm:panelData" action="#{practiceExtList.actionSearch}" icon="fa fa-fw fa-search" />
+
+					</div>
+					
+					<!-- ADDITIONAL FIELDS -->
+					<div class="search-add" jsf:id="panelSearchAdd">
+						
+						<!-- TOGGLE BUTTON -->	
+						<div class="clear-button">
+							<p:commandLink action="#{practiceExtList.actionClear}" update="practiceListForm" id="btnClear">
+								<h:outputText value="#{labels['general.clear']}" /><i class="fas fa-trash-alt" style="margin-left: 6px;"></i>
+							</p:commandLink>
+						</div>
+					</div>
+										
+				</div>
+			
+				<i class="fas fa-graduation-cap graphic"></i>
+				<i class="fas fa-briefcase graphic"></i>
+				
+			</div>
+			
+			<div class="div-info" id="div_info">
+				<div  style="font-size: 30px; float:right; padding:10px; cursor: pointer" onclick =" readedDopInfo('dopinfost'); $('#div_info').hide(); $('#div_info_small').show();  " title="close">
+					<i class="fas fa-close" style="font-size: 30px;"> </i> 
+				</div>
+				<div  class="container" style="padding-top: 15px; padding-bottom: 10px; padding-left:10px; padding-right:10px; border-bottom: 1px; text-align: justify;">
+					<i class="fas fa-info-circle info-icon"> </i>
+					#{labels['practiceExtList.dopInfo']}
+				</div>	
+			</div>
+			
+			<div class="container" style="padding: 0 4px;"> 
+				<p:outputPanel id="panelData">
+					
+					<!-- NUMBER OF RESULS -->
+					<h:panelGroup class="results-summary   " layout="block" rendered="#{practiceExtList.practiceList.rowCount > 0}">
+	       				<div class="p-grid">
+		       				<div class="p-col-8 p-md-6 p-lg-6">
+			       				<div class="results-count bolded">
+			       					<div id="div_info_small" style="cursor: pointer" onclick =" readedDopInfo('dopinfost'); $('#div_info').show(); $('#div_info_small').hide();"><i class="fas fa-info-circle info-icon-small"> </i></div>
+			       					<h:outputText value="#{labels['practiceExtList.obiaviStaj']}: " />
+									<h:outputText value="#{practiceExtList.practiceList.rowCount }"/>
+			       				</div>
+		       				</div>
+		       				<div class="p-col-4 p-md-6 p-lg-6 " style="text-align: right">
+		       					<p:commandButton icon="fa fa-list" action="#{practiceExtList.actionListTable}"  update="tableGrid"/>
+			       				<p:spacer width="5"/>
+			       			    <p:commandButton icon="fa fa-th" action="#{practiceExtList.actionGridTable}" update="tableGrid"/>			       			    
+		                    </div>
+	                    </div>
+	       			</h:panelGroup>
+	       			
+	       			<!-- ITEMS DATA GRID -->
+					<p:dataGrid var="row" value="#{practiceExtList.practiceList}" id="tableGrid"  layout="grid" rows="6" paginator="true"  columns="#{practiceExtList.gridColumn}"
+							rendered="#{practiceExtList.practiceList.rowCount > 0}" lazy="true" emptyMessage="#{labels['general.norows']}" paginatorPosition="bottom"
+					        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					        rowsPerPageTemplate="6, 12, 18" styleClass="datagrid no-border no-background paginator-custom padding-between" >
+					        		
+					        <div class="panel panel-job">
+					        	<div class="panel-heading blue">
+									<a href="practiceExtView.jsf?idObj=#{row[0]}" onclick="rc()">#{row[1]}</a>
+								</div>
+								
+								<div class="panel-body">
+								
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-solid fa-hashtag"></i>
+												<div class="text">#{labels['practice.number']}</div>
+											</div>
+										</div>
+										<div class="panel-text panel-job-label">
+											 #{row[0]} 
+										</div>
+									</div>
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-building panel-job-icon icon"></i>
+												<div class="text">#{labels['general.admStruc']}</div>
+											</div>
+										</div>
+										<div class="panel-text panel-job-label">
+											<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, row[2], practiceExtList.currentLang, practiceExtList.today, IBConstants.PORTAL_USER)}"/>
+										</div>
+									</div>
+																							
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-user-friends panel-job-icon icon"></i>
+												<div class="text">#{labels['practiceList.numPositions']}</div>
+											</div>
+										</div>
+										<div class="panel-text panel-job-label">
+											 #{labels['practiceExtList.broi']}: #{row[4]} 
+										</div>
+									</div>
+																	
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-map-marker-alt panel-job-icon icon"></i>
+												<div class="text">#{labels['practiceExtList.oblastObsht']}</div>
+											</div>
+										</div>
+										<div class="panel-text panel-job-label">
+										    #{labels['general.oblast']}
+											<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row[5], practiceExtList.currentLang, practiceExtList.today, IBConstants.PORTAL_USER)}" styleClass="panel-job-label"/>
+											,  #{labels['general.obshtina']}
+											<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row[6], practiceExtList.currentLang, practiceExtList.today, IBConstants.PORTAL_USER)}" styleClass="panel-job-label"/>
+										</div>
+									</div> 
+									<ui:remove>
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-calendar-alt panel-job-icon icon"></i>
+												<div class="text">#{labels['practice.begDatePract']}</div>
+											</div>
+										</div>
+										<div class="panel-text">
+											<p:outputLabel value="#{row[7]}" styleClass="panel-job-label">
+				        						<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceExtList.timeZone}"/>
+				        					</p:outputLabel>
+										</div>
+									</div>							
+									</ui:remove>		
+									<div class="panel-row">
+										<div class="panel-icon">
+											<div class="popup">
+												<i class="fas fa-calendar-alt panel-job-icon icon"></i>
+												<div class="text">#{labels['practiceExtView.srokKand']}</div>
+											</div>
+										</div>
+										<div class="panel-text">
+											<p:outputLabel value="#{row[8]}" styleClass="panel-job-label">
+				        						<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceExtList.timeZone}"/>
+				        					</p:outputLabel>
+										</div>
+									</div>		
+								</div>
+					        </div>
+					        		
+			    		</p:dataGrid>
+
+				</p:outputPanel>
+			</div>
+				<script>
+
+					let dopinfo = localStorage.getItem('dopinfost');
+					if(dopinfo){
+						$('#div_info').hide(); $('#div_info_small').show();
+					} else {
+						$('#div_info_small').hide();
+					}
+				</script>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

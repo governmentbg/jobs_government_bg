@@ -1,0 +1,360 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,111)}" />   
+ </f:metadata>
+<ui:composition template="/templateExt/mainExt.xhtml">
+		
+		<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 80, environment.currentLang, null, null)} </ui:define> 
+		
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">		
+			
+		<style>
+		
+			.ui-datagrid.padding-between .ui-datagrid-column {
+				padding: 1px;
+			}
+
+			.search-main {
+				height: auto !important;
+				width: auto !important;
+				flex-grow: 1;
+			}
+			
+			.search-main .col {
+				padding-top: 0;
+				padding-bottom: 0;
+			}
+			
+			.search-main .ui-selectonemenu {
+				height: 40px;
+			}
+			
+			.search-main .ui-selectonemenu label {
+				height: 100%;
+				color: #333333;
+				display: flex;
+				align-items: center;
+			}
+			
+			.search-main .ui-selectonemenu .ui-selectonemenu-trigger {
+			    width: 32px !important;
+			}
+			
+			.search-main .ibg-modal-button input,
+			.search-main .ibg-modal-button button {
+				height: 40px;
+			}
+			
+			.search-main .ui-selectonemenu label,
+			.search-main .ibg-modal-button input {
+				font-size: 1em;
+			}
+					
+			
+			.search-main .ibg-modal-button button {
+				width: 32px;
+			}
+			
+			.search-filter .search-button {
+				float: right;
+				height: 40px;
+			}
+			
+			.clear-button {
+				display: inline-block;
+				margin-left: 2em;
+			}
+			
+			.clear-button a {
+				color: #005E8B;
+			}			
+			
+			.toggle {
+				padding-left: 0.5em !important;
+			}
+			
+			.panel-job .panel-heading {
+				min-height: auto;
+			}
+			
+			@media only screen and (max-width: 991px) {
+				.search-main {
+					width: 100% !important;
+				}
+				
+				.search-main .col {
+					padding-top: 0.1em;
+					padding-bottom: 0.1em;
+				}
+				
+				.search-filter .search-button {
+					margin-left: 0.1em;
+					margin-top: 0.1em;
+					height: 32px;
+				}
+				
+				.search-main .ui-selectonemenu .ui-inputtext {
+					height: 32px;
+				}
+				
+				.search-main .ibg-modal-button input,
+				.search-main .ibg-modal-button button {
+					height: 32px;
+				}	
+				
+			}
+			
+			.search-graphic {
+				position: absolute;
+				bottom: 1px;
+				opacity: 0;
+				animation-name: rise;
+			    animation-duration: 1s;
+			    animation-iteration-count: 1;
+			    animation-fill-mode: forwards;
+			}
+			
+			.search-graphic.b:nth-of-type(1) {
+				left: 10px;
+				animation-delay: 0.25s;
+			}
+			
+			.search-graphic.b:nth-of-type(2) {
+				left: 90px;
+				animation-delay: 0.5s;
+			}
+			
+			.search-graphic.b:nth-of-type(3) {
+				width: 34px;
+				right: 43px;
+				animation-delay: 1s;
+			}
+			
+			.search-graphic.b:nth-of-type(4) {
+				width: 31px;
+				right: 5px;
+				animation-delay: 0.75s;
+			}
+			
+			.search-graphic.a {
+				top: calc(50% - 55px);
+				right: 3%;
+			}
+			
+			@media screen and (max-width: 1499px) {
+				.search-graphic {
+					bottom: calc(100% - 2.75em - 28px);
+				}
+				
+				.search-graphic.b:nth-of-type(1) {
+					width: 36px;
+					left: 28vw;
+				}
+				
+				.search-graphic.b:nth-of-type(2) {
+					width: 38px;
+					left: 31.5vw;
+				}
+				
+				.search-graphic.b:nth-of-type(3) {
+					width: 30px;
+					right: 15em;
+				}
+				
+				.search-graphic.b:nth-of-type(4) {
+					width: 23px;
+					right: 13em;
+				}
+				
+				.search-graphic.a {
+					width: 54px;
+					top: auto;
+					right: calc(33%);
+				}
+			}
+			
+			@media screen and (max-width: 991px) {
+				
+				.search-graphic.b:nth-of-type(1) {
+					left: 16em;
+				}
+				
+				.search-graphic.b:nth-of-type(2) {
+					left: 19em;
+				}
+				
+				.search-graphic.b:nth-of-type(3) {
+					left: calc(100% - 3em - 34px);
+				}
+				
+				.search-graphic.b:nth-of-type(4) {
+					left: calc(100% - 1em - 23px);
+				}
+				
+				.search-graphic.a {
+					right: calc(33%);
+				}
+			}
+			
+			@media screen and (max-width: 640px) {
+				
+				.search-graphic.b:nth-of-type(1) {
+					left: 12em;
+				}
+				
+				.search-graphic.b:nth-of-type(2) {
+					left: 15em;
+				}
+				
+				.search-graphic.b:nth-of-type(3) {
+					display: none;
+				}
+				
+				.search-graphic.b:nth-of-type(4) {
+					display: none;
+				}
+				
+				.search-graphic.a {
+					right: 1em;
+				}
+			}
+			
+			@media screen and (max-width: 360px) {
+				.search-graphic.b:nth-of-type(1) {
+					display: none;
+				}
+				
+				.search-graphic.b:nth-of-type(2) {
+					display: none;
+				}
+			}
+			
+			@keyframes rise {
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, 50%, 0);
+					-ms-transform: translate3d(0, 50%, 0);
+					transform: translate3d(0, 50%, 0);
+				}
+				100% {
+					opacity: 1;
+					-webkit-transform: none;
+					-ms-transform: none;
+					transform: none;
+				}
+			}
+			
+		</style>
+			
+			<h:form id="formSpr">
+			<!-- TITLE -->
+			<div class="search-filter" jsf:id="panelDataSearch">
+				<div class="container">	 
+				
+					<h3 class="search-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 80, environment.currentLang, null, null)}</h3>
+						 					
+					<!-- ФИЛТЪР -->
+					<div style="display: flex; flex-wrap: wrap;">
+						<div class="search-main p-grid">
+							<div class="p-col-12 p-lg-6 col">	
+							 	<p:selectOneMenu value="#{reportPracticeAll.idCamp}" id="idCamp">
+							 		<f:selectItem itemLabel="--#{labels['report.camp']}--" itemValue="" />
+									<f:selectItems value="#{reportPracticeAll.campaignsList}" var="camp" itemLabel="#{camp.label}" itemValue="#{camp.value}" />
+									<p:ajax event="change" update="fYear" listener="#{reportPracticeAll.changeCamp}" process="@this"/>
+								</p:selectOneMenu>
+							</div>
+							<div class="p-col-12 p-lg-6 col ibg-modal-button">		 
+								 <p:inputText value="#{reportPracticeAll.year}" placeholder="#{labels['general.year']}" id="fYear">
+								 		<p:keyFilter mask="num" preventPaste="true"/>
+								 </p:inputText>
+							 </div>
+					    </div>
+					    <p:commandButton id="bnt_search" styleClass="search-button" action="#{reportPracticeAll.actionSearch}"  update="panelResult" icon="fa fa-fw fa-search" />
+					</div>		 
+				
+				</div>
+			</div>	
+			
+			<div class="container" style="padding: 0 4px;">
+			<br/>
+			<h:panelGroup id="panelResult">
+				<p:dataTable id="tblReports" var="row" value="#{reportPracticeAll.resultReportAll}" 
+						 rowIndexVar="idx"  reflow="true" emptyMessage="#{labels['general.norows']}"
+						 >
+
+						<f:facet name="{Exporters}">
+						
+							 <div style="float:right;padding-top: 5px;">
+								
+								<h:commandLink>
+									<p:graphicImage library="images" name="excel.png" width="24" />
+									<p:dataExporter type="xls" target="tblReports" fileName="reportsRankingCandidates" encoding="utf-8" />
+								</h:commandLink>
+	
+								<h:commandLink>
+									<p:graphicImage library="images" name="csv.png" width="24" />
+									<p:dataExporter type="csv" target="tblReports" fileName="reportsRankingCandidates" encoding="utf-8" />
+								</h:commandLink>
+	
+								<h:commandLink>
+									<p:graphicImage library="images" name="xml.png" width="24" />
+									<p:dataExporter type="xml" target="tblReports" fileName="reportsRankingCandidates" encoding="utf-8" />
+								</h:commandLink>
+							
+							</div>
+
+						</f:facet>
+
+						<p:column width="50" exportable="false">
+							<f:facet name="header">
+								<h:outputText value=" #{labels['general.No-symbol']}" />
+							</f:facet>
+							<h:outputText value="#{idx + 1}" />
+						</p:column>
+						
+						<p:column  width="50" exportable="false">
+							<f:facet name="header">
+								<h:outputText value="" />
+							</f:facet>
+							<p:button href="#{reportPracticeAll.actionGoto(row)}"  icon="fa fa-fw fa-eye"  title="#{labels['general.view']}" rendered="#{row[2]!=null}"
+								target="_blank">
+							
+							</p:button> 
+							
+						</p:column>
+						
+						<p:column >
+							<f:facet name="header">
+								<h:outputText value=" " />
+							</f:facet>
+							<h:outputText value="#{row[0]}"/>
+						</p:column>
+						<p:column width="80">
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.count']}" />
+							</f:facet>
+							<h:outputText value="#{row[1]}"/>
+						</p:column>
+				 </p:dataTable>
+			</h:panelGroup>	
+			</div>
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>
+
+</html>

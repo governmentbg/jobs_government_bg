@@ -1,0 +1,307 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+
+	<f:metadata>
+	    <f:viewAction action="#{publExtControler.controlPublData}" />		   
+	</f:metadata>
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">  #{labels['publ.lable']} </ui:define> 
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	
+		<style>
+			.publication-list-item {
+				display: flex;
+				border: 1px solid #ddd;
+				border-radius: 3px;
+				background-color: #ffffff;
+				margin: 0.5em 0;
+			   	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+			   	transition: box-shadow 0.1s linear;
+			}
+			
+			.publication-list-item:hover {
+				box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.20);
+			}
+			
+			.publication-list-item .image-wrapper {
+				width: 240px;
+				float: left;
+				display: block;
+				position: relative;
+			}
+			
+			.publication-list-item .image-wrapper:empty {
+				display: none;
+			}
+			
+			.publication-list-item .publication-image {
+				height: 100%;
+				width: 100%;
+				/*object-fit: cover;*/
+				/*font-family: "object-fit: cover;";*/
+				border-top-left-radius: 3px;
+				border-bottom-left-radius: 3px;
+			}
+			
+			.publication-list-item .publication-contents {
+			    width: calc(100% - 200px);
+			    padding: 0.5em 1em;
+			    position: relative;
+			    overflow: hidden;
+			}
+			
+			.publication-list-item .publication-title {
+				font-size: 1.25em;
+				font-variant: small-caps;
+				margin-bottom: 0.5em;
+				color: #0077b3;
+			}
+			
+			.publication-list-item .publication-title:hover {
+				text-decoration: underline;
+			}
+			
+			.publication-list-item .publication-text {
+				overflow: hidden;
+				margin-bottom: 1.5em;
+			}
+			
+			.publication-list-item .publication-date {
+				position: absolute;
+				bottom: 0;
+				left: 1em;
+				height: 20px;
+				width: 100%;
+				font-size: 0.85em;
+			}
+			
+			.ui-md-6 .publication-list-item {
+				flex-direction: column;
+			}
+			
+			.ui-md-6 .publication-list-item .image-wrapper {
+				width: 100%;
+				float: none;
+			}
+			
+			.ui-md-6 .publication-list-item .image-wrapper:empty {
+				display: none;
+			}
+			
+			.ui-md-6 .publication-list-item .publication-contents {
+				width: 100%;
+			}
+			
+			@media only screen and (max-width: 640px) {
+				.publication-list-item {
+					flex-direction: column;
+				}
+				
+				.publication-list-item .image-wrapper {
+					width: 100%;
+					float: none;
+				}
+								
+				.publication-list-item .publication-contents {
+					width: 100%;
+				}
+			}
+			
+			@media only screen and (max-width: 991px) {
+				.search-main {
+					height: 32px !important;
+				}
+			}
+			
+			body.color-blind .publication-list-item {
+				background-color: #000000;
+				color: #ffffff;
+			}
+			
+			body.color-blind .publication-list-item .publication-title {
+				color: #ffff00;
+			}
+			
+		</style>
+
+		<h:form id="formExtList" >
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			<p:tooltip/>
+						
+			
+			<!-- SEARCH FILTER -->
+			<div class="search-filter">
+				<div class="container">
+					
+					<h3 class="search-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECT_PUBL, publExtList.codeSection, publExtList.currentLang, publExtList.currentDate, publExtList.idUser)}</h3>
+													
+					<!-- SEARCH FIELD + BUTTON -->
+					<p:focus for="idTitle2"/>
+					<div class="search-main">
+						<p:inputText id="idTitle2" value="#{publExtList.titleF}" class="search-input" placeholder="#{labels['publ.title']}" maxlength="255" label="#{labels['publ.title']}">
+							<f:validateLength maximum="255"/>
+						</p:inputText>
+						<p:commandButton id="bnt_search" styleClass="search-button" update="formExtList:panelData" action="#{publExtList.actionFind()}" 
+								icon="fa fa-fw fa-search" oncomplete="fitImagesIE()"/>
+					</div>
+					
+					<!-- ADDITIONAL FIELDS -->
+					<div class="search-add">
+						
+						<!-- TOGGLE BUTTON -->	
+						<div class="toggle">
+							<div onclick="toggle();">
+								<span>#{labels['publ.extSearch']}</span>
+								<i class="fas fa-caret-right arrow"></i>
+							</div>
+						</div>
+							
+						<!-- ADDITIONAL FILTERS -->
+						<div class="fields">
+							<div class="fields-wrapper p-grid">
+							
+								<div class="p-col-12 p-md-4" >
+									<p:selectOneMenu id="idPer" value="#{publExtList.period}" styleClass="period-picker">
+	                                  	<f:selectItem itemLabel="--#{labels['publ.period']}--" itemValue="#{null}"/>       
+					                	<f:selectItems value="#{publExtList.periodList}"  
+	                                  		var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+	                                   	<p:ajax event="itemSelect" update="dateOt dateDo idPer"  listener="#{publExtList.changePeriod()}"   />  
+	                              	</p:selectOneMenu>
+								</div>
+
+								<div class="p-col-6 p-md-3">
+									<p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true"  showOn="button" 
+										timeZone="#{publExtList.timeZone}" size="10" locale="bg"
+							         	value="#{publExtList.dateFrom}" label="#{labels['publ.dateFrom']}" placeholder="#{labels['general.dataOt']}">
+							          	<p:ajax event="dateSelect" listener="#{publExtList.checkDates(1)}"  update="formExtList:dateOt formExtList:dateDo formExtList:idPer" />
+							          	<p:ajax event="change" listener="#{publExtList.checkDates(1)}" update="formExtList:dateOt formExtList:dateDo formExtList:idPer" />
+							        </p:calendar>
+								</div>
+								
+								<div class="p-col-6 p-md-3">
+									<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button"
+										timeZone="#{publExtList.timeZone}" size="10" locale="bg"
+							         	value="#{publExtList.dateTo}" label="#{labels['publ.dateTo']}" placeholder="#{labels['general.dataDo']}">
+						          		<p:ajax event="dateSelect" listener="#{publExtList.checkDates(2)}" update="formExtList:dateOt formExtList:dateDo formExtList:idPer" />
+						          		<p:ajax event="change" listener="#{publExtList.checkDates(2)}" update="formExtList:dateOt formExtList:dateDo formExtList:idPer" />
+									</p:calendar>						
+								</div>
+								
+							</div>
+						</div>
+							
+					</div>
+					
+				</div>
+			</div>
+			
+			<div class="container" style="padding: 0 4px"> 
+				<p:outputPanel id="panelData">
+			
+					<!-- NUMBER OF RESULS -->
+					<h:panelGroup class="results-summary p-grid p-align-center p-justify-between" layout="block" rendered="#{publExtList.pubListT.rowCount > 0}">
+	       				<div class="results-count bolded">
+	       					<h:outputText value="#{labels['menu.publInput']}: " />
+							<h:outputText value="#{publExtList.pubListT.rowCount}"/>
+	       				</div>
+	       				
+	       				<div class="results-count">
+	       					<div class="ui-inputgroup" >
+		       					<p:commandButton icon="fa fa-list" action="#{publExtList.actionListTable}" update="tableGrid" oncomplete="fitImagesIE()"/>
+			       				<p:spacer width="5"/>
+			       			    <p:commandButton icon="fa fa-th" action="#{publExtList.actionGridTable}" update="tableGrid" oncomplete="fitImagesIE()"/>
+			       			    <p:spacer width="5"/>
+		       					<p:selectOneMenu id="idSort" value="#{publExtList.sortCol}" disabled="#{publExtList.pubListT.rowCount &lt; 2}">
+		                            <f:selectItem itemLabel="--#{labels['publ.sortRep']}--" itemValue="#{null}"/> 
+		                            <f:selectItem itemLabel="#{labels['publ.title']}" itemValue="A1" />
+						            <f:selectItem itemLabel="#{labels['publ.published']}" itemValue="A4" />
+		                              <p:ajax event="itemSelect" update="tableGrid"  listener="#{publExtList.sortReport()}"/>  
+		                         </p:selectOneMenu>
+	                         </div>
+	       				</div>
+	       			</h:panelGroup>
+	       			
+	
+					<!-- ITEMS DATA GRID -->
+					<p:dataGrid var="row" value="#{publExtList.pubListT}" id="tableGrid" columns="#{publExtList.gridcolumn}" layout="grid" rows="6" paginator="true" 
+							rendered="#{publExtList.pubListT.rowCount > 0}" lazy="true" emptyMessage="#{labels['general.norows']}" paginatorPosition="bottom"
+					        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					        rowsPerPageTemplate="6, 12, 18" styleClass="datagrid no-border no-background paginator-custom padding-between" >
+					        
+					        <p:ajax event="page" oncomplete="fitImagesIE()" />
+					        
+					        <div class="publication-list-item">
+					        	<div class="image-wrapper">
+					        		<a href="publExtData.jsf?idPubl=#{row[0]}">
+					        			<p:graphicImage value="#{publExtList.createImageCont(row[3],30)}" stream="false" class="publication-image fittable-image" alt="no image" rendered="#{row[3] != null}"/>
+					        		</a>
+					        		<span class="media" jsf:rendered="#{row[6] == IBConstants.CODE_ZNACHENIE_TYPE_IMAGE}">
+					        			<i class="fas fa-camera"></i>
+					        		</span>
+					        		<span class="media" jsf:rendered="#{row[6] == IBConstants.CODE_ZNACHENIE_TYPE_VIDEO}">
+					        			<i class="far fa-play-circle"></i>
+					        		</span>
+					        	</div>
+					        	
+					        	<h:panelGroup layout="block" styleClass="publication-contents" >
+					        	
+					        		<div>
+					        			<a href="publExtData.jsf?idPubl=#{row[0]}" class="publication-title" >
+					        				<p:ajax event="click" listener="#{publExtList.changePage()}" />
+					        				<h:outputText value="#{row[1]}" escape="false"/>
+					        			</a>
+					        		</div>
+					        		<div class="publication-text">
+					        			<h:outputText value="#{row[2]}" escape="false"/>
+					        		</div>
+					        		<div class="publication-date">
+					        			<h:outputText value="#{labels['publ.published']}: " />
+					        			<h:outputText value="#{row[4]}">
+					        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{publExtList.timeZone}"/>
+					        			</h:outputText>
+					        		</div>
+					        	
+					        	</h:panelGroup>
+					        	
+				        	</div>
+			    		</p:dataGrid>
+
+				</p:outputPanel>
+			</div>
+				
+		</h:form>
+		
+		<script>
+
+			jQuery(document).ready(function() {
+				fitImagesIE();
+			});
+			
+			function toggle() {
+				$(".search-filter .fields").slideToggle();
+				$(".search-filter .toggle .arrow").toggleClass("rotated");
+			}
+
+		</script>
+		
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

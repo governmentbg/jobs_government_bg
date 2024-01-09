@@ -1,0 +1,549 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,105)}" />		   
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 73, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+
+		
+
+		<p:tooltip />
+		<h:form id="practiceForm">
+		 
+		 	<p:staticMessage rendered="#{!practiceBean.edit}" severity="warn"  summary="" detail="#{beanMessages['practice.inputPeriodEnd']}" style="padding: 1em;" />	
+		
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			
+			<!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+						<div class="p-col-fixed back-col">
+							<p:link outcome="practiceList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					     <div class="p-col">  
+							<h3 class="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 73, environment.currentLang, null, null)}</h3>
+						 </div>
+					</div>
+				</div>
+			</div>	
+			
+			<div class="container">
+				<p:focus context="panelPractice"/>
+				<p:outputPanel id="panelData">
+					<div class="container-white">
+				
+					<br />
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton id="bntSave" action="#{practiceBean.actionSave}" rendered="#{practiceBean.edit}"  update="practiceForm:panelData "  icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+						<f:facet name="right">
+							<ibg:compObjAudit id="compJ" idObj="#{practiceBean.practice.id}" codeObj="#{IBConstants.CODE_OBJECT_PRACTICE}" />
+						</f:facet>
+					</p:toolbar>					
+					<br />
+					
+					<p:panel style="margin-bottom:10px" id="panelPractice">
+                        
+							<div class="p-grid" >	
+						
+								<!-- Пореден номер -->	
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['practice.number']}: "/>
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-1">
+									<p:inputText id="porNom" value="#{practiceBean.practice.id}" disabled="true"/>		                        
+  
+		                        </div>
+								
+								<!-- Кампания -->		
+								<div class="p-col-12 p-md-12 p-lg-1 cc-right" >
+									<h:outputText value="#{labels['practice.campaign']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-5">	
+									<p:inputText id="nameCamp" value="#{practiceBean.camp.nameCamp}" disabled="true" rendered="#{practiceBean.practice.id ne null}"/>												
+	    							<p:selectOneMenu rendered="#{practiceBean.practice.id == null}"  height="300px" value="#{practiceBean.practice.idCampaign}" id="idCampaign"  disabled="#{practiceBean.practice.id ne null}">										     
+				                           <f:selectItem value="#{null}" itemValue="#{null}"/> 
+				                           <f:selectItems value="#{practiceBean.campList}" var="camp" itemLabel="#{camp.label}" itemValue="#{camp.value}" />
+				                           <p:ajax event="change" update="practiceForm" 
+				                           listener="#{practiceBean.actionSelectCamp}" />	       				                          
+				                    </p:selectOneMenu>   
+				                     <p:tooltip for="idCampaign" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('idCampaign', view).clientId)}">						        
+										<p:message for="idCampaign"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									 </p:tooltip>
+								 							 							                 
+								</div>		
+								
+								<!-- Брой места -->
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['advertisement.brMesta']}: " styleClass="req"/>
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-1">
+									<p:inputNumber id="num" value="#{practiceBean.practice.num}" min="0" decimalPlaces="0" style="display:block;"/>	
+									
+									  <p:tooltip for="num" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('num', view).clientId)}">						        
+										<p:message for="num"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									  </p:tooltip>									 		                      		                        
+		                        </div>
+								<ui:remove>
+								<!-- Статус -->				
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['general.status']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-4">											
+	    							<p:selectOneMenu  height="300px" value="#{practiceBean.practice.status}" id="status"  >										     
+				                           <f:selectItem value="#{null}" itemValue="#{null}"/> 
+				                           <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_PRACTICE_STATUS, practiceBean.today, practiceBean.currentLang, practiceBean.userId)}" 
+		                                    	var="status" itemLabel="#{status.tekst}" itemValue="#{status.code}" />	       				                          
+				                    </p:selectOneMenu>  
+				                    
+				                    <p:tooltip for="status" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('status', view).clientId)}">						        
+										<p:message for="status"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									 </p:tooltip>									    								    							                     
+								</div>
+								
+								<!-- Дата на статуса -->
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['userEdit.dateStat']}: "  styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="dateStatus" locale="bg" value="#{practiceBean.practice.statusDate}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>
+	    							<p:tooltip for="dateStatus" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('dateStatus', view).clientId)}">						        
+										<p:message for="dateStatus"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>										 									 
+								</div>
+								</ui:remove>
+								<!-- Административна структура -->
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['general.admStruc']}: "  styleClass="req"/>
+								</div>
+		
+								<div class="p-col-12 p-md-10 p-lg-10">	
+									<div class="ibg-modal-button">
+										 <h:panelGroup rendered="#{practiceBean.admin and practiceBean.practice.id == null}">
+											<p:inputText value="#{practiceBean.admText}" id="admStr" readonly="true" />
+						                	<ibg:selectOneModal header="#{labels['general.admStruc']}" userId="#{practiceBean.userId}" lang="#{practiceBean.currentLang}" 
+									 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_ADM_REGISTER}"     
+									 				update="practiceForm:admStr practiceForm:zvenoGroup" selectedCode="#{practiceBean.adm}" selectedText="#{practiceBean.admText}"  />
+								 		 </h:panelGroup>	
+							 		</div>									
+									<p:inputText id="admin" rendered="#{!practiceBean.admin or (practiceBean.admin and practiceBean.practice.id != null)}" value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, practiceBean.practice.administration, practiceBean.currentLang, now, practiceBean.userId)}" readonly="true"/>						 		
+							 	</div>
+							 		
+							 	<!-- Звено -->				 						 	
+							 	<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['advertisement.zveno']}: "/>
+								</div>
+								<div class="p-col-12 p-md-10 p-lg-10">
+	                                <div class="ibg-modal-button">
+		                                <h:panelGroup id="zvenoGroup">
+											<p:inputText value="#{practiceBean.unitText}" id="zveno" readonly="true" />
+											<p:tooltip for="zveno" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('zveno', view).clientId)}">						        
+												<p:message for="zveno"  display="text" style="color:#ffffff; background:none; border:0px">
+													<p:autoUpdate/>
+												</p:message>
+											</p:tooltip>	
+						                	<ibg:selectDirAdmStruct header="#{labels['advertisement.zveno']}" userId="#{practiceBean.userId}" lang="#{practiceBean.currentLang}" 
+									 	 			saveStateTree="false" isSelectNode="true" withBtnClear="true" codeClassif="#{practiceBean.adm}"     
+									 				update="practiceForm:zveno " 
+									 				selectedCode="#{practiceBean.unit}" selectedText="#{practiceBean.unitText}" />
+									 	</h:panelGroup>
+							 		</div>								                        
+								</div>
+								
+								<!-- Област -->
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+				  					<h:outputText value="#{labels['general.oblast']}: " styleClass="req"/>
+				  				</div>
+				  				<div class="p-col-12 p-md-2 p-lg-2">
+				  					<p:selectOneMenu id="oblast" value="#{practiceBean.practice.region}" autoWidth="false" filter="true" filterMatchMode="contains">
+				  					    <f:selectItem itemLabel="" itemValue="" />
+							            <f:selectItems value="#{practiceBean.oblastList}" var="oblastP" itemLabel="#{oblastP.tekst}" itemValue="#{oblastP.code}"/>
+	                                    <p:ajax event="change" update="practiceForm:obshtina practiceForm:nasMesto" listener="#{practiceBean.actionChangeOblast}" process="@all"/>	
+							        </p:selectOneMenu>
+							       
+							        <p:tooltip for="oblast" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('oblastPubl', view).clientId)}">						        
+										<p:message for="oblastPubl"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>
+				  				</div>
+				  				
+				  				<!-- Община -->
+				  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+				  					<h:outputText value="#{labels['general.obshtina']}: " styleClass="req"/>
+				  				</div>
+				  				<div class="p-col-12 p-md-3 p-lg-3">
+				  					<p:selectOneMenu id="obshtina" value="#{practiceBean.practice.municipality}" autoWidth="false" filter="true" filterMatchMode="contains">
+				  						<f:selectItem itemLabel="" itemValue="" />
+							            <f:selectItems value="#{practiceBean.obshtiniList}" var="obshtinaP" itemLabel="#{obshtinaP.tekst}" itemValue="#{obshtinaP.code}"/>
+	                                    <p:ajax event="change" update="practiceForm:nasMesto" listener="#{practiceBean.actionChangeObshtina}" process="@all"/>
+							        </p:selectOneMenu>
+							        
+							        <p:tooltip for="obshtina" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('obshtinaPubl', view).clientId)}" >
+										<p:message for="obshtina"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>
+				  				</div>
+				  				
+				  				<!-- Населено място -->
+				  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+				  					<h:outputText value="#{labels['general.nasMiasto']}: " styleClass="req"/>
+				  				</div>
+				  				<div class="p-col-12 p-md-3 p-lg-3">
+				  					<p:selectOneMenu id="nasMesto" value="#{practiceBean.practice.town}" autoWidth="false" filter="true" filterMatchMode="contains">
+							             <f:selectItem itemLabel="" itemValue="" />
+							             <f:selectItems value="#{practiceBean.nasMestoList}" var="nasMestoP" itemLabel="#{nasMestoP.tekst}" itemValue="#{nasMestoP.code}"/>
+							        </p:selectOneMenu>
+							        
+							        <p:tooltip for="nasMesto" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('nasMestoPubl', view).clientId)}" >
+										<p:message for="nasMesto"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>
+				  				</div>
+				  				
+				  				<!-- Област на висше образование -->
+				  				<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+				  					<h:outputText value="#{labels['practice.educationArea']}: " styleClass="req"/>
+				  				</div>
+				  				<div class="p-col-12 p-md-10 p-lg-10">
+				  					<p:selectOneMenu id="eduArea" value="#{practiceBean.practice.educationArea}" autoWidth="false"  >
+							             <f:selectItem itemLabel="" itemValue="" />
+							             <f:selectItems value="#{practiceBean.educationAreaList}" 
+							             var="edu" itemLabel="#{edu.tekst}" itemValue="#{edu.code}"/>
+							        </p:selectOneMenu>
+							        
+							        <p:tooltip for="eduArea" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('eduArea', view).clientId)}" >
+										<p:message for="eduArea"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>
+				  				</div>
+				  				
+				  				<!-- Заглавие -->				
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['publ.title']}: " />
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-10">											
+	    							<p:inputText id="practiceTitle" value="#{practiceBean.practice.practiceTitle}" disabled="true"/>		
+	    							<p:tooltip for="practiceTitle" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('practiceTitle', view).clientId)}" >
+										<p:message for="practiceTitle"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>              
+								</div>
+			  				
+			  					<!-- Начална дата за въвеждане на стаж -->
+			  					<div class="p-col-12 p-md-6 p-lg-2 cc-right" jsf:rendered="#{practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+									<h:outputText value="#{labels['practice.begDateInput']}: " />
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-4" jsf:rendered="#{practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">											
+	    							<p:calendar id="structureDateFrom" locale="bg" value="#{practiceBean.practice.structureDateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="true" >    								
+	    							</p:calendar>
+									<p:message for="structureDateFrom" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+							
+								<!-- Крайна дата за въвеждане на стаж -->
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right" jsf:rendered="#{practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+									<h:outputText value="#{labels['practice.endDateInput']}: "/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-4" jsf:rendered="#{practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">											
+	    							<p:calendar id="structureDateTo" locale="bg" value="#{practiceBean.practice.structureDateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="true" />
+									<p:message for="structureDateTo" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+			  				
+								<!-- Начална дата на обявата -->
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['practice.begDate']}: "  styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="begDate" locale="bg" value="#{practiceBean.practice.dateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    							disabled="#{practiceBean.camp ne null and practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+	    								<p:ajax event="change" update="practiceForm:endDate" listener="#{practiceBean.actionSetDateTo}" />	  
+	    								<p:ajax event="dateSelect" update="practiceForm:endDate" listener="#{practiceBean.actionSetDateTo}"/>  
+	    							</p:calendar>
+									<p:tooltip for="begDate" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('begDate', view).clientId)}" >
+										<p:message for="begDate"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>    
+								</div>
+							
+								<!-- Крайна дата на обявата -->
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['practice.endDate']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="endDate" locale="bg" value="#{practiceBean.practice.dateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    							disabled="#{practiceBean.camp ne null and practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}" />
+									<p:tooltip for="endDate" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('endDate', view).clientId)}" >
+										<p:message for="endDate"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>  
+								</div>
+																																						
+								<!--Дата на първа класация -->
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['campaign.rankingDate']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="rankingDate" locale="bg" value="#{practiceBean.practice.rankingDate}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    							disabled="#{practiceBean.camp ne null and practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}"/>
+									<p:tooltip for="rankingDate" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('rankingDate', view).clientId)}" >
+										<p:message for="rankingDate"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>   
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-6">	
+								</div>
+								
+								<!-- Начална дата на потвърждаване -->
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['campaign.beginDateConf']}: "  styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="begDateConf" locale="bg" value="#{practiceBean.practice.confirmDateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    								disabled="#{practiceBean.camp ne null and practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+	    								<p:ajax event="change" update="practiceForm:endDateConf" listener="#{practiceBean.actionSetDateToConfirm}" />	  
+	    								<p:ajax event="dateSelect" update="practiceForm:endDateConf" listener="#{practiceBean.actionSetDateToConfirm}"/>
+	    							</p:calendar>
+									<p:message for="begDateConf" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<!-- Крайна дата на потвърждаване-->
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.endDateConf']}: "  styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="endDateConf" locale="bg" value="#{practiceBean.practice.confirmDateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    							disabled="#{practiceBean.camp ne null and practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}"/>
+									<p:message for="endDateConf" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<!--Дата на втора класация -->
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['campaign.rankingDate2']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="rankingDate2" locale="bg" value="#{practiceBean.practice.rankingDate2}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    							disabled="#{practiceBean.camp ne null and practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}"/>
+									<p:tooltip for="rankingDate2" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('rankingDate2', view).clientId)}" >
+										<p:message for="rankingDate2"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>   
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-6">	
+								</div>
+								
+								<!-- Начална дата на потвърждаване за втора класация -->
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['campaign.beginDateConf2']}: "  styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="begDateConf2" locale="bg" value="#{practiceBean.practice.confirmDateFrom2}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    								disabled="#{practiceBean.camp ne null and practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+	    								<p:ajax event="change" update="practiceForm:endDateConf2" listener="#{practiceBean.actionSetDateToConfirm2}" />	  
+	    								<p:ajax event="dateSelect" update="practiceForm:endDateConf2" listener="#{practiceBean.actionSetDateToConfirm2}"/>
+	    							</p:calendar>
+									<p:message for="begDateConf2" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<!-- Крайна дата на потвърждаване за втора класация-->
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.endDateConf2']}: "  styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="endDateConf2" locale="bg" value="#{practiceBean.practice.confirmDateTo2}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    							disabled="#{practiceBean.camp ne null and practiceBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}"/>
+									<p:message for="endDateConf2" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+									<!-- Начална дата на стаж -->								
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['practice.begDatePract']}: "  styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="begDatePractice" locale="bg" value="#{practiceBean.practice.practiceDateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>
+									<p:tooltip for="begDatePractice" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('begDatePractice', view).clientId)}" >
+										<p:message for="begDatePractice"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>  
+								</div>
+								
+								<!-- Крайна дата на стаж -->
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['practice.endDatePractice']}: "  styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="endDatePractice" locale="bg" value="#{practiceBean.practice.practiceDateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>
+									<p:tooltip for="endDatePractice" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('endDatePractice', view).clientId)}" >
+										<p:message for="endDatePractice"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>   
+								</div>	
+								
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['practice.description']}: " styleClass="req"/>
+								</div>
+								
+								<div class="p-col-12 p-md-10 p-lg-10">								
+									
+									<p:textEditor id="description" value="#{practiceBean.practice.description}" height="300" secure="true">
+							           			<f:facet name="toolbar">
+					  					<span class="ql-formats"> 										
+											<select	class="ql-size" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-bold" />
+											<button class="ql-italic" />
+											<button class="ql-underline" />
+											<button class="ql-strike" />
+										</span>
+										<span class="ql-formats"> 
+											<select class="ql-color" />
+											<select class="ql-background" />
+										</span>
+										<span class="ql-formats">
+											<select class="ql-align" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-script" value="sub" />
+											<button class="ql-script" value="super" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-header" value="1" />
+											<button class="ql-header" value="2" />
+											<button class="ql-blockquote" />
+											<button class="ql-code-block" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-list" value="ordered" />
+											<button class="ql-list" value="bullet" />
+											<button class="ql-indent" value="-1" />
+											<button class="ql-indent" value="+1" />
+										</span>										
+										<span class="ql-formats">
+											<button class="ql-link" />
+										</span>
+					  				</f:facet>
+							        </p:textEditor>	
+									<p:tooltip for="description" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('description', view).clientId)}" >
+										<p:message for="description"  display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>   																	                        
+								</div>	
+																												
+						</div>
+							
+					</p:panel>	 				
+										
+					<br/>
+					
+						
+					<p:toolbar>
+					
+						<f:facet name="left">
+							<p:commandButton id="bntSaveDown" action="#{practiceBean.actionSave}" rendered="#{practiceBean.edit}" update="practiceForm:panelData "  icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+						
+						<f:facet name="right">
+							<p:commandButton id="bntDelete"  action="#{practiceBean.actionDelete}" rendered="#{practiceBean.practice.id!=null }"
+							 style="color: #d90000;" icon="fa fa-fw fa-trash"  value="#{labels['general.delete']}" update="practiceForm:panelData" >
+								<p:confirm header="#{labels['general.delete']}" message="#{labels['general.confirm']}" icon="ui-icon-alert" />
+							</p:commandButton>
+						</f:facet>
+						
+						
+					</p:toolbar>
+					
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
+				    </div>
+				</p:outputPanel>
+
+			</div>
+			
+		</h:form>
+		
+			<script>
+				$(document).ready(function() {
+					attachTabClickListeners();
+				});
+			</script>
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

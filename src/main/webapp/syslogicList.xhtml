@@ -1,0 +1,288 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	<!-- <f:metadata> TODO constant
+		<f:viewAction action="#{userData.hasAccessPage(7,62)}" />		   
+	</f:metadata> -->
+	
+	<ui:composition template="/templateExt/mainExt.xhtml">
+	
+		<ui:define name="title">#{labels['general.systemClassifLogicEdit']}</ui:define>
+		
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">
+		
+			<style type="text/css">
+				.sButton {
+					display: none;
+				}
+			</style>
+		
+			<h:form id="scForm">
+			
+				<div class="title-page back">
+					<div class="container-fluid" style="padding: 0.5em 1em;">
+				 		<div class="p-grid p-align-center">
+				 			<div class="p-col-fixed back-col">
+								<p:link outcome="syslogicListOpis.jsf" 
+									title="#{labels['general.back']}" 
+									styleClass="back-button">
+							  		<i class="fas fa-caret-left" ></i>								
+							    </p:link>
+					    	</div>
+						    <div class="p-col">  	 
+								<h3 class="title">#{labels['syslogicListEdit']}</h3>
+							</div>
+						</div>
+				 	</div>
+			  	</div>
+			
+				<div jsf:id="panelData" class="container-fluid">
+					<div class="container-white">
+						<div class="p-grid">
+							<div class="p-col-12">
+								<p:commandButton id="addPass" 
+									action="#{syslogicList.actionInit}"
+                                    update="scForm:modalSyslogicListPanel"
+                                    icon="fas fa-plus"
+                                    value="#{labels['general.dopalvane']}"
+                                    title="#{labels['syslogiclist.new']} "
+                                    oncomplete="PF('modalSyslogicList').show();"/>
+							</div>
+							
+							<div class="p-col-12">
+								<p:dataTable id="listSc" reflow="true"
+									var="dataSc" value="#{syslogicList.listSc}" 
+									editable="true" editMode="cell"
+	                                rowIndexVar="rkv" 
+	                                emptyMessage="#{labels['general.norows']}"
+	                                rows="10" paginator="true" paginatorPosition="bottom"
+	                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+	                                style="margin-bottom:20px">
+		                            
+		                            <f:facet name="header">
+		                                <h:outputText
+		                                        value="#{systemData.getNameList(syslogicList.codeClassif,syslogicList.currentLang)}"/>
+		                            </f:facet>
+		                            
+		                            <f:facet name="header">
+		                                <div class="p-grid">
+		                                    <div class="p-col-3">
+		                                        <h:outputText
+		                                                value="#{systemData.getNameClassification(syslogicList.codeClassifVod,syslogicList.currentLang)}"/>
+		                                    </div>
+		                                    <div class="p-col-3">
+		                                        <h:outputText
+		                                                value="#{systemData.getNameClassification(syslogicList.codeClassifPod,syslogicList.currentLang)}"/>
+		                                    </div>
+		                                </div>
+		                            </f:facet>
+		                            
+		                            <f:facet name="{Exporters}">
+		                                <h:commandLink>
+		                                    <p:graphicImage library="images" name="excel.png" width="24"/>
+		                                    <p:dataExporter type="xls" target="listSc" fileName="listSc" encoding="utf-8"/>
+		                                </h:commandLink>
+		                                <h:commandLink>
+		                                    <p:graphicImage library="images" name="pdf.png" width="24"/>
+		                                    <p:dataExporter type="pdf" target="listSc" fileName="listSc" encoding="utf-8"/>
+		                                </h:commandLink>
+		                                <h:commandLink>
+		                                    <p:graphicImage library="images" name="csv.png" width="24"/>
+		                                    <p:dataExporter type="csv" target="listSc" fileName="listSc" encoding="utf-8"/>
+		                                </h:commandLink>
+		                                <h:commandLink>
+		                                    <p:graphicImage library="images" name="xml.png" width="24"/>
+		                                    <p:dataExporter type="xml" target="listSc" fileName="listSc" encoding="utf-8"/>
+		                                </h:commandLink>
+		                            </f:facet>
+		                            
+	                            	<p:ajax event="cellEdit" 
+	                            		listener="#{syslogicList.onCellEdit}"
+	                                    update=":scForm:listSc"/>
+	                                    
+		                            <p:column headerText="No" width="60" sortBy="#{dataSc.id}">
+		                                <h:outputText value="#{dataSc.id}"/>
+		                            </p:column>
+		                            
+		                            <p:column headerText="#{labels['syslogiclist.vod']}" sortBy="#{dataSc.codeVod}">
+		                                <h:outputText value="#{systemData.decodeItem(syslogicList.codeClassifVod, dataSc.codeVod, syslogicList.currentLang, dataSc.dateReg, syslogicList.userId)}"/>
+		                            </p:column>
+		                            
+		                            <p:column headerText="#{labels['syslogiclist.pod']}" sortBy="#{dataSc.codePod}">
+		                                <h:outputText value="#{systemData.decodeItem(syslogicList.codeClassifPod, dataSc.codePod, syslogicList.currentLang, dataSc.dateReg, syslogicList.userId)}"/>                                
+		                            </p:column>
+	                            
+		                            <p:column id="dateOt" headerText="#{labels['syslogiclist.datot']}" sortBy="#{dataSc.dateOt}">
+		                                <p:cellEditor>
+		                                    <f:facet name="output">
+		                                    	<h:outputText value="#{dataSc.dateOt}">
+		                                        	<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{syslogicList.timeZone}"/>
+		                                    	</h:outputText>
+		                                    </f:facet>
+		                                    <f:facet name="input">
+		                                        <p:calendar value="#{dataSc.dateOt}"
+													pattern="dd.MM.yyyy"
+													label="Year"
+													timeZone="#{syslogicList.timeZone}">
+		
+		                                            <p:tooltip for="dateOt"
+														rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('dateOt', view).clientId)}" >
+		                                                <p:message for="dateOt" display="text"
+		                                                           style="color:#ffffff; background:none; border:0px"/>
+		                                            </p:tooltip>
+		                                        </p:calendar>
+		                                    </f:facet>
+		                                </p:cellEditor>
+		                            </p:column>
+	                            
+		                            <p:column id="dateDo" headerText="#{labels['syslogiclist.datdo']}" sortBy="#{dataSc.dateDo}">
+		                                <p:cellEditor>
+		                                    <f:facet name="output">
+		                                        <h:outputText value="#{dataSc.dateDo}">
+		                                            <f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{syslogicList.timeZone}"/>
+		                                        </h:outputText>
+		                                    </f:facet>
+		                                    <f:facet name="input">
+		                                        <p:calendar value="#{dataSc.dateDo}" pattern="dd.MM.yyyy"
+		                                            timeZone="#{syslogicList.timeZone}" style="width:96%"
+		                                            label="Year">
+		                                            <p:tooltip for="dateDo"
+		                                                rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('dateDo', view).clientId)}" >
+		                                                <p:message for="dateDo" display="text"
+		                                                	style="color:#ffffff; background:none; border:0px"/>
+		                                            </p:tooltip>
+		                                        </p:calendar>
+		                                    </f:facet>
+		                                </p:cellEditor>
+		                            </p:column>
+		                            
+		                            <p:column headerText="" width="50" exportable="false">
+		                                <p:commandButton actionListener="#{syslogicList.actionDelete}"
+											update="scForm:listSc " icon="fas fa-trash"
+											title="#{labels['general.delete']}">
+		                                    <f:param name="delObj" value="#{rkv}"/>
+		                                    <p:confirm header="#{labels['general.comfirmation']} "
+		                                    	message="#{labels['syslogicList1.delete']} " 
+		                                    	icon="ui-icon-alert"/>
+		                                </p:commandButton>
+		                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		                                    <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+		                                    <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+		                                </p:confirmDialog>
+		                            </p:column>
+		                        </p:dataTable>
+		                        
+	                        	<p:contextMenu for="listSc" widgetVar="cMenu">
+		                            <p:menuitem value="Edit Cell" icon="fas fa-search"
+		                            	onclick="PF('cell').showCellEditor();return false;"/>
+		                            <p:menuitem value="Hide Menu" icon="fas fa-close" onclick="PF('cMenu').hide()"/>
+		                        </p:contextMenu>
+	                        </div>
+						</div>
+					</div>
+				</div>
+			
+				<p:dialog header="#{labels['syslogic.syslogicList']}" widgetVar="modalSyslogicList" modal="true"
+                      resizable="false" width="900">
+	                <div jsf:id="modalSyslogicListPanel">
+	                    <div class="p-grid">
+	                        <div class="p-col-6">
+	                            <h:outputText
+	                                    value="#{systemData.getNameClassification(syslogicList.codeClassifVod, syslogicList.currentLang)}"
+	                                    style="font-weight:bold"/>
+	                            <p:scrollPanel mode="native" style="height:300px" id="panelVod">
+	                                <p:tree id="treeVod" 
+		                                value="#{syslogicList.rootNodeVod}" 
+		                                var="docVod"
+                                        nodeVar="rowNodeVod"
+                                        scrollable="true"
+                                        selectionMode="single"
+                                        selection="#{syslogicList.selectedNodeVod}" 
+                                        style="border-style: none; width: 100%;">
+	                                    <p:treeNode type="default" 
+	                                    	expandedIcon="fas fa-folder-open"
+                                        	collapsedIcon="fas fa-folder"
+	                                        icon="#{rowNodeVod.leaf ? 'fas fa-file' : 'fas fa-folder'}">
+	                                        <h:outputText value="#{docVod.tekst}"/>
+	                                        <h:outputText value="(#{docVod.code})"/>
+	                                    </p:treeNode>
+	                                </p:tree>
+	                            </p:scrollPanel>
+	                        </div>
+	                        <div class="p-col-6">
+	                            <h:outputText
+	                                value="#{systemData.getNameClassification(syslogicList.codeClassifPod, syslogicList.currentLang)}"
+	                                style="font-weight:bold"/>
+	                            <p:scrollPanel mode="native" style="height:300px" id="panelPod">
+	                                <p:tree id="treePod" 
+		                                value="#{syslogicList.rootNodePod}" 
+		                                var="docPod"
+	                                    nodeVar="rowNodePod"
+	                                    scrollable="true"
+	                                    selectionMode="multiple"
+	                                    selection="#{syslogicList.selectedNodePod}" 
+	                                    style="border-style: none; width: 100%;">
+	                                    <p:treeNode type="default"
+		                                    expandedIcon="fas fa-folder-open"
+	                                        collapsedIcon="fas fa-folder"
+	                                        icon="#{rowNodePod.leaf?'fas fa-file':'fas fa-folder'}">
+	                                        <h:outputText value="#{docPod.tekst}"/>
+	                                        <h:outputText value="(#{docPod.code})"/>
+	                                    </p:treeNode>
+	                                </p:tree>
+	                            </p:scrollPanel>
+	                        </div>
+	                        
+	                        <div class="p-col-12">
+	                        	<p:panel>
+			                        <f:facet name="header">
+			                            <h:outputText value="#{labels['syslogiclist.DataOt']}" styleClass="req"/>
+			                        </f:facet>
+			                      	<div class="p-grid ui-fluid">
+			                      		<div class="p-col-3">
+					                        <p:calendar id="newDate" 
+						                        pattern="dd.MM.yyyy" 
+						                        value="#{syslogicList.newDate}"
+				                                timeZone="#{syslogicList.timeZone}" 
+				                                showOn="button"/>
+		                                </div>
+		                           	</div>
+			                    </p:panel>
+	                        </div>
+	                        
+	                        <div class="p-col-12">
+	                        	<p:commandButton value="#{labels['general.save']}"
+									update="scForm:listSc @(modalSyslogicListPanel not:modalSyslogicListPanel:panelVod not:modalSyslogicListPanel:panelPod)"
+									ajax="true"
+									oncomplete="handleOpisClassif(xhr, status, args)"
+									action="#{syslogicList.actionSave}" 
+									icon="fas fa-save"/>
+	                        </div>
+	                    </div>
+	                </div>
+	            </p:dialog>
+			
+				<script type="text/javascript">
+	                function handleOpisClassif(xhr, status, args) {
+	                    if (args.validationFailed || !args.validOpisClassif) {
+	                        PF('modalSyslogicList').jq.effect("shake", {times: 5}, 100);
+	                    } else {
+	                        PF('modalSyslogicList').hide();
+	                    }
+	                }
+	            </script>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</html>

@@ -1,0 +1,424 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	 <f:metadata>
+	  		<f:viewAction action="#{userData.hasAccessPage(7,67)}" />		   
+	  </f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 45, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:tooltip />
+		<h:form id="testForm">
+		 
+		 			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+					
+			<style>
+				.right {
+					float:right;
+				}
+				
+				
+				@media print {
+				    header ,nav ,footer , .title-page {
+				        display: none;
+				    }
+				    
+				    #testForm\:clearTestButton , #testForm\:bnttarsene , #testForm\:bntzapisEgn ,#testForm\:buttonNew ,#testForm\:printButton {
+				        display: none;
+				    }
+				    
+				   * {
+				        margin: 0px  !important;
+				        padding: 2px !important;
+				        color: #000000 !important;    
+				        background-color: #ffffff !important ;
+				        @include box-shadow(none);
+				        @include text-shadow(none);
+				        
+				    }
+				    
+				    .cc-right {
+				    	text-align: left;
+				    }
+				    .ui-inputfield {border: 1px solid black !important;}
+				    .ui-widget-content { border: 0px ;}
+				    .ui-datatable-tablewrapper .ui-state-default { border: 1px solid black  !important;}
+				    
+				}
+				
+			</style>
+			<h:outputScript>
+			        function chartExtender() {
+			           //copy the config options into a variable
+			           var options = $.extend(true, {}, this.cfg.config);
+			        
+			           options = {
+			              options: {
+			                  //remove the legend
+			                  legend: {
+			                     display: true,
+			                     fontSize: 20
+			                  },
+			                  scales: {
+			                     "pointLabels":{"fontSize":14}
+			                  }
+			                }
+			           };
+			        
+			           //merge all options into the main chart options
+			           $.extend(true, this.cfg.config, options);
+			        };
+			</h:outputScript>
+			
+			<!-- TITLE -->
+				<div class="title-page">
+					<div class="container">	 
+						<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 45, environment.currentLang, null, null)}</h3>
+					</div>
+				</div>	
+				
+			<div class="container">
+				<p:focus context="panelData"/>
+				<p:outputPanel id="panelData">
+				
+					 <div class="container-white">
+				     
+						
+				  	    <div class="p-grid" >
+							<div class="p-col-12 title-box">
+								<span class="section-text">#{labels['checkForTest.candidateData']}: 
+									<span jsf:id="namesLice">#{checkForTestBean.user.name} #{checkForTestBean.user.surname} #{checkForTestBean.user.family} </span>
+								</span>									
+								<p:commandButton class="button-add right" icon="ui-icon-closethick" id="clearTestButton" action="#{checkForTestBean.actionClear}" value="#{labels['general.clear']}" update="testForm" style="margin-right:20px;" title="#{labels['general.clear']}"/>														
+							</div>
+						</div>
+								
+				  	    
+						<div class="p-grid"  onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('testForm:bnttarsene').click()}">
+						
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.pin']}:"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-2">
+								<p:inputNumber id="pin" value="#{checkForTestBean.pin}" label="#{labels['general.pin']}:" decimalPlaces="0" thousandSeparator="">  
+									<p:ajax event="keyup" update="testForm"  listener="#{checkForTestBean.changePin}" disabled="#{!checkForTestBean.visibleLevel}"/>
+								</p:inputNumber>
+  								<p:message for="pin" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>   
+	                        </div>
+	                                              
+		                    <div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.egn']}:"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-2">
+								<p:inputNumber id="egn" value="#{checkForTestBean.egn}" decimalPlaces="0" thousandSeparator="" label="#{labels['general.egn']}"/>
+								<p:message for="egn" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>   
+		                    </div>
+		                    
+		                    <div class="p-col-12 p-md-4 p-lg-6 cc-left">     
+		                    	<p:commandButton icon="fa fa-fw fa-search" update="testForm" value="#{labels['general.search']}" action="#{checkForTestBean.actionSearchEgnByPin}" style="margin-right:20px;" title="#{labels['general.search']}" id="bnttarsene"/>
+							</div>
+		                    
+		                    <div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<p:selectBooleanCheckbox value="#{checkForTestBean.dyslexia}" itemLabel="#{labels['checkForTest.dislexya']}"/>												
+							</div>		
+		                   	<div class="p-col-12 p-md-4 p-lg-2 cc-left">     
+		                    	<p:commandButton icon="ui-icon-disk" update="levelGroup" disabled="#{checkForTestBean.user.id == null}" value="#{labels['checkForTest.saveEgn']}" action="#{checkForTestBean.actionSaveEgn}" style="margin-right:20px;" title="#{labels['general.save']}" id="bntzapisEgn"/>
+							</div>
+						
+						</div>	
+	   
+						<div class="p-grid" >
+								<div class="p-col-12 title-box ">
+								    <span class="section-text">#{labels['checkForTest.testData']}: </span>
+								    
+								    <p:commandButton class="button-add right" icon="fa fa-print" id="printButton" action="#" value="#{labels['general.print']}"  onclick="print(); return false;" ajax="false"  style="margin-right:20px;"/>
+									 
+								</div>
+						</div>
+								
+								
+							  	    
+                        <h:panelGroup  id="levelGroup">
+	                        <h:panelGroup rendered="#{checkForTestBean.visibleLevel}" >
+		                      <div class="p-grid" > 
+		                       <div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+										<h:outputText value="#{labels['profile.langLevel']}: " styleClass="req"/>
+								</div>
+									
+								<div class="p-col-12 p-md-6 p-lg-4">
+									<p:selectOneMenu value="#{checkForTestBean.nivo}" id="nivo"  >                                     
+		                               		<f:selectItem value="#{null}" itemValue="#{null}"/> 
+		                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_NIVO_TEST, checkForTestBean.today, checkForTestBean.currentLang, checkForTestBean.idUser)}"  
+		                                    			   var="nivo" itemLabel="#{nivo.tekst}" itemValue="#{nivo.code}" />	
+		                                     <p:ajax event="change" update="levelGroup panelTable buttonTest" listener="#{checkForTestBean.actionSelectLevel}" />		                                    
+		                            </p:selectOneMenu>
+		                            
+		                            <p:tooltip for="nivo" rendered="#{not empty facesContext.messageList and not empty 
+		                            facesContext.getMessageList(p:resolveFirstComponentWithId('nivo', view).clientId)}">
+											 <p:message for="nivo"  display="text" style="color:#ffffff; background:none; border:0px">
+												 <p:autoUpdate/>
+											 </p:message>
+									</p:tooltip>
+				                       
+			                    </div>
+			                    <div class="p-col-12 p-md-5 p-lg-7"> 
+			                    	<h:panelGroup id="buttonTest">	
+										<p:commandButton action="#{checkForTestBean.actionCheckDeaktiv}" rendered="#{checkForTestBean.nivo!=null}"   value="#{labels['checkForTest.newTest']}" icon="fa fa-plus" id="buttonNew"/>
+										<p:tooltip for="buttonNew" value="#{labels['checkForTest.newTest']}" position="left"/>
+									</h:panelGroup>
+			                    </div>
+			                  </div> 
+			                </h:panelGroup>
+	                    </h:panelGroup>                           
+                      
+                      
+					  <!--  NEW Test -->
+					  
+								<div class="add-test" style="display: none;">
+									<p:outputPanel id="newTestForm">
+										<div class="p-grid" style="border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 3px;">
+											<div class="p-col-12 small-caps">
+												<h:outputText value="#{labels['checkForTest.newTest']}:" style="font-weight:bold"/>
+											</div>
+													
+											<div class="p-col-12 p-md-2 p-lg-1 cc-right">
+												<h:outputText  value="#{labels['checkForTest.location']}:"  styleClass="req"/>
+											</div>
+											<div class="p-col-12 p-md-10 p-lg-4">
+												<p:selectOneMenu value="#{checkForTestBean.newTest.testLocation}" id="halls" autoWidth="false" filter="true" filterMatchMode="contains">                                     
+				                               		<f:selectItem value="#{null}" itemValue="#{null}"/> 
+				                                    <f:selectItems value="#{checkForTestBean.halls}"  var="hall" 
+				                                    itemLabel="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, hall, checkForTestBean.currentLang, checkForTestBean.today, checkForTestBean.idUser)}"
+				                                    			    itemValue="#{hall}" />		                                    		                                    
+				                            	</p:selectOneMenu>
+				                            	
+				                            	<p:tooltip for="halls" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('halls',view).clientId)}">
+													<p:message for="halls"  display="text" style="color:#ffffff; background:none; border:0px">
+														<p:autoUpdate/>
+													</p:message>
+												</p:tooltip>
+																			
+											</div>	
+									
+											<div class="p-col-12 p-md-12 p-lg-2">												
+													<p:commandButton icon="ui-icon-disk" id="saveTestButton" value="#{labels['checkForTest.saveTest']}" onclick="$('.add-test').slideToggle();"  action="#{checkForTestBean.actionSave}" update="panelTable buttonTest"/>									
+											</div>			    
+										   																																
+										</div>
+									</p:outputPanel>
+								</div>
+							    <br/>          
+					
+					  <h:panelGroup  id="panelTable">
+		                  <p:panel   header="#{labels['general.result']}: #{checkForTestBean.tests.size()}" id="panelTable_" rendered="#{checkForTestBean.nivo!=null}">
+	 						 <h:commandLink action="#{checkForTestBean.generatePdfExport}"  target="_blank" ajax="false" >
+	 						 	<i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color:red"></i>
+	 						 	<h:outputText value=" сваляне на справка " />
+	 						 </h:commandLink>	
+						 	 <p:dataTable id="tbl" var="row" value="#{checkForTestBean.tests}" rows="15"
+								rowIndexVar="idx" sortMode="single" reflow="true" rendered="#{checkForTestBean.tests!=null}"
+								emptyMessage="" 
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+								rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+								paginator="true" style="margin-bottom:20px">
+	   
+								<ui:remove>
+									<!-- 
+	                             <p:column style="text-align: center" width="5">
+									<f:facet name="header">
+						                 No
+						            </f:facet>
+									<h:outputText value="#{idx + 1}" />
+ 								</p:column>
+ 								 	-->
+    							</ui:remove>	
+    														
+								<p:ajax event="rowToggle" listener="#{checkForTestBean.onRowToggle}"  />
+		
+								<p:column style="width:40px">
+						            <p:rowToggler >
+						            	
+						            </p:rowToggler>
+						        </p:column>
+								
+								
+								<p:column width="130" sortBy="#{row.testLocation}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['checkForTest.location']}" />
+									</f:facet>
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row.testLocation, checkForTestBean.currentLang, checkForTestBean.today, checkForTestBean.idUser)}" />
+								</p:column>
+												
+								
+								<p:column width="130" sortBy="#{row.testDate}">
+									<f:facet name="header">
+										 <h:outputText  value="#{labels['checkForTest.dateTest']}" />									  
+									</f:facet>
+										<h:outputText value="#{row.testDate}" >
+									     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{checkForTestBean.timeZone}"/>
+									</h:outputText>
+								</p:column>	
+								
+								
+								<p:column width="80" >
+									<f:facet name="header">
+										 <h:outputText value="#{labels['checkForTest.time']}" />									  
+									</f:facet>
+										<h:outputText value="#{row.testТime}" >
+									     <f:convertDateTime pattern="HH:mm:ss" timeZone="#{checkForTestBean.timeZone}"/>
+									</h:outputText>
+								</p:column>	
+							
+								<p:column width="140" sortBy="#{row.dateReg}">
+									<f:facet name="header">
+										 <h:outputText  value="#{labels['checkForTest.dateAppr']}" />									  
+									</f:facet>
+										<h:outputText value="#{row.dateReg}" >
+									     <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm" timeZone="#{checkForTestBean.timeZone}"/>
+									</h:outputText>
+								</p:column>	
+								
+								<p:column width="*" sortBy="#{row.administration}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['checkForTest.administration']}" />
+									</f:facet>
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, row.administration, checkForTestBean.currentLang, checkForTestBean.today, checkForTestBean.idUser)}" />
+								</p:column>		
+								
+								<p:column width="150" sortBy="#{row.status}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['general.result']}" />
+									</f:facet>
+										<h:outputText rendered="#{row.status!=null}" value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASSIF_CANDIDATE_STATUS, row.status, checkForTestBean.currentLang, checkForTestBean.today, checkForTestBean.idUser)}" />
+								</p:column>	
+								
+								<p:column width="110" sortBy="#{row.testLevel}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['profile.langLevel']}" />
+									</f:facet>
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_NIVO_TEST, row.testLevel, checkForTestBean.currentLang, checkForTestBean.today, checkForTestBean.idUser)}" />
+								</p:column>	
+								
+								<p:column width="*" sortBy="#{row.deactivReason}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['checkForTest.reason']}" />
+									</f:facet>
+										<h:outputText  value="#{row.deactivReason}"  rendered="#{row.deactivReason!=null}"/>
+								</p:column>	
+																	 
+								 <p:column style="text-align: center" width="50" exportable="false">								
+									 <p:commandButton id="btnDelete" icon="fa fa-fw fa-trash" action="#{checkForTestBean.actionDelete}" update="testForm:panelTable testForm:buttonTest"  ajax="true" title="#{labels['general.delete']}"   
+									 	rendered="#{row.status eq IBConstants.CODE_ZNACH_CANDIDATE_STATUS_ODOBREN &amp;&amp; row.administration eq checkForTestBean.userAdministration }"
+									 	onclick="if(!confirm('#{beanMessages['general.confirmDeleteMsg']}'))return false;">
+									 	<f:param name="idObj" value="#{row.id}" />	
+									 						   
+									 </p:commandButton>  
+						        </p:column>
+						        
+						        
+	
+								<p:rowExpansion >
+									 <div class="ui-g">
+									    <div class="ui-lg-12 ui-g-12">
+									    	<h:commandLink action="#{checkForTestBean.generateTestPdfExport}"  onclick="exportToPdf()"  target="_blank" ajax="false" rendered="#{!empty checkForTestBean.testResuts}">
+					 						 	<i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color:red"></i>
+					 						 	Експорт на резултати
+					 						 	<f:param value="#{row.id}" name="idTest"/>
+					 						</h:commandLink>
+									        <p:dataList value="#{checkForTestBean.testResuts}" var="tResult" emptyMessage="#{labels['general.norows']}" type="definition" >
+									        	  <h:outputText value="&#160;&#160;&#8226; " rendered="#{tResult[0] == tResult[1]}" escape="false" style="font-weight:bold"/>
+									        	  <h:outputText value="&#160;&#160;&#160;&#160;&#160; - " rendered="#{tResult[0] != tResult[1]}" escape="false"/>
+											      <h:outputText value="#{systemData.decodeItem(10093, tResult[0],  checkForTestBean.currentLang, now, checkForTestBean.idUser)}" rendered="#{tResult[0]==2 or tResult[0]==3}"/>
+											      <h:outputText value=" #{systemData.decodeItem(10093, tResult[1],  checkForTestBean.currentLang, now, checkForTestBean.idUser)}" rendered="#{tResult[0]==1}"/>
+											      
+											      <h:outputText value=" #{labels['general.sum_result']}" rendered="#{tResult[0]==0}"/>
+											      <br/>
+											      <h:outputText value="&#160;&#160;&#160;&#160;&#160;&#160;&#160;" rendered="#{tResult[0] != tResult[1]}" escape="false"/>
+											      <h:outputText value="&#160;&#160;" rendered="#{tResult[0] == tResult[1]}" escape="false"/>
+											      <h:outputText value="#{labels['testResults.points']}: " style="font-style: italic; font-weight: bold;"/> #{tResult[2]}<br/>
+											      
+											 </p:dataList>
+									    </div>
+									    <div class="ui-lg-12 ui-g-12">
+									        <p:radarChart id="radarCh" widgetVar="chart" model="#{checkForTestBean.mapRadarModel[row.id]}" rendered="#{!empty checkForTestBean.testResuts}" />
+									    </div>
+									</div>
+									 
+									 <br/>
+									 <!-- Файлове -->
+									    <p:dataTable id="fileList" var="rowFile" value="#{checkForTestBean.filesList}" reflow="true" rendered="#{checkForTestBean.filesList!= null and checkForTestBean.filesList.size()>0}"
+							 			  rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" rows="10" style="margin-bottom:10px" paginator="true" 
+							 			  paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+									      
+									        <p:column headerText="#{labels['general.No-symbol']}" width="40">
+												<h:outputText value="#{rkv + 1}" />
+											</p:column>
+											
+											 <p:column headerText="" width="60">									           	
+										        <p:commandButton ajax="false" actionListener="#{checkForTestBean.download(rowFile)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+										     </p:column>
+											
+									       	<p:column headerText="#{labels['checkForTest.fileName']}" width="30%" >
+									       		 <h:outputText value="#{rowFile.filename}" />     
+									         </p:column>
+									       	
+									       <p:column headerText="#{labels['file.description']}" width="60%" >									   
+									            <h:outputText value="#{rowFile.description}" />									            								           
+									       </p:column>				       
+											
+							  
+							   			</p:dataTable>
+									    
+									    
+								</p:rowExpansion>
+								
+							</p:dataTable>
+							
+				         </p:panel>  
+	           		</h:panelGroup>
+	           		</div>												
+				</p:outputPanel>
+
+			</div>
+			
+			<h:inputHidden id="chartImageSrc"   value="#{checkForTestBean.chartImageSrcBase64}" />
+			<p:remoteCommand name="exportToPdfRemoteCommand"  action="#{checkForTestBean.generateTestPdfExport}"/>
+			
+			<script type="text/javascript">
+					function exportToPdf() {
+					    //get your image 
+					    var imageElement = PF('chart').exportAsImage();
+		
+					    //get the value of the 'src' attribute of this object and fill the hidden input
+					    $("#testForm\\:chartImageSrc").val($(imageElement).attr("src"));
+		
+					    //send the image (converted in text) to your MB
+					    //exportToPdfRemoteCommand(); 
+					}
+	        </script>
+	        
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

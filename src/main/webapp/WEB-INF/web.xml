@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+
+  <display-name>Archetype Created Web Application</display-name>
+
+  <welcome-file-list>
+    <welcome-file>index.jsf</welcome-file>
+  </welcome-file-list>
+  <context-param>
+    <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+    <param-value>server</param-value>
+  </context-param>
+  <context-param>
+    <param-name>primefaces.THEME</param-name>
+    <param-value>bootstrap</param-value>
+  </context-param>
+  <context-param>
+    <param-name>primefaces.FONT_AWESOME</param-name>
+    <param-value>true</param-value>
+  </context-param>
+    <context-param>
+        <description>сетва се от профилите в мейвън-а
+        </description>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>${prop.projectStage}</param-value>
+    </context-param>
+ <!--  <context-param>
+  <param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
+   <param-value>6LdOB5MUAAAAACI9zIhXpB5oYtmkDAd7I9T0Jh5Z</param-value>
+  </context-param>
+   <context-param>
+    <param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name>
+    <param-value>6LdOB5MUAAAAAAkOKkShpJ-r65LtoH77_X0a4jQv</param-value>
+   </context-param> -->
+
+   <context-param>
+	   <param-name>maxRequestSize</param-name>
+	   <param-value>314572800</param-value>
+   </context-param>
+
+   <servlet>
+	    <servlet-name>Faces Servlet</servlet-name>
+	    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+	    <load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>Faces Servlet</servlet-name>
+	    <url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+	    <servlet-name>Video</servlet-name>
+	    <servlet-class>indexbg.pjobs.bean.Video</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>Video</servlet-name>
+	    <url-pattern>/Video</url-pattern>
+	</servlet-mapping>
+
+   <!-- AUTH FILTER -->
+   <filter>
+      <filter-name>AuthFilter</filter-name>
+      <filter-class>com.indexbg.system.oauth2.AuthFilter</filter-class>
+      <init-param>
+      	<description>Страници за които не се прилага филтъра!</description>
+      	<param-name>freePages</param-name>
+      	<param-value>login.jsf,noAccess.jsf,WSSystemDataService,index.jsf,Classifications,pageNotFound.jsf,contactForm.jsf,adverExtList.jsf,advertisementView.jsf,publExtList.jsf,publExtData.jsf,regAdmin.jsf,bursaryExtList.jsf,bursaryExtView.jsf,gdpr.jsf,uslovia.jsf,calculatorSalary.jsf,regAdmin.jsf,adverJobs.jsf,roleGame.jsf,questExtList.jsf,bursaryExtView.jsf,Video,testBean.jsf,portalStaj.jsf,portalStartKariera.jsf,statisticList.jsf,statCandAppeared.jsf,statBroiIzdarjali.jsf,statAvgResByArea.jsf,practiceExtList.jsf,practiceExtView.jsf,reportsRankingCandidates.jsf,,</param-value>
+      </init-param>
+      <init-param>
+     	<param-name>loginPage</param-name>
+      	<param-value>login.jsf</param-value>
+      </init-param>
+  </filter>
+  <filter-mapping>
+      <filter-name>AuthFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <!-- AUTH SERVER PARAMS -->
+  <context-param>
+    <description>Auth server url</description>
+    <param-name>authServerAddress</param-name>
+    <!-- test <param-value>http://172.23.117.144:8080/AAServer/api/</param-value> -->
+    <!-- <param-value>http://10.29.1.165:8080/AAServer/api/</param-value> -->
+     <param-value>${aa.server.address}/AAServer/api/</param-value>
+  </context-param>
+  <context-param>
+    <description>System client id</description>
+    <param-name>clientId</param-name>
+    <param-value>55</param-value>
+  </context-param>
+  <context-param>
+    <description>forgotPassword</description>
+    <param-name>forgotPassword</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <description>loginCert</description>
+    <param-name>loginCert</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <context-param>
+    <description>Login with SAML2.0 to eAuthenticator</description>
+    <param-name>samlLogin</param-name>
+    <param-value>true</param-value>
+  </context-param>
+   <context-param>
+    <description>registrationExt</description>
+    <param-name>registrationExt</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <description>System client secret</description>
+    <param-name>clientSecret</param-name>
+    <param-value>pjobsSecret</param-value>
+  </context-param>
+  <context-param>
+    <description>mainTitle</description>
+    <param-name>mainTitle</param-name>
+    <param-value>Портал за работа в държавната администрация</param-value>
+  </context-param>
+  <context-param>
+    <description>Локален точка за извличане на потребителските данни и редирект към home страницата</description>
+    <param-name>localRedirectEndpoint</param-name>
+    <param-value>/api/auth/redirect</param-value>
+  </context-param>
+  <context-param>
+    <description>Local home page</description>
+    <param-name>homePage</param-name>
+    <param-value>/index.jsf</param-value>
+  </context-param>
+  <context-param>
+    <description>go to local home page after logout</description>
+    <param-name>logoutExt</param-name>
+    <param-value>true</param-value>
+  </context-param>
+    <session-config>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>true</secure>
+        </cookie-config>
+    </session-config>
+</web-app>
+
+

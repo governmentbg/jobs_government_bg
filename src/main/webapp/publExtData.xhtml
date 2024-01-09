@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">  #{labels['publ.lable']} </ui:define> 
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	
+		<h:form id="formPublExt">
+			
+			<ui:remove><div class="title-page">
+				<div class="container">	 
+					<ui:remove><h3><h:outputText  value="#{publExtData.publListHM[publExtData.currentLang].title}"  escape="false" /></h3></ui:remove>
+					<h3><h:outputText value="#{publExtData.publSelLang.title}" escape="false"/></h3>
+				</div>
+			 </div></ui:remove>
+			 
+			 
+			 <div class="title-page back">
+				 <div class="container">
+				 	<div class="p-grid p-align-center">
+				 		<div class="p-col-fixed back-col" jsf:rendered="#{publExtData.codeSection ne 13 and publExtData.codeSection ne 15 and publExtData.codeSection ne 20}">
+							<p:link outcome="publExtList.jsf" title="#{labels['general.back']}" styleClass="back-button" >
+						  		<f:param name="sect" value="#{publExtData.codeSection}" />
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					    <div class="p-col">  	 
+							<h3 class="title">
+							<h:outputText value="#{publExtData.publSelLang.title}" escape="false" rendered="#{publExtData.publSelLang.title ne null}"/>
+							<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, publExtData.codeSection, publExtData.currentLang, null, null)}" escape="false" rendered="#{publExtData.publSelLang.title eq null}"/>
+							</h3>
+						</div>
+					</div>
+				 </div>
+			 </div>
+			 
+			
+			
+			<div class="container"> 
+				
+				<div class="container-white">
+						<div class="p-grid">
+					    	<div class="p-col-12">
+					    		<div class="galleryImg">
+					    		
+					    			<div class="slideshow-container" jsf:rendered="#{publExtData.publication.typePub==2}" jsf:id="slideshowContainer">
+
+									<ui:repeat var="imgig" value="#{publExtData.images}">
+										 <div class="hideImage fade">
+									 		<p:graphicImage value="#{imgig[0]}"  style="width:100%;" stream="false" />
+									 		<div class="cptionText">#{imgig[1]}</div>
+										</div>
+									</ui:repeat>
+									
+									<a class="prev" onclick="plusSlides(-1)"><i class="fas fa-caret-left" ></i></a>
+									<a class="next" onclick="plusSlides(1)"><i class="fas fa-caret-right" ></i></a>
+									
+									</div>
+									
+									<p:graphicImage value="#{publExtData.imageCont}"  style="width:100%;" stream="false" rendered="#{publExtData.imageCont ne null and publExtData.publication.typePub==1}"/>
+					    			
+					    			<div class="video-container" jsf:rendered="#{publExtData.publication.typePub==3 &amp;&amp; empty publExtData.publSelLang.urlPub}" jsf:id="videoContainer">
+					    				<video width="100%" height="100%" controls="true" id="video-player">
+									  		<source src="Video?param=#{publExtData.paramsVideo}" type="video/mp4"/>  Your browser does not support HTML5 video.
+										</video>
+									</div>
+									<div  jsf:rendered="#{publExtData.publication.typePub==3 &amp;&amp; !empty publExtData.publSelLang.urlPub}" jsf:id="videoContainerTube">
+					    				<embed class="video-container" src="#{publExtData.publSelLang.urlPub}"/>
+					    			</div>
+					    		</div>
+					    	
+					    		<ui:remove><h:outputText id="idFullTextO" value="#{publExtData.publListHM[publExtData.currentLang].fullText}" escape="false"  /></ui:remove>
+					    		<h:outputText id="idFullTextO" value="#{publExtData.publSelLang.fullText}" escape="false"  />	
+					    	</div>
+				    	</div>
+				</div>	
+									
+				
+			  	
+	<ui:remove> <!-- 
+			  	<p:panel header="#{labels['general.attachedDoc']}" toggleable="true" toggleOrientation="vertical" styleClass="marker" id="idFilesTabl">
+	
+					<div class="p-grid">
+						
+						<div class="p-col-12 p-md-12" align="right">
+							<ui:remove><p:dataTable id="fileList" var="row" value="#{publExtData.filesListHM[publExtData.currentLang]}" editable="true" 
+								 
+								editMode="cell" widgetVar="cellAtt" rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" 
+								rows="10" style="margin-bottom:20px" paginator="true" reflow="true"	paginatorPosition="bottom" 
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+		
+																
+						       	<p:column headerText="#{labels['general.No-symbol']}" width="4%" >
+									<h:outputText value="#{rkv + 1}" />
+								</p:column>
+								
+								<p:column headerText="" width="4%" style="text-align:center;">									           	
+						           <p:commandButton  id="download" ajax="false" actionListener="#{publExtData.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+						       	</p:column>
+						 
+						       							       	
+						       	<p:column headerText="#{labels['file.description']}" width="44%" >									   
+						            <h:outputText value="#{row.description}"  />
+						       	</p:column>
+						   </p:dataTable></ui:remove>
+						   
+						   <p:dataTable id="fileList" var="row" value="#{publExtData.filesList}" editable="true" 
+								editMode="cell" widgetVar="cellAtt" rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" 
+								rows="10" style="margin-bottom:20px" paginator="true" reflow="true"	paginatorPosition="bottom" 
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+																
+						       	<p:column headerText="#{labels['general.No-symbol']}" width="4%" >
+									<h:outputText value="#{rkv + 1}" />
+								</p:column>
+								<p:column headerText="" width="4%" style="text-align:center;">									           	
+						           <p:commandButton  id="download" ajax="false" actionListener="#{publExtData.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+						       	</p:column>
+						       	<p:column headerText="#{labels['file.description']}" width="44%" >									   
+						            <h:outputText value="#{row.description}"  />
+						       	</p:column>
+						   </p:dataTable>
+						 </div>
+					</div>
+					
+				</p:panel>	 -->
+		</ui:remove>    	
+		    	<h:outputText value=" #{labels['general.files']}" style="font-weight: bold;" rendered="#{publExtData.publication.typePub==1 &amp;&amp; publExtData.filesList.size() > 0}" />
+
+				<p:dataTable var="row" value="#{publExtData.filesList}" rendered="#{publExtData.publication.typePub==1 &amp;&amp; publExtData.filesList.size() > 0}">
+
+					<p:column width="50">
+						<p:commandButton id="download" ajax="false" actionListener="#{publExtData.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+					</p:column>
+
+					<p:column>
+						<h:outputText value="#{row.description}" rendered="#{row.description != null}" />
+						<h:outputText value="#{row.filename}" rendered="#{row.description == null or row.description == ''}" />
+					</p:column>
+
+				</p:dataTable>
+		    	
+			    
+			</div>
+		
+
+		</h:form>
+		
+		<script>
+			$(document).ready(function() {
+				if($('.slideshow-container').length > 0) {
+					showSlides(1);
+				}
+			});
+		</script>
+		
+			
+	</ui:define>
+
+	</ui:composition>
+	
+</html>	 

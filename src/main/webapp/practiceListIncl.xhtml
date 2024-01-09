@@ -1,0 +1,319 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+		
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{practiceList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+	
+		<h:form id="practiceForm">
+					
+			<h:inputHidden value="#{practiceList.pageHidden}" />			
+
+			<div class="container">
+			<p:focus context="panelData"/>
+				<p:outputPanel id="panelData">	
+					<div class="container-white"  onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('practiceForm:btnSearch').click()}">	
+				
+					
+					<p:panel header="#{labels['general.search']}" style="margin-bottom:10px" toggleable="true" toggleOrientation="vertical" styleClass="marker">
+						<div class="p-grid">
+					
+							    <!-- Пореден номер -->	
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['practice.number']}: " />
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-1">
+									<p:inputNumber id="porNom" value="#{practiceList.porNom}" min="0" decimalPlaces="0" style="display:block;"/>		                        			                           
+		                        </div>
+								
+								<!-- Кампания -->		
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['practice.campaign']}: " />
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-7">											
+	    							<p:selectOneMenu  height="300px" value="#{practiceList.idCamp}" id="idCampaign"  >										     
+				                           <f:selectItem value="#{null}" itemValue="#{null}"/> 
+				                           <f:selectItems value="#{practiceList.campList}" var="camp" itemLabel="#{camp.label}" itemValue="#{camp.value}" />	       				                          
+				                    </p:selectOneMenu>    							
+	    							<p:message for="idCampaign" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>                        
+								</div>	
+
+								<!-- Административна структура -->
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['general.admStruc']}: " />
+								</div>
+		
+								<div class="p-col-12 p-md-10 p-lg-10">	
+									<div class="ibg-modal-button">
+									  <h:panelGroup rendered="#{practiceList.admin}">
+										<p:inputText value="#{practiceList.admText}" id="admStr" readonly="true" />
+					                	<ibg:selectOneModal header="#{labels['general.admStruc']}" userId="#{practiceList.userId}" lang="#{practiceList.currentLang}" 
+								 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_ADM_REGISTER}"     
+								 				update="practiceForm:admStr practiceForm:zvenoGroup" selectedCode="#{practiceList.admStruct}" selectedText="#{practiceList.admText}"  />
+							 		 </h:panelGroup>	
+							 		</div>						
+									<p:inputText rendered="#{!practiceList.admin}" id="admin" value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, practiceList.admStruct, practiceList.currentLang, now, practiceList.userId)}" readonly="true"/>						 		
+							 	</div>	
+							 	
+							 	<!-- Звено -->				 						 	
+							 	<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['advertisement.zveno']}: "/>
+								</div>
+								<div class="p-col-12 p-md-10 p-lg-10">
+	                                <div class="ibg-modal-button">
+	                                	<h:panelGroup id="zvenoGroup">
+											<p:inputText value="#{practiceList.unitText}" id="zveno" readonly="true" />										
+						                	<ibg:selectDirAdmStruct header="#{labels['advertisement.zveno']}" userId="#{practiceList.userId}" lang="#{practiceList.currentLang}" 
+									 	 			saveStateTree="false" isSelectNode="true" withBtnClear="true" codeClassif="#{practiceList.admStruct}"     
+									 				update="practiceForm:zveno " 
+									 				selectedCode="#{practiceList.unit}" selectedText="#{practiceList.unitText}" />
+								 		</h:panelGroup>
+							 		</div>								                        
+								</div>
+							
+							 	<!-- Област -->
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+				  					<h:outputText value="#{labels['general.oblast']}: "/>
+				  				</div>
+				  				<div class="p-col-12 p-md-2 p-lg-2">
+				  					<p:selectOneMenu id="oblast" value="#{practiceList.oblast}" autoWidth="false" filter="true" filterMatchMode="contains">
+				  					    <f:selectItem itemLabel="" itemValue="" />
+							            <f:selectItems value="#{practiceList.oblastList}" var="oblastP" itemLabel="#{oblastP.tekst}" itemValue="#{oblastP.code}"/>
+	                                    <p:ajax event="change" update="practiceForm:obshtina practiceForm:nasMesto" listener="#{practiceList.actionChangeOblast}" process="@all"/>	
+							        </p:selectOneMenu>
+				  				</div>
+				  				
+				  				<!-- Община -->
+				  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+				  					<h:outputText value="#{labels['general.obshtina']}: " />
+				  				</div>
+				  				<div class="p-col-12 p-md-3 p-lg-3">
+				  					<p:selectOneMenu id="obshtina" value="#{practiceList.obshtina}" autoWidth="false" filter="true" filterMatchMode="contains">
+				  						<f:selectItem itemLabel="" itemValue="" />
+							            <f:selectItems value="#{practiceList.obshtiniList}" var="obshtinaP" itemLabel="#{obshtinaP.tekst}" itemValue="#{obshtinaP.code}"/>
+	                                    <p:ajax event="change" update="practiceForm:nasMesto" listener="#{practiceList.actionChangeObshtina}" process="@all"/>
+							        </p:selectOneMenu>
+							        						        
+				  				</div>
+				  				
+				  				<!-- Населено място -->
+				  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+				  					<h:outputText value="#{labels['general.nasMiasto']}: " />
+				  				</div>
+				  				<div class="p-col-12 p-md-3 p-lg-3">
+				  					<p:selectOneMenu id="nasMesto" value="#{practiceList.nasMiasto}" autoWidth="false" filter="true" filterMatchMode="contains">
+							             <f:selectItem itemLabel="" itemValue="" />
+							             <f:selectItems value="#{practiceList.nasMestoList}" var="nasMestoP" itemLabel="#{nasMestoP.tekst}" itemValue="#{nasMestoP.code}"/>
+							        </p:selectOneMenu>
+
+				  				</div>
+				  				
+				  				<!-- Област на висше образование -->
+				  				<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+				  					<h:outputText value="#{labels['practice.educationArea']}: "/>
+				  				</div>
+				  				<div class="p-col-12 p-md-10 p-lg-10">
+				  					<p:selectOneMenu id="eduArea" value="#{practiceList.area}" autoWidth="false"  >
+							             <f:selectItem itemLabel="" itemValue="" />
+							             <f:selectItems value="#{practiceList.educationAreaList}" var="edu" itemLabel="#{edu.tekst}" itemValue="#{edu.code}"/>
+							        </p:selectOneMenu>
+							        
+				  				</div>
+				  				<ui:remove>
+				  				<!-- Заглавие -->				
+								<div class="p-col-12 p-md-12 p-lg-2 cc-right" >
+									<h:outputText value="#{labels['publ.title']}: " />
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-10">											
+	    							<p:inputText id="practiceTitle" value="#{practiceList.title}"/>		
+	    							<p:message for="practiceTitle" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>                        
+								</div>
+								</ui:remove>	
+								
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+									<h:outputText value="#{labels['practice.begDate']}: "  />
+								</div>
+		
+								<div class="p-col-12 p-md-6 p-lg-2">											
+		    							<p:calendar id="begDate" locale="bg" value="#{practiceList.dateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>									  
+								</div>
+
+								<div class="p-col-12 p-md-6 p-lg-2 cc-right">
+										<h:outputText value="#{labels['practice.endDate']}: " />
+								</div>
+		
+								<div class="p-col-12 p-md-6 p-lg-2">											
+		    							<p:calendar id="endDate" locale="bg" value="#{practiceList.dateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy"/>
+	
+								</div>
+							
+						</div>
+						<div class="p-grid">		
+							<div class="p-col-12 p-md-10 p-lg-10 cc-left">
+					 				<p:commandButton action="#{practiceList.actionClear()}" value="#{labels['general.clear']}"  id="btnClear" update="practiceForm:panelData practiceForm:panelTable"
+					 				tabindex="-1"/> 
+							</div>
+		 
+						    <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+							        <p:commandButton action="#{practiceList.actionSearch()}" value="#{labels['general.search']}" icon="fa fa-search" id="btnSearch" update="practiceForm:panelTable" />
+							</div>
+						</div>
+					
+					</p:panel>	
+				</div>
+				</p:outputPanel>
+
+			</div>
+					<br />
+				<div class="container-white">	
+					<p:panel  id="panelTable" >
+					
+					    <f:facet name="header" >
+					    	<h:outputText value="#{labels['general.result']}: #{practiceList.practiceList.getRowCount()} " styleClass="form-label" rendered="#{practiceList.practiceList.getRowCount() > 0}"/>
+							
+							<span class="p-mx-2" jsf:rendered="#{practiceList.practiceList.rowCount > 0}"> 
+								<span class="fas fa-ellipsis-v" />
+							</span>	
+							
+							<p:spacer width="5"/>	
+							<p:commandButton  icon="fa fa-fw fa-plus" action="practice.jsf" ajax="false" 
+							 	styleClass="button-green" title="#{labels['general.new']}" value="#{labels['general.new']}"/>
+						</f:facet>	
+			 						 	
+					 	 <p:dataTable id="tbl" var="row" value="#{practiceList.practiceList}" lazy="true" rows="15"
+							rowIndexVar="idx" sortMode="single" reflow="true" rendered="#{practiceList.practiceList!=null}"
+							emptyMessage="" 
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+							paginator="true" style="margin-bottom:20px">
+
+                             <f:facet name="{Exporters}">
+                                 <h:commandLink >
+                                     <p:graphicImage library="images" name="excel.png" width="24"/>
+                                     <p:dataExporter type="xls" target="tbl" fileName="app" encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="csv.png" width="24"/>
+                                     <p:dataExporter type="csv" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="xml.png" width="24"/>
+                                     <p:dataExporter type="xml" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                             </f:facet>
+
+                             <p:column style="text-align: center" width="30">
+								<f:facet name="header">
+					                 No
+					            </f:facet>
+								<h:outputText value="#{idx + 1}" />
+							</p:column>
+							
+							<p:column style="text-align: center" width="50" exportable="false" rendered="#{forProcess ne 1}">							
+								 <p:commandButton icon="fa fa-fw fa-edit" action="practice.jsf"  ajax="false" title="#{labels['general.izbor']}"  onclick="rc()" >
+								 	<f:param name="idObj" value="#{row[0]}" />							   
+								 </p:commandButton>  					
+					        </p:column>
+					        
+					        <p:column style="text-align: center" width="50" exportable="false" rendered="#{forProcess eq 1}">							
+								 <p:commandButton icon="fas fa-gear" action="practiceProcess.jsf"  ajax="false" title="#{labels['practiceProcess.processStaj']}"  onclick="rc()" >
+								 	<f:param name="idObj" value="#{row[0]}" />							   
+								 </p:commandButton>  					
+					        </p:column>
+					        
+					        <p:column width="150" sortBy="#{row.A0}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['practice.number']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[0]}" />	
+							</p:column>	
+					        
+					        <p:column sortBy="#{row.A1}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['publ.title']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[1]}" />	
+							</p:column>	
+											     						
+							<p:column sortBy="#{row.A2}" width="300">
+								<f:facet name="header">
+									<h:outputText value="#{labels['checkForTest.administration']}" />
+								</f:facet>
+									<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, row[2], practiceList.currentLang, practiceList.today, practiceList.userId)}" />
+							</p:column>
+							
+							<p:column width="160" sortBy="#{row.A3}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.nasMiasto']}" />
+								</f:facet>
+									<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row[3], practiceList.currentLang, practiceList.today, practiceList.userId)}" />
+							</p:column>
+							
+							<p:column width="140" sortBy="#{row.A4}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['practiceList.numPositions']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[4]}" />	
+							</p:column>	
+											
+							<ui:remove>							
+							<p:column width="100" sortBy="#{row.A5}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.status']}" />
+								</f:facet>
+									<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_PRACTICE_STATUS, row[5], practiceList.currentLang, practiceList.today, practiceList.userId)}" />
+							</p:column>
+							
+							<p:column width="130" sortBy="#{row.A6}">
+								<f:facet name="header">
+									 <h:outputText  value="#{labels['userEdit.dateStat']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[6]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceList.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+							</ui:remove>																					
+							
+							<p:column width="130" sortBy="#{row.A7}">
+								<f:facet name="header">
+									 <h:outputText  value="#{labels['practice.begDate']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[7]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceList.timeZone}"/>
+								</h:outputText>
+							</p:column>		
+							
+							<p:column width="130" sortBy="#{row.A8}">
+								<f:facet name="header">
+									 <h:outputText  value="#{labels['practice.endDate']}" />									  
+								</f:facet>
+									<h:outputText value="#{row[8]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceList.timeZone}"/>
+								</h:outputText>
+							</p:column>				 
+
+						</p:dataTable>
+
+			         </p:panel>
+		</div>
+			
+		</h:form>
+
+</ui:composition>

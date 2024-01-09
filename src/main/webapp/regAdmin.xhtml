@@ -1,0 +1,243 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/ibg">
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+		<ui:define name="title">#{labels['regAdminBean.title']}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">
+		
+			<style>
+			
+			   
+				.ui-fileupload-buttonbar {
+				    margin: 0px 0px 0px 0px !important;
+				    padding: 0px 0px 0px 0px !important;
+				    border: none;
+				    position: relative;  
+				    background-color: #fff;
+				   
+				}
+				
+				.ui-fileupload {
+				    margin: 0px 0px 0px 0px !important;
+				    padding: 0px 0px 0px 0px !important;
+				    display: inline-block;
+				    border: none;
+				   
+				}
+				
+				.ui-fileupload-content { 
+				   border: none;
+				   padding: 0px !important;
+				}
+				.ui-fileupload-files {display:none;}
+				
+				.ui-selectonemenu-filter-container {
+				    width: 98% !important;
+				}	
+	 
+				
+			    
+			</style>
+		
+			  <h:form id="formRegAdmin">
+			  <p:tooltip/>
+   			  <div class="title-page">
+				<div class="container">	 
+					<h3>#{labels['regAdminBean.title']}</h3>
+ 				</div>
+ 			  </div>
+ 	
+ 			   
+			  <div class="container" >	
+			  	<p:focus context="panelData"/>
+			  	 <div class="container-white">
+			  	 	<div class="p-grid">
+				   		
+				   		<div class="p-col-12 p-md-6">
+			  
+			  <p:outputPanel id="panelData">
+			 			  		
+				    <!-- firstName -->
+				    <div class="p-grid">
+						<div class="p-col-12" style="margin-bottom: -10px;">
+							<p:outputLabel for="firstName" value=" #{labels['general.fname']}:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-12 p-lg-11 ">
+		           			<p:inputText id="firstName" value="#{regAdminBean.firstName}" autocomplete="false" maxlength="100">
+		           				<f:validateLength maximum="100"/>
+		           			</p:inputText>
+		           			<p:message for="firstName" display="tooltip"> <p:autoUpdate/> </p:message>
+						</div>
+						
+					<!-- secondName -->
+						<div class="p-col-12"  style="margin-bottom: -10px;">
+							<p:outputLabel for="secondName" value="#{labels['general.secondName']}:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-12 p-lg-11">
+		           			<p:inputText id="secondName" value="#{regAdminBean.secondName}" autocomplete="false" maxlength="100">
+		           				<f:validateLength maximum="100"/>
+		           			</p:inputText>
+		           			<p:message for="secondName" display="tooltip"> <p:autoUpdate/> </p:message> 
+						</div>
+						
+					<!-- lastName -->
+						<div class="p-col-12" style="margin-bottom: -10px;">
+							<p:outputLabel for="lastName" value="#{labels['general.lname']}:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-12 p-lg-11">
+		           			<p:inputText id="lastName" value="#{regAdminBean.lastName}" autocomplete="false" maxlength="100">
+		           				<f:validateLength maximum="100"/>
+		           			</p:inputText>
+		           			<p:message for="lastName" display="tooltip"> <p:autoUpdate/> </p:message> 
+						</div>
+						
+					<!-- email -->
+				  
+						<div class="p-col-12" style="margin-bottom: -10px;">
+							<p:outputLabel for="email" value="#{labels['regAdmin.email']}:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-12 p-lg-11">
+		           			<p:inputText id="email" value="#{regAdminBean.email}" autocomplete="false" maxlength="100">
+		           				<f:validateLength maximum="100"/>
+		           			</p:inputText>
+		           			<p:message for="email" display="tooltip"> <p:autoUpdate/> </p:message> 
+						</div>
+						
+					<!-- phone -->
+						<div class="p-col-12" style="margin-bottom: -10px;">
+							<p:outputLabel for="phone" value="#{labels['general.telefon']}:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-12 p-lg-11">
+		           			<p:inputText id="phone" value="#{regAdminBean.phone}" autocomplete="false"
+		           				onkeyup="onlyLatWithNumbers('formRegAdmin:phone','#{labels['general.onlyLat']}')" maxlength="50">
+		           				<f:validateLength maximum="50"/>
+		           			</p:inputText>
+		           			<p:message for="phone" display="tooltip"> <p:autoUpdate/> </p:message> 
+						</div>
+					
+					<!-- pass1 -->
+				   
+						<div class="p-col-12" style="margin-bottom: -10px;">
+							<p:outputLabel for="pass1" value="#{labels['general.pass']}:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-12 p-lg-11">
+							<p:password id="pass1" value="#{regAdminBean.pass1}" label="#{labels['general.pass']}" autocomplete="false" />
+							<p:message for="pass1" display="tooltip"> <p:autoUpdate/> </p:message> 
+						</div>
+						
+					<!-- pass2 -->
+						<div class="p-col-12" style="margin-bottom: -10px;">
+							<p:outputLabel for="pass2" value="#{labels['general.pass1']}:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-12 p-lg-11"> 
+							 <p:password id="pass2" value="#{regAdminBean.pass2}" label="#{labels['general.pass1']}" autocomplete="false" />
+							 <p:message for="pass2" display="tooltip"> <p:autoUpdate/> </p:message> 
+						</div>
+						
+					</div>
+					
+					<!-- groups 
+				    <div class="p-grid">
+						<div class="p-col-12 p-md-2 cc-right">
+							<p:outputLabel for="groups" value="#{labels['general.groups']}:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-10">
+						     <p:selectCheckboxMenu id="groups" value="#{regAdminBean.selectedGroups}" label="#{labels['general.groups']}"
+				                              filter="true" filterMatchMode="startsWith" >
+					            <f:selectItems value="#{regAdminBean.groups}" />
+					        </p:selectCheckboxMenu>
+						</div>
+					</div> -->
+
+					<!-- captcha -->
+					<div class="p-grid">
+						<div class="p-col-12" style="margin-bottom: -10px;">
+							<p:outputLabel for="captchaStr" value="#{labels['general.captcha']}:" styleClass="req"/>
+							
+						</div>
+					</div>
+					<div class="p-grid">
+						<div class="p-col-fixed">
+							<p:inputText id="captchaStr" value="#{regAdminBean.captchaStr}" autocomplete="false"/>
+							<p:message for="captchaStr" display="tooltip"> <p:autoUpdate/> </p:message> 
+						</div>
+
+						<div class=" p-col">
+		           			<p:graphicImage value="#{paintClass.graphicText}"  id="img_cap">
+								 		<f:param value="#{regAdminBean.timeStamp}" name="time" />
+							</p:graphicImage>
+						</div>
+					</div>				
+			  	</p:outputPanel>
+			 </div>
+	 			<div class="p-col-12 p-md-6">
+		   			<div class="title-box">				   			
+		   			<i class="fa fa-fw fa-info"/>		  		
+			  			#{labels['general.instructions']}
+			  	    </div>
+			  	    <div class="p-col-12 p-md-12" style="text-align: justify; text-justify: inter-word;">
+			  	   		<h:outputText value="#{regAdminBean.helpText}" escape="false"/>
+			  	    </div>
+		   		</div>
+			 </div>
+			<div class="title-box">		  		
+	  			<p:outputLabel for="filesUpload" value="#{labels['general.attachedDoc']}:" styleClass="req"/>
+	  		</div>
+	  		<div class="p-grig">
+	  		<div class="p-col-12">
+	  		<p:fileUpload id="filesUpload" listener="#{regAdminBean.uploadFileListener}"  label="#{labels['file.upload']}" skinSimple="true" update="fileList" auto="true"
+								  allowTypes="#{systemData.getSettingsValue('fileExtensionsForAttaching')}"/>
+			</div>
+			</div>
+			<p:dataTable id="fileList" var="row" value="#{regAdminBean.filesList}" reflow="true" 
+			 			  rowIndexVar="rkv" emptyMessage="" rows="10" style="margin-bottom:10px" paginator="true" 
+			 			  paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+			      
+			        <p:column headerText="#{labels['general.No-symbol']}" width="40">
+						<h:outputText value="#{rkv + 1}" />
+					</p:column>
+					
+					<p:column headerText="#{labels['file.filename']}"  >
+			       		 <h:outputText value="#{row.filename}" />     
+			         </p:column>
+			       	
+			      			       
+							
+					<p:column headerText="" width="60" exportable="false">
+						<p:commandButton action="#{regAdminBean.remove(row)}" update="fileList" icon="fa fa-fw fa-trash" style="color: #d90000;" title="#{labels['general.delete']}">
+							<f:param name="idObjDel" value="#{row.id}" />
+																		
+						</p:commandButton>
+					</p:column>
+			  
+			   </p:dataTable>	
+						
+				<div>
+						<p:commandButton id="bntSaveDown" styleClass="button-mail" update="formRegAdmin:panelData " action="#{regAdminBean.actionSave}"  value="#{labels['general.send']}" />
+				</div>
+			
+		  	</div>
+		  	</div>
+		  	
+			
+		</h:form>
+
+		</ui:define>
+	</ui:composition>
+	
+</html>	

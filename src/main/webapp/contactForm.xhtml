@@ -1,0 +1,384 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/ibg">
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+		<ui:define name="title">#{labels['contactForm.title']}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">
+		
+			<style type="text/css">
+				
+				.title-page {
+					position: relative;
+					overflow: hidden;
+				}
+				
+				.graphic {
+					font-size: 3em;
+					color: #b8b8b8;
+					position: absolute;
+					top: 50%;
+					opacity: 0;
+					animation-name: rise;
+				    animation-duration: 1s;
+				    animation-iteration-count: 1;
+				    animation-fill-mode: forwards;
+				}
+				
+				
+				.icons-container .graphic:nth-of-type(1) {
+					right: 1rem;
+					animation-delay: 0.75s;
+					font-size: 4rem;
+				}
+				
+				.icons-container .graphic:nth-of-type(2) {
+					right: calc(7rem + 20px);
+					animation-delay: 1.25s;
+					
+				}
+				
+				.icons-container .graphic:nth-of-type(3) {
+					right: calc(11rem + 20px);
+					animation-delay: 1.5s;
+				}
+				
+				.icon-fb {
+					color: #4267b2; 
+					font-size: 1.75em;
+				}
+
+				.banner-res {
+					margin: 0.5rem;
+				}
+
+				.banner-res a {
+				    position: relative;
+				    display: block;
+				}
+				
+				.banner-res a .size {
+					position: absolute;
+					top: 0;
+					left: 0;
+					background-color: rgb(0 0 0 / 20%);
+					padding: 5px;
+					color: #ffffff;
+					transition: background-color ease-in 0.1s;
+				}
+				
+				.banner-res a:hover .size {
+					background-color: rgb(0 0 0 / 0%);
+    				color: transparent;
+				}
+				
+				body.color-blind .banner-res a .size {
+					background-color: #000000;
+					color: #ffffff;
+					border-top: 1px solid #ffffff;
+    				border-left: 1px solid #ffffff;
+				}
+				
+				body.color-blind .banner-res a:hover .size {
+					background-color: rgb(0 0 0 / 0%);
+					border-color: transparent;
+					color: transparent;
+				}				
+				
+				@media screen and (max-width: 767px) {
+					.graphic {
+						font-size: 2em;
+					}
+					
+					.icons-container .graphic:nth-of-type(1) {
+						font-size: 3rem;
+					}
+					
+					.icons-container .graphic:nth-of-type(2) {
+						right: calc(5rem + 20px);
+					}
+					
+					.icons-container .graphic:nth-of-type(3) {
+						right: calc(8rem + 20px);
+					}
+				}
+				
+				.rotate {
+					transform: rotate(33deg);
+				}
+			
+				.ui-treetable.bordersno thead th,
+				.ui-treetable.bordersno tbody,
+				.ui-treetable.bordersno tbody tr,
+				.ui-treetable.bordersno tbody td {
+			    	border-style: none;
+		    	  white-space:normal !important;
+				}
+				
+				.ui-treetable.bordersno thead{
+					display: none;
+				}
+				
+				.ui-treetable {
+					font-weight,: bold;
+				}
+				
+				body.color-blind .address a {
+					color: #ffff00;
+				}
+				
+				body.color-blind .icon-fb {
+					color: #ffff00;
+				}
+				
+				@keyframes rise {
+					0% {
+						opacity: 0;
+						-webkit-transform: translate3d(0, 50%, 0);
+						-ms-transform: translate3d(0, 50%, 0);
+						transform: translate3d(0, 50%, 0);
+					}
+					100% {
+						opacity: 1;
+						-webkit-transform: translate3d(0, -50%, 0);
+						-ms-transform: translate3d(0, -50%, 0);
+						transform: translate3d(0, -50%, 0);
+					}
+				}
+				
+				
+			</style>
+		
+			  <h:form id="formContact">
+ 			  	<p:tooltip/>	
+ 			  	
+ 			  <div class="title-page">
+				<div class="container">	 
+					<h3>#{labels['general.contacts']}</h3>
+ 				</div>
+ 				
+ 				<div class="icons-container">
+	 				<div class="graphic">
+						<i class="fas fa-map-marker-alt rotate"></i>
+					</div>
+					
+					<div class="graphic">
+	 					<i class="fas fa-mail-bulk"></i>
+	 				</div>
+					
+					<div class="graphic">
+	 					<i class="fas fa-phone"></i>
+	 				</div>
+ 				</div> 				
+ 				
+ 			  </div>	
+ 			 
+			  <div class="container">	
+			  
+			 
+			  <div class="container-white">
+			   
+			  		<div class="title-box">		  		
+			  			#{labels['general.contactTitleMs']}
+			  	    </div>
+			  	    
+			  	    <div class="p-grid">
+				    	<div class="p-col-12 p-md-6 address">
+				    	
+				    		<p>
+				    			<h:outputText value="#{labels['general.nasMiasto']}: "/>
+				    			<h:outputText value="#{contactFormBean.admMSTown}"/>
+				    		</p>
+				    		<p>
+				    			<h:outputText value="#{labels['general.adress']}: "/>
+				    			<h:outputText value="#{contactFormBean.admMSAdress}"/>
+				    		</p>
+							<p>
+								<h:outputText value="#{labels['general.telefon']}: "/>
+								<h:outputText value="#{contactFormBean.admMSPhone}"/>
+							</p>
+							<p>
+								<h:outputText value="#{labels['general.facebook']}: "/>
+								<a href="#{contactFormBean.admMSFax}" class="icon-fb"><i class="fab fa-facebook-square"></i></a>
+							</p>
+							<p>
+								<h:outputText value="#{labels['general.email']}: " escape="false"/>
+								<a href="mailto:#{contactFormBean.admMSEmail}"><h:outputText value="#{contactFormBean.admMSEmail}" escape="false"/></a>
+							</p>
+				    	
+				    	</div>
+				    	
+				    	<div class="p-col-12 p-md-6">
+				    		<p:focus context="panelData"/>
+				    		<p:outputPanel id="panelData">
+						    <div class="p-grid">
+								<div class="p-col-12 p-md-12" style="margin-bottom: -10px;">
+									<p:outputLabel for="names" value="#{labels['general.imena']}:" styleClass="req"/>
+								</div>
+								<div class="p-col-12 p-md-12">
+				           			<p:inputText id="names" value="#{contactFormBean.names}" maxlength="100">
+				           				<f:validateLength maximum="100"/>
+				           			</p:inputText>
+				           			<p:message for="names" display="tooltip"> <p:autoUpdate/> </p:message>
+								</div>
+							
+								<div class="p-col-12 p-md-12" style="margin-bottom: -10px;">
+									<p:outputLabel for="email" value="#{labels['general.email']}:" styleClass="req" />
+								</div>
+								<div class="p-col-12 p-md-12">
+				           			<p:inputText id="email" value="#{contactFormBean.email}" maxlength="100">
+				           				<f:validateLength maximum="100"/>
+				           			</p:inputText>
+				           			<p:message for="email" display="tooltip"> <p:autoUpdate/> </p:message>
+								</div>
+							
+								<div class="p-col-12 p-md-12" style="margin-bottom: -10px;">
+									<p:outputLabel for="about" value="#{labels['contactForm.about']}:" styleClass="req" />
+								</div>
+								<div class="p-col-12 p-md-12">
+				           			<p:inputText id="about" value="#{contactFormBean.about}" maxlength="255">
+				           				<f:validateLength maximum="255"/>
+				           			</p:inputText>
+				           			<p:message for="about" display="tooltip"> <p:autoUpdate/> </p:message>
+								</div>
+							
+								<div class="p-col-12 p-md-12" style="margin-bottom: -10px;">
+									<h:outputText value="#{labels['contactForm.message']}: " styleClass="req"/>
+								</div>
+			
+								<div class="p-col-12 p-md-12 ">							
+									<p:inputTextarea id="message" value="#{contactFormBean.message}" rows="5" maxlength="1500">	
+										<f:validateLength maximum="1500"/>
+									</p:inputTextarea>
+									<p:message for="message" display="tooltip"> <p:autoUpdate/> </p:message>
+								</div>
+							
+								<div class="p-col-12 p-md-12" style="margin-bottom: -10px;">
+									<p:outputLabel for="captchaStr" value="#{labels['general.captcha']}:" styleClass="req"/>
+								</div>
+								<div class="p-col-12 p-md-12">
+				           			<p:inputText id="captchaStr" value="#{contactFormBean.captchaStr}"/>
+				           			<p:message for="captchaStr" display="tooltip"> <p:autoUpdate/> </p:message>
+								</div>
+								<div class="p-col-6 p-md-6">
+				           			<p:graphicImage value="#{paintClass.graphicText}"  id="img_cap">
+										 		<f:param value="#{contactFormBean.timeStamp}" name="time" />
+									</p:graphicImage>
+								</div>
+								
+								<div class="p-col-6 p-md-6 cc-right">
+									<p:commandButton id="bntSendDown" styleClass="button-mail" update="formContact:panelData " action="#{contactFormBean.run()}" value="#{labels['general.send']}" />	
+								</div>
+							</div>
+							</p:outputPanel>
+						</div>
+					</div>
+		  		
+		  		
+		  		<div class="title-box">		  		
+			  			#{labels['genaral.administracii']}
+			  	</div>
+		  		
+				<p:panelGrid id="columnLayout" columns="2" layout="grid" styleClass="ui-noborder" 
+							columnClasses="p-col-12 p-md-8 p-lg-8 cc-left, p-col-12 p-md-4 p-lg-4" >	
+				
+					<p:outputPanel id="panelAdminLeft">	
+							<div class="p-grid">
+				    			<div class="p-col-12 p-md-8 ui-p-10">	
+									<p:inputText value="#{contactFormBean.searchWord}" id="textZv1" tabindex="1"
+										placeholder="#{labels['general.search']}" style="width:100%">
+										<p:ajax event="keyup" listener="#{contactFormBean.search}" update="formContact:zadSubektiTree"/>
+									</p:inputText>
+								</div>   
+					            <div class="p-col-12 pi-md-4 p-lg-2">
+								 	<p:commandButton icon="fa fa-fw fa-search"  id="searchBtn" actionListener="#{contactFormBean.search}"
+				  						update="formContact:zadSubektiTree" title="#{labels['general.search']}" rendered="false"/>
+									<span class="ui-separator"></span>
+								  	<p:commandButton icon="fa fa-fw fa-refresh"  actionListener="#{contactFormBean.refreshTree}" id="refreshBtn"
+				  						update="formContact:zadSubektiTree formContact:textZv1" title="#{labels['general.refresh']}"/>
+				  				</div> 
+								
+							</div>
+        					
+							
+							<p:treeTable value="#{contactFormBean.admRootNode}" var="subekt"  selectionMode="single"   emptyMessage="#{labels['general.norows']}"
+									 id="zadSubektiTree" style="ui-treetable" styleClass="bordersno">
+						        <p:ajax event="select" listener="#{contactFormBean.onNodeSelect}" update="@this formContact:panelAdminRight"/>
+				     			<p:ajax event="unselect" listener="#{contactFormBean.onNodeUnselect}" update="formContact:panelAdminRight"/>
+			     				<p:column>
+						            <h:outputText value="#{subekt.tekst}" escape="false"/>
+						        </p:column>
+
+						    </p:treeTable>
+
+						</p:outputPanel>
+					
+					
+						<p:outputPanel id="panelAdminRight">
+							
+							<div id="contactsContainer">
+								<div>
+									<div style="text-align:left">
+										<div class="title-box" jsf:rendered="#{not empty contactFormBean.nameAdmStruct}">		  		
+									  			<h:outputText value="#{contactFormBean.nameAdmStruct}" escape="false"/>
+									  	</div>
+										
+										<p><h:outputText value="#{contactFormBean.admTown}" style="margin-bottom:10px;"/></p>
+										<p><h:outputText value="#{contactFormBean.admAdress}" style="margin-bottom:10px;"/></p>
+										<p><h:outputText value="#{contactFormBean.admPhone}" style="margin-bottom:10px;"/></p>
+										<p><h:outputText value="#{contactFormBean.admFax}" style="margin-bottom:10px;"/></p>
+										<p><h:outputText value="#{contactFormBean.admEmail}" style="margin-bottom:10px;" escape="false"/></p>
+									</div>
+								</div>
+								
+					        	
+							
+							</div>
+				      
+					      </p:outputPanel>
+
+					</p:panelGrid>
+					
+					<div class="title-box" style="margin-top:1.5rem;">
+			  			#{labels['general.websiteBanner']}
+			  		</div>
+					<div style="display:flex;">
+						<div class="banner-res">
+							<a href="#{resource['images:banners/PJobs_banner_300x250.png']}" download="PJobs_banner_300x250.png" target="_blank">
+		                         <p:graphicImage value="#{resource['images:banners/PJobs_banner_300x250.png']}"  stream="false" />
+		                         <div class="size">300 x 250</div>
+	                        </a>
+						</div>
+						<div class="banner-res">
+							<a href="#{resource['images:banners/PJobs_banner_198x100.png']}" download="PJobs_banner_198x100.png" target="_blank">
+		                        <p:graphicImage value="#{resource['images:banners/PJobs_banner_198x100.png']}"  stream="false" />
+		                        <div class="size">198 x 100</div>
+	                        </a>
+						</div>
+					</div>
+				
+				</div>		
+			 	
+				
+				
+		  	</div>
+		</h:form>
+
+		</ui:define>
+	</ui:composition>
+	
+</html>	

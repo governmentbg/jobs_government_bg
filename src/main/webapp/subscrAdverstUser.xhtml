@@ -1,0 +1,423 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+		<ui:define name="title">#{labels['subscrAdvreuser.title']}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items"> 
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">
+		
+			<style type="text/css">
+			
+				.title-page {
+					position: relative;
+					overflow: hidden;
+				}
+				
+				.graphic {
+					font-size: 4em;
+					color: #b8b8b8;
+					position: absolute;
+					right: 1rem;
+					top: 50%;
+					opacity: 0;
+					animation-name: rise;
+				    animation-duration: 1s;
+				    animation-iteration-count: 1;
+				    animation-fill-mode: forwards;
+				    animation-delay: 0.5s;
+				}
+				
+				.graphic i {
+					transform-origin: top center;
+					animation-name: ring;
+					animation-timing-function: linear;
+				    animation-duration: 1.5s;
+				    animation-iteration-count: 1;
+				    animation-fill-mode: forwards;
+				    animation-delay: 0.75s;
+				}
+				
+				.right {
+					text-align: right;
+				}
+
+				.subscribe-button {
+					background-color: #F9A339;
+					box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.25);
+					width: 40px;
+					color: #ffffff;
+					text-shadow: none;
+				    border: none;
+				    transition: background-color 0.1s linear;
+				}
+				
+				.subscribe-button:hover {
+					background-color: #E39534;
+				}
+				
+				.subscribe-button .fa-bell {
+					transform-origin: top center;
+				}
+				
+				.animate {
+					animation: ring 1s linear;
+					animation-iteration-count: 1;
+				}
+				
+				.unsubscr-column {
+					text-align: center;
+				}
+				
+				.unsubscribe-icon {
+					transition: color 0.1s linear;
+				}
+				
+			    .unsubscribe-icon:hover {
+			    	color: #E39534;
+			    	cursor: pointer;
+			    }
+				   
+				.small-caps {
+					font-variant: small-caps;
+				}
+				
+				.ui-widget-content .competition-link {
+					color: #0077b3;
+				}
+				
+				.ui-widget-content .competition-link:hover {
+					text-decoration: underline;
+				}
+				
+				@keyframes rise {
+					0% {
+						opacity: 0;
+						-webkit-transform: translate3d(0, 50%, 0);
+						-ms-transform: translate3d(0, 50%, 0);
+						transform: translate3d(0, 50%, 0);
+					}
+					100% {
+						opacity: 1;
+						-webkit-transform: translate3d(0, -50%, 0);
+						-ms-transform: translate3d(0, -50%, 0);
+						transform: translate3d(0, -50%, 0);
+					}
+				}
+
+				@keyframes ring {
+					0% {
+				        transform: rotate(0deg);
+				    }
+				    12.5% {
+				    	transform: rotate(-40deg);
+				    }
+				    25% {
+				    	transform: rotate(0deg);
+				    }
+				    37.5% {
+				    	transform: rotate(20deg);
+				    }
+				    50% {
+				    	transform: rotate(0deg);
+				    }
+				    62.5% {
+				        transform: rotate(-15deg);
+				    }
+				    75% {
+				    	transform: rotate(0deg);
+				    }
+				    87.5% {
+				    	transform: rotate(7deg);
+				    }
+				    100% {
+				    	transform: rotate(0deg);
+				    }
+				}
+				
+				@media only screen and (max-width: 767px) {
+					.subscribe-button {
+						width: 45px;
+						height: 40px;
+					}
+					
+					.graphic {
+						font-size: 3em;
+					}
+				}
+				
+				@media (max-width: 640px) {
+					.ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title {
+					    font-weight: bold;
+					}
+					
+					.ui-datatable-tablewrapper {
+						border-left: 1px solid #dddddd;
+						border-right: 1px solid #dddddd;
+					}
+					
+					.title-box {
+						font-size: 1.25em;
+					}
+					
+					.unsubscr-column {
+						text-align: right !important;
+					}
+					
+				}
+				
+				body.color-blind .ui-widget-content .competition-link {
+					color: #ffff00;
+				}
+				
+				body.color-blind .unsubscribe-icon {
+					color: #ffffff;
+				}
+			</style>
+		
+			<h:form id="formSubsc">
+ 				<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+ 				<!-- TITLE -->
+				<div class="title-page">
+					<div class="container">	 
+						<h3>#{labels['subscrAdvreuser.title']}</h3>
+					</div>
+					
+					<div class="graphic">
+						<i class="fas fa-bell"></i>
+					</div>
+				</div>	
+				 
+					<div class="container">	
+						<div class="container-white">
+						
+							<!-- SECTION -->
+							<div class="title-box small-caps">#{labels['general.subscFiletrtitle']}</div>
+							
+							<!-- INPUT FIELDS -->
+							<p:outputPanel id="inputFields">
+								<div class="p-grid">
+									
+									<!-- VID NA OBIAVATA -->
+									<ui:remove>
+									<!-- 
+									<div class="p-col-12 p-md-12 p-lg-12 " >	
+										<h:panelGrid columns="2">
+											<p:outputLabel for="newSubType" value="За:" style="padding-right:12px;"/>		
+											<p:selectOneRadio id="newSubType" value="#{subAdvBean.newSubscription.type}" unselectable="true">
+									            <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_TYPE_ADVERTISEMENT, now, subAdvBean.currentLang, subAdvBean.userId)}"  
+			                                    			   var="type" itemLabel="#{type.tekst}" itemValue="#{type.code}" />
+			                                     <p:ajax event="change" update="formSubsc:inputFields" listener="#{subAdvBean.actionChangeSubType}"/>
+									        </p:selectOneRadio>
+								        </h:panelGrid>
+									</div>
+									 -->
+									</ui:remove>
+									
+									<!-- ADMINISTRACIA -->
+									<div class="p-col-12 p-md-11 p-lg-11">							
+										<div class="ibg-modal-button">									
+							 				<p:inputText value="#{subAdvBean.newSubStrucText}" id="newAdminStruc" readonly="true" placeholder="#{labels['general.admStruc']}"/>
+							 				<ibg:selectOneModal header="#{labels['general.admStruc']}" userId="#{subAdvBean.userId}" lang="#{subAdvBean.currentLang}" 
+							 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_ADM_REGISTER}"     
+							 				selectedCode="#{subAdvBean.newSubscription.administration}" selectedText="#{subAdvBean.newSubStrucText}" update="formSubsc:newAdminStruc" />
+								 		</div>   
+									</div>
+									<!-- DLAJNOST -->
+									<div class="p-col-12 p-md-11 p-lg-11">							
+										<div class="ibg-modal-button">	
+											<p:inputText value="#{subAdvBean.positionText}" id="newDlajnost" readonly="true"  placeholder="#{labels['advertisement.dlajnost']}"/>
+											<ibg:selectOneModal header="#{labels['advertisement.dlajnost']}" userId="#{subAdvBean.userId}" lang="#{subAdvBean.currentLang}" 
+									 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_JOBS}"
+									 				update="formSubsc:newDlajnost" 
+									 				selectedCode="#{subAdvBean.newSubscription.position}" selectedText="#{subAdvBean.positionText}"  />
+										</div>
+									</div>
+									<div class="p-col-12 p-md-11 p-lg-11" jsf:id="professionalField" jsf:rendered="#{subAdvBean.newSubscription.type eq IBConstants.CODE_ZNACHENIE_TYPE_ADVERTISEMENT_MOBILITY}">							
+										<div class="ibg-modal-button">	
+											<p:selectOneMenu value="#{subAdvBean.newSubscription.professionalField}" id="profNapr" autoWidth="false" filter="true" filterMatchMode="contains"
+												placeholder="#{labels['advertisement.profNapr']}">                                     
+			                               		<f:selectItem itemLabel="" itemValue="" />
+			                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_PROFESSIONAL_FIELD, now, subAdvBean.currentLang, subAdvBean.userId)}"  
+			                                    			   var="profNaprJ" itemLabel="#{profNaprJ.tekst}" itemValue="#{profNaprJ.code}" />			                                    
+			                                </p:selectOneMenu>
+										</div>
+									</div>
+									<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+										<!-- SUBSCRIBE BUTTON -->							
+										<p:commandButton id="btn-subscribe" icon="fa fa-fw fa-bell" action="#{subAdvBean.subscribe()}" update="formSubsc:subscTable formSubsc:inputFields" 
+											styleClass="subscribe-button" oncomplete="addAnimation()"/>
+										<p:tooltip id="toolTipFocus" for="btn-subscribe" position="top" value="#{labels['subscrAdvreuser.subscribe']}"/>
+									</div>
+									
+								</div>
+								
+								
+							</p:outputPanel>
+							
+							<!-- SUBSCRIPTIONS TABLE -->
+							<div style="margin-top:2em;">#{labels['general.subsTableTitle']}</div>
+							<div>
+								<p:dataTable id="subscTable" var="sub" rowIndexVar="index" value="#{subAdvBean.subscriptions}" reflow="true" emptyMessage="#{labels['subscrAdvreuser.noSub']}">
+									
+									<p:column headerText="#{labels['general.No-symbol']}" width="5%">
+										<h:outputText value="#{index + 1}" />
+									</p:column>
+									
+									<p:column headerText="#{labels['advertisement.vidObiava']}"
+										width="100"
+										 sortBy="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_TYPE_ADVERTISEMENT, sub.type, subAdvBean.currentLang, now, subAdvBean.userId)}">
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_TYPE_ADVERTISEMENT, sub.type, subAdvBean.currentLang, now, subAdvBean.userId)}"/>
+									</p:column>
+									
+									<p:column headerText="#{labels['general.admStruc']}" sortBy="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, sub.administration, subAdvBean.currentLang, now, subAdvBean.userId)}">
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, sub.administration, subAdvBean.currentLang, now, subAdvBean.userId)}"/>
+									</p:column>
+									
+									<p:column headerText="#{labels['advertisement.dlajnost']}" sortBy="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_JOBS, sub.position, subAdvBean.currentLang, now, subAdvBean.userId)}">
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_JOBS, sub.position, subAdvBean.currentLang, now, subAdvBean.userId)}"/>
+									</p:column>
+									
+									<p:column headerText="#{labels['advertisement.profNapr']}" sortBy="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_PROFESSIONAL_FIELD, sub.professionalField, subAdvBean.currentLang, now, subAdvBean.userId)}">
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_PROFESSIONAL_FIELD, sub.professionalField, subAdvBean.currentLang, now, subAdvBean.userId)}"/>
+									</p:column>
+									
+									<p:column width="5%" class="unsubscr-column">
+										<p:commandLink action="#{subAdvBean.unsubscribe(index)}" update="formSubsc:subscTable">
+											<i class="fas fa-bell-slash unsubscribe-icon" title="#{labels['subscrAdvreuser.unsubscribe']}"></i>
+											<p:confirm message="#{labels['subscrAdvreuser.unsubscribe']}?" icon="fa fa-exclamation-triangle"/>
+										</p:commandLink>
+									</p:column>
+													
+								</p:dataTable>
+							</div>
+							
+							<!-- SECTION -->
+							<div class="title-box small-caps" style="margin-top:2em;">#{labels['general.subscTitlePanelS']}</div>
+							
+							<div style="min-height:200px">
+								<p:tabView id="tabsSubscr" dynamic="true" cache="false">
+									
+									<!-- COMPETITION -->
+									<p:tab title="#{labels['subscrAdvreuser.concursiRabota']}" rendered="false">
+									
+										<!-- COMPETITION TABLE -->
+										<p:dataTable id="competitionTable" value="#{subAdvBean.competitions}" var="comp" rowIndexVar="index" reflow="true" paginator="true"
+											lazy="true" paginatorPosition="bottom" rowsPerPageTemplate="6, 12, 18"  rows="6" emptyMessage="#{labels['general.norows']}"
+											paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+											
+											<p:column headerText="#{labels['general.No-symbol']}" width="5%">
+												<h:outputText value="#{index + 1}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['advertisement.dlajnost']}" sortBy="#{comp.positionname}">
+												<a href="https://iisda.government.bg/competitions/competitions_list/competition/#{comp[5]}" target="_blank" class="competition-link">#{comp[0]}</a>
+											</p:column>
+											
+											<p:column headerText="#{labels['advertisement.zveno']}" sortBy="#{comp.str_name}">
+												#{comp[3]}
+											</p:column>
+											
+											<p:column headerText="#{labels['checkForTest.administration']}" sortBy="#{comp.subject_name}">
+												#{comp[4]}
+											</p:column>
+											
+											<p:column headerText="#{labels['publ.published']}" width="12%" sortBy="#{comp.published_date}">
+												<h:outputText value="#{comp[1]}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{subAdvBean.timeZone}"/>
+												</h:outputText>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.kraenSrok']}" width="12%" sortBy="#{comp.deadline_date}">
+												<h:outputText value="#{comp[2]}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{subAdvBean.timeZone}"/>
+												</h:outputText>
+											</p:column>
+											
+										</p:dataTable>
+									</p:tab>
+									
+									<!-- MOBILITY -->
+									<p:tab title="#{labels['subscrAdvreuser.obqviMobil']}">
+									
+									
+										<!-- MOBILITY TABLE -->
+										<p:dataTable id="mobilityTable" value="#{subAdvBean.obyaviMobilnost}" var="mob" rowIndexVar="index" reflow="true" paginator="true"
+											lazy="true" paginatorPosition="bottom" rowsPerPageTemplate="6, 12, 18"  rows="6" emptyMessage="#{labels['general.norows']}"
+											paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+											
+											<p:column headerText="#{labels['general.No-symbol']}" width="5%">
+												<h:outputText value="#{index + 1}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['advertisement.dlajnost']}" sortBy="#{mob.job_shortname}">
+												<a href="#{systemData.getSettingsValue('linkToPJobsSite')}#{mob[0]}" target="_blank" class="competition-link">#{mob[1]}</a>
+											</p:column>
+											
+											<p:column headerText="#{labels['advertisement.zveno']}" sortBy="#{mob.subject_name}">
+												#{mob[2]}
+											</p:column>
+											
+											<p:column headerText="#{labels['checkForTest.administration']}" sortBy="#{mob.str_name}">
+												#{mob[3]}
+											</p:column>
+											
+											<p:column headerText="#{labels['publ.published']}" width="12%" sortBy="#{mob.date_from}">
+												<h:outputText value="#{mob[4]}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{subAdvBean.timeZone}"/>
+												</h:outputText>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.kraenSrok']}" width="12%" sortBy="#{mob.date_to}">
+												<h:outputText value="#{mob[5]}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{subAdvBean.timeZone}"/>
+												</h:outputText>
+											</p:column>
+											
+										</p:dataTable>
+									
+									
+									</p:tab>
+								</p:tabView>	
+							</div>
+						</div>
+					</div>
+					
+					<!-- CONFIRM DIALOG -->
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closable="false">
+				        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+				        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+				    </p:confirmDialog>      
+			</h:form>
+			
+			<script>
+				$(document).ready(function() {
+					addAnimation();
+				});
+
+				
+				function addAnimation() {
+					$('.subscribe-button').mouseenter(function(){
+					    $target = $(this).find(".fa-bell");
+					    $target.removeClass('animate');
+					    setTimeout(function() {$target.addClass('animate');}, 100)
+					});
+				}
+			</script>
+
+		</ui:define>
+	</ui:composition>
+</html>	

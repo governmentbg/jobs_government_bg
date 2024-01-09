@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+<f:metadata>
+	<f:viewAction action="#{userData.hasAccessPage(7,71)}" />
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title"> #{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 71, environment.currentLang, null, null)} </ui:define>
+
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+	
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{usersGroupDeleteList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+
+		<h:form id="formUsersGrDelList">
+
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			
+			<p:tooltip />
+
+			<!-- PAGE TITLE -->
+			<div class="title-page">
+				<div class="container">
+					<h3> #{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 71, environment.currentLang, null, null)} </h3>
+				</div>
+			</div>
+
+			<div class="container">
+
+				<div class="container-white" onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('formUsersGrDelList:btnSearch').click()}">
+				
+					<p:focus context="panellFilter"/>	
+
+					<p:outputPanel id="panellFilter">
+
+						<p:panel header="#{labels['general.search']}" style="margin-bottom:10px">
+
+							<div class="p-grid">
+
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+									<h:outputText value="#{labels['usersList.periodReg']}:" />
+								</div>
+
+								<div class="p-col-12 p-md-3 p-lg-3">
+									<p:selectOneMenu id="idPer" value="#{usersGroupDeleteList.period}">
+										<f:selectItem value="#{null}" itemValue="#{null}" />
+										<f:selectItems value="#{usersGroupDeleteList.periodList}" var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+										<p:ajax event="change" update="formUsersGrDelList:idPer formUsersGrDelList:dateOt formUsersGrDelList:dateDo"
+											listener="#{usersGroupDeleteList.changePeriod}" />
+									</p:selectOneMenu>
+								</div>
+
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+									<h:outputText value="#{labels['general.dataOt']}:" />
+								</div>
+								
+								<div class="p-col-12 p-md-2 p-lg-2">
+									<p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{usersGroupDeleteList.timeZone}" size="10" locale="bg" 
+										value="#{usersGroupDeleteList.dateOt}" label="#{labels['general.dataOt']}" styleClass="form-control #{applicationFilter.hasMessages('formUsersGrDelList:dateOt') ? 'cc-red ': '' }" />
+									<p:message for="dateOt" showDetail="true" showSummary="true" display="tooltip">
+										<p:autoUpdate />
+									</p:message>
+								</div>
+
+								<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+									<h:outputText value="#{labels['general.dataDo']}:" />
+								</div>
+								
+								<div class="p-col-12 p-md-2 p-lg-2">
+									<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{usersGroupDeleteList.timeZone}" size="10" locale="bg" value="#{usersGroupDeleteList.dateDo}"
+										label="#{labels['general.dataDo']}" styleClass="form-control #{applicationFilter.hasMessages('formUsersGrDelList:dateDo') ? 'cc-red' : '' }" />
+									<p:message for="dateDo" showDetail="true" showSummary="true" display="tooltip">
+										<p:autoUpdate />
+									</p:message>
+								</div>
+								
+								<ui:remove>
+								<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+									<h:outputText value="#{labels['usersGrDelList.applyFor']}: " />
+								</div>
+								<div class="p-col-12 p-md-3 p-lg-3">
+									<p:selectOneMenu value="#{usersGroupDeleteList.applyFor}" id="applyFor" autoWidth="false" >                                     
+	                               		 <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_APPLY_FOR, now, usersGroupDeleteList.currentLang, usersGroupDeleteList.idUser)}"  
+	                                    			   var="apply" itemLabel="#{apply.tekst}" itemValue="#{apply.code}" />				                                    
+	                                </p:selectOneMenu>											                        
+								</div>
+								</ui:remove>
+								 
+								 <div class="p-col-12 p-md-4 p-lg-4 cc-right">
+									<p:selectBooleanCheckbox value="#{usersGroupDeleteList.usersOver5Years}" itemLabel="#{labels['usersGrDelList.usersOver5Years']}"/>												
+								</div>	
+
+							</div>
+
+							<div class="p-grid">
+
+								<div class="p-col-6 p-md-10 p-lg-10 cc-left">
+									<p:commandButton action="#{usersGroupDeleteList.clearAll}" value="#{labels['general.clear']}" update="formUsersGrDelList" tabindex="-1"/>
+								</div>
+
+								<div class="p-col-6 p-md-2 p-lg-2 cc-rightAll">
+									<p:commandButton action="#{usersGroupDeleteList.actionSearch}" value="#{labels['general.search']}" icon="fa fa-search" update="formUsersGrDelList" id="btnSearch" ajax="true" />
+								</div>
+
+							</div>
+
+						</p:panel>
+
+					</p:outputPanel>
+
+				</div>
+			</div>
+
+			<br />
+
+			<div class="container-white">
+
+				<p:panel id="panelTable">
+
+					<f:facet name="header">
+					
+						<h:panelGroup id="panelTblToolbar">
+						
+							<p:commandButton value="Изтриване на всички" actionListener="#{usersGroupDeleteList.actionDeleteSelectedUsers}" ajax="true" rendered="#{usersGroupDeleteList.userSelectedAllM.size() > 0 and usersGroupDeleteList.tablList.rowCount > 0}" 
+					        	partialSubmit="true" update="formUsersGrDelList" process="formUsersGrDelList @this" styleClass="p-mr-2" icon="fa fa-fw fa-user-times" >
+					        	<p:confirm header="#{labels['general.comfirmation']}" message="#{labels['usersGrDelList.confirmDeleteAllUsers']}" icon="fas fa-exclamation-triangle" />
+				        	</p:commandButton>
+							
+							<span class="p-mr-2" style="#{usersGroupDeleteList.userSelectedAllM.size() > 0 and usersGroupDeleteList.tablList.getRowCount() > 0 ?'':'display:none'}"> 
+								<span class="fas fa-ellipsis-v" />
+							</span>	
+							
+							<p:spacer width="5" rendered="#{usersGroupDeleteList.userSelectedAllM.size() > 0 and usersGroupDeleteList.tablList.getRowCount() > 0}"/>	
+							
+							<h:outputText value="#{labels['general.result']}: #{usersGroupDeleteList.tablList.rowCount} " styleClass="form-label" rendered="#{usersGroupDeleteList.tablList.rowCount > 0}"/>
+							
+							<span class="p-mr-2" style="#{usersGroupDeleteList.userSelectedAllM.size() > 0 and usersGroupDeleteList.tablList.getRowCount() > 0 ?'':'display:none'}" >
+								<span class="fas fa-ellipsis-v" />
+							</span>
+							
+							<h:outputText value="Бр. избрани: #{usersGroupDeleteList.userSelectedAllM.size()}" rendered="#{usersGroupDeleteList.userSelectedAllM.size() > 0 and usersGroupDeleteList.tablList.getRowCount() > 0}" styleClass="form-label" id="brSel"/>
+
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+								<p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+								<p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+							</p:confirmDialog>
+
+						</h:panelGroup>
+					
+					</f:facet>
+
+					<p:dataTable id="tbl" var="row" value="#{usersGroupDeleteList.tablList}" lazy="true" rendered="#{usersGroupDeleteList.tablList.getRowCount() > 0}" 
+						rows="20" rowIndexVar="idx" widgetVar="usersF" sortMode="single" rowsPerPageTemplate="10,15,20,25,30" reflow="true"
+						paginatorTemplate="{RowsPerPageDropdown}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						paginator="true" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width:100%;margin-bottom:20px" emptyMessage="#{labels['general.norows']}"
+						rowSelectMode="checkbox" selection="#{usersGroupDeleteList.userSelectedTmp}" rowKey="#{row[0]}">
+					
+						<p:ajax event="toggleSelect" listener="#{usersGroupDeleteList.onRowSelectAll}" process="@this" update="formUsersGrDelList:panelTblToolbar"/>
+						<p:ajax event="rowSelectCheckbox" listener="#{usersGroupDeleteList.onRowSelect}"   process="@this"  update="formUsersGrDelList:panelTblToolbar"/>
+						<p:ajax event="rowUnselectCheckbox" listener="#{usersGroupDeleteList.onRowUnselect}" process="@this"  update="formUsersGrDelList:panelTblToolbar"/>
+						<p:ajax event="page" listener="#{usersGroupDeleteList.onPageUpdateSelected}" />
+			
+						<p:column width="25px" exportable="false" style="width:5px; text-align:center" selectionMode="multiple" />
+									
+						<f:facet name="{Exporters}">
+							<h:commandLink>
+								<p:graphicImage library="images" name="excel.png" width="24" />
+								<p:dataExporter type="xls" target="tbl" fileName="users" encoding="utf-8" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="csv.png" width="24" />
+								<p:dataExporter type="csv" target="tbl" fileName="users" encoding="utf-8" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage library="images" name="xml.png" width="24" />
+								<p:dataExporter type="xml" target="tbl" fileName="users" encoding="utf-8" />
+							</h:commandLink>
+
+						</f:facet>
+
+						<p:column style="text-align: center" width="5">
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.No-symbol']}" />
+							</f:facet>							
+							<h:outputText value="#{idx + 1}" />
+						</p:column>
+
+						<!-- Потребителско име -->
+						<p:column sortBy="#{row.username}" width="100">
+							<f:facet name="header">
+								<h:outputText value="#{labels['userList.login']}" />							
+							</f:facet>
+							<h:outputText value="#{row[1]}" />
+						</p:column>
+
+						<!-- Имена -->
+						<p:column sortBy="#{row.unames}" width="150">
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.imena']}" />
+							</f:facet>							
+							<h:outputText value="#{row[2]}" />
+						</p:column>
+
+						<!-- Статус -->
+						<p:column sortBy="#{row.status}" width="100" >
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.status']}" />
+							</f:facet>							
+							<h:outputText value="#{systemData.decodeItem (IBConstantsSys.CODE_CLASSIF_STATUS_POTREB, row[4], usersGroupDeleteList.lang, usersGroupDeleteList.currentDate,  usersGroupDeleteList.idUser)}" />
+						</p:column>
+
+						<!--   Ел. поща -->
+						<p:column width="110" >
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.email']}" />
+							</f:facet>							
+							<h:outputText value="#{row[3]}" />
+						</p:column>
+
+
+						<!--   Дата регистрация -->
+						<p:column style="text-align:center" sortBy="#{row.datereg}" width="70">
+							<f:facet name="header">
+								<h:outputText value="#{labels['usersList.registrNa']}" />
+							</f:facet>							
+							<h:outputText value="#{row[5]}">
+								<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{usersGroupDeleteList.timeZone}" />
+							</h:outputText>
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panel>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

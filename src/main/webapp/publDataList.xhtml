@@ -1,0 +1,214 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">  #{labels['publ.lable']} </ui:define> 
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	<style>
+	    .marker .ui-icon-carat-1-s {
+		    background-position: -16px -80px;
+		}
+	</style>
+	
+		<h:form id="formPublList" >
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{labels['menu.publ']}</h3>
+ 				</div>
+ 			 </div>	
+			<p:tooltip/>
+			
+			<div class="container"> 
+				<div class="container-white"  onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('formPublList:bnt_search').click()}">
+				<p:focus context="panelFilter"/>					
+				<p:panel header="#{labels['global.criteriaFind']}:"  toggleable="true" toggleOrientation="vertical" styleClass="marker" id="panelFilter">
+        			
+					<div>
+					    <div class="p-grid" >
+					    
+							<div class="p-col-12 p-md-2" align="right" >
+								<p:outputLabel for="idSectionText" value="#{labels['general.section']}:"/>
+							</div>
+							<div class="p-col-12 p-md-10" align="left">
+			           		<div class="ui-inputgroup">
+			           			<p:inputText value="#{publDataList.sectionText}"  id="idSectionText" readonly="true" />
+								<ibg:selectOneModal  
+									header="#{labels['publ.izbSection']}"   
+									userId="#{publDataList.idUser}"  
+									lang="1"   
+					 	            saveStateTree="true"  
+					 	            isSelectNode="true"  
+					 	            withBtnClear="true"
+					 	            expanded="false"
+					 	            id="idOneMod"
+					 		        codeClassif="#{IBConstants.CODE_SYSCLASS_SECT_PUBL}"     
+					 		        update="formPublList:idSectionText"  
+					 		        selectedCode="#{publDataList.codeSection}" 
+					 		        selectedText="#{publDataList.sectionText}"/>
+							</div>
+							</div>
+					    </div>
+					    
+					    <div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right" >
+								<h:outputText value="#{labels['publ.period']}:" />
+							</div>
+							<div class="p-col-12 p-md-4" align="left">
+								<p:selectOneMenu id="idPer" value="#{publDataList.period}">
+                                   <f:selectItem value="#{null}" itemValue="#{null}"/>          
+                                   <f:selectItems value="#{publDataList.periodList}"  
+	                                  		var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+                                     <p:ajax event="change" update="idPer dateOt dateDo"  listener="#{publDataList.changePeriod()}"   />   
+                               </p:selectOneMenu>
+                           </div>
+	                             
+                           <div class="p-col-12 p-md-1">
+								<h:outputText value="#{labels['general.dataOt']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2">
+								<p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true"  showOn="button" 
+									timeZone="#{publDataList.timeZone}" size="10" locale="bg" 
+						         	value="#{publDataList.dateFrom}" label="#{labels['publ.dateFrom']}" >
+						          	<p:ajax event="dateSelect" listener="#{publDataList.checkDates(1)}"  update="formPublList:dateOt formPublList:dateDo formPublList:idPer" />
+						          	<p:ajax event="change" listener="#{publDataList.checkDates(1)}" update="formPublList:dateOt formPublList:dateDo formPublList:idPer" />
+						        </p:calendar>
+						        
+							</div>
+							<div class="p-col-12 p-md-1" >
+								<h:outputText value="#{labels['general.dataDo']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2">
+								<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button" 
+									timeZone="#{publDataList.timeZone}" size="10" locale="bg" 
+						         	value="#{publDataList.dateTo}" label="#{labels['publ.dateTo']}"   
+						          	 >
+						          	<p:ajax event="dateSelect" listener="#{publDataList.checkDates(2)}" update="formPublList:dateOt formPublList:dateDo formPublList:idPer" />
+						          	<p:ajax event="change" listener="#{publDataList.checkDates(2)}" update="formPublList:dateOt formPublList:dateDo formPublList:idPer" />
+							     </p:calendar>  	
+							     
+							</div> 
+							
+					
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2" align="right">
+								<h:outputText value="#{labels['publ.title']}:" />
+							</div>
+							<div class="p-col-12 p-md-10" align="right">
+								<p:inputText id="idTitle" value="#{publDataList.titleF}"/>
+							</div>
+						</div>
+						
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-6" align="left">
+	        					<p:commandButton id="bnt_clear" update="formPublList" action="#{publDataList.actionClear()}"  value="#{labels['general.clear']}" tabindex="-1"/>
+							</div>
+		        			<div class="p-col-12 p-md-6" align="right">	
+	        					<p:commandButton id="bnt_search" update="panelTablePubl" action="#{publDataList.actionFind}"  icon="fa fa-search" value="#{labels['general.search']}" />
+		        				
+        					</div>
+        				</div>
+						
+					    
+				    </div>
+				    </p:panel>
+
+				    <br/>
+				    
+				    <p:panel id="panelTablePubl">
+				    
+				    <f:facet name="header">
+						
+							<h:outputText value="#{labels['menu.publInput']}: #{publDataList.pubListT.rowCount} " styleClass="form-label" rendered="#{publDataList.pubListT.rowCount > 0}"/>
+							
+							<span class="p-mx-2" jsf:rendered="#{publDataList.pubListT.rowCount > 0}"> 
+								<span class="fas fa-ellipsis-v" />
+							</span>	
+							
+							<p:spacer width="5"/>	
+							
+							<p:commandButton id="btnNewPubl" icon="fa fa-fw fa-plus" action="publDataEdit.jsf" ajax="false" title="#{labels['publ.newData']}" value="#{labels['publ.newData']}" styleClass="button-green"/>
+							
+					</f:facet>	
+					
+				    <p:dataTable var="row" value="#{publDataList.pubListT}" id="tablePubl" reflow="true" 
+							rendered="#{publDataList.pubListT.rowCount > 0}" lazy="true" 
+							rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" 
+							rows="6" paginator="true" paginatorPosition="bottom" 
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							style="margin-bottom:20px">
+							
+							<p:column style="text-align: center" width="3%">
+								<f:facet name="header">
+					              <h:outputText value=" #{labels['general.No-symbol']}" /> 
+					            </f:facet>
+								<h:outputText value="#{rkv + 1}" />
+							</p:column>
+							
+							<p:column style="text-align: center" width="3%" exportable="false">
+								<f:facet name="header"/>								
+								<p:commandButton  icon="fa fa-fw fa-edit" actionListener="#{publDataList.changePage()}" action="publDataEdit.jsf" ajax="false" title="#{labels['general.edit']}" >
+								 	<f:param name="idPubl" value="#{row[0]}" />
+								</p:commandButton>								
+							</p:column>
+
+							<p:column headerText="" width="7%" style="text-align:center;" >												
+								<p:graphicImage value="#{publDataList.createImageCont(row[4],30)}" stream="false" height="40px" rendered="#{row[4]!=null}"/>
+							</p:column>
+							
+							<p:column headerText="#{labels['general.section']}" width="19%" sortBy="#{row.A1}" >
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECT_PUBL, row[1], publDataList.currentLang, publDataList.currentDate, publDataList.idUser)}" />
+							</p:column>
+
+							<p:column headerText="#{labels['publ.title']}" width="23%" sortBy="#{row.A5}" >
+								<h:outputText value="#{row[5]}" escape="false"/>
+							</p:column>
+
+							<p:column  headerText="#{labels['general.dataOt']}" width="9%" sortBy="#{row.A2}" style="text-align:center;" >												
+								<h:outputText value="#{row[2]}">	
+									<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{publDataList.timeZone}"/>
+								</h:outputText>
+							</p:column>
+							<p:column  headerText="#{labels['general.dataDo']}" width="9%" sortBy="#{row.A3}" style="text-align:center;" >												
+								<h:outputText value="#{row[3]}">	
+									<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{publDataList.timeZone}"/>
+								</h:outputText>
+							</p:column>
+							
+							<ui:remove><p:column headerText="#{labels['general.anotation']}" width="30%" sortBy="#{row.A4}" >												
+								<h:outputText value="#{row[4]}" escape="false"/>	
+							</p:column></ui:remove>
+		
+
+						</p:dataTable>
+					</p:panel>
+				    
+				</div>
+			</div>
+				
+
+		</h:form>
+		
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

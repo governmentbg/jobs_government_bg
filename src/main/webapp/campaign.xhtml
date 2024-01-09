@@ -1,0 +1,300 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,104)}" />		   
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 68, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+
+		
+
+		<p:tooltip />
+		<h:form id="campForm">
+		 
+		 			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			
+			<!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+						<div class="p-col-fixed back-col">
+							<p:link outcome="campaignList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					     <div class="p-col">  
+							<h3 class="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 68, environment.currentLang, null, null)}</h3>
+						 </div>
+					</div>
+				</div>
+			</div>	
+		
+			<div class="container">
+				<p:focus context="panelCamp"/>
+				<p:outputPanel id="panelData">
+					<div class="container-white">
+				
+					<br />
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton id="bntSave" action="#{campaignBean.actionSave}"  update="campForm:panelData "  icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+						<f:facet name="right">
+							<ibg:compObjAudit id="compJ" idObj="#{campaignBean.camp.id}" codeObj="#{IBConstants.CODE_OBJECT_CAMPAIGN}" />
+						</f:facet>
+					</p:toolbar>					
+					<br />
+					
+					<p:panel style="margin-bottom:10px" id="panelCamp">
+                        
+							<div class="p-grid" >	
+							
+							 	<div class="p-col-12 p-md-12 p-lg-3 cc-right" >
+									<h:outputText value="#{labels['general.vid']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-3">											
+	    							<p:selectOneMenu  height="300px" value="#{campaignBean.camp.typeCamp}" id="type" disabled="#{campaignBean.disabledDates}" >										     
+				                           <f:selectItem value="#{null}" itemValue="#{null}"/> 
+				                           <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_CAMPAIGN_TYPE, campaignBean.today, campaignBean.currentLang, campaignBean.userId)}" 
+		                                    	var="type" itemLabel="#{type.tekst}" itemValue="#{type.code}" />	
+		                                    <p:ajax event="change" update="campForm"  />       				                          
+				                    </p:selectOneMenu>    							
+	    							<p:message for="type" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>                        
+								</div>
+								<div class="p-col-12 p-md-12 p-lg-6 cc-right" >
+								</div>	
+						
+								<div class="p-col-12 p-md-12 p-lg-3 cc-right" >
+									<h:outputText value="#{labels['general.name']}: " styleClass="req"/>
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-9">
+			                        <p:inputText id="name"  value="#{campaignBean.camp.nameCamp}" />
+			                        <p:message for="name" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>    
+		                        </div>
+		                        
+		                       				
+								<div class="p-col-12 p-md-12 p-lg-3 cc-right" >
+									<h:outputText value="#{labels['general.status']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-12 p-lg-3">											
+	    							<p:selectOneMenu  height="300px" value="#{campaignBean.camp.status}" id="status"  >										     
+				                           <f:selectItem value="#{null}" itemValue="#{null}"/> 
+				                           <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_CAMPAIGN_STATUS, campaignBean.today, campaignBean.currentLang, campaignBean.userId)}" 
+		                                    	var="status" itemLabel="#{status.tekst}" itemValue="#{status.code}" />	       				                          
+				                    </p:selectOneMenu>    							
+	    							<p:message for="status" display="tooltip">
+										<p:autoUpdate/>
+									</p:message>                        
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['userEdit.dateStat']}: "  />
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:inputText id="dateStatus"  value="#{campaignBean.camp.statusDate}" disabled="true">
+	    							 	<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{campaignBean.timeZone}"/>
+	    							</p:inputText>
+  
+								</div>
+																							
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right" jsf:rendered="#{campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+									<h:outputText value="#{labels['campaign.addPractice']} " />
+									<h:outputText value="#{labels['campagn.dateBegInputPractice']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3" jsf:rendered="#{campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">											
+	    							<p:calendar id="structureDateFrom" locale="bg" value="#{campaignBean.camp.structureDateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="#{campaignBean.disabledDates}">    								
+	    							</p:calendar>
+									<p:message for="structureDateFrom" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+							
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right" jsf:rendered="#{campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+									<h:outputText value="#{labels['campaign.endDateInputPractice']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3" jsf:rendered="#{campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">											
+	    							<p:calendar id="structureDateTo" locale="bg" value="#{campaignBean.camp.structureDateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="#{campaignBean.disabledDates}"/>
+									<p:message for="structureDateTo" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.beginDateApply']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="begDate" locale="bg" value="#{campaignBean.camp.dateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="#{campaignBean.disabledDates}">
+	    								<p:ajax event="change" update="campForm:endDate" listener="#{campaignBean.actionSetDateTo}" />	  
+	    								<p:ajax event="dateSelect" update="campForm:endDate" listener="#{campaignBean.actionSetDateTo}"/>  
+	    							</p:calendar>
+									<p:message for="begDate" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+							
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.endDateApply']}: " styleClass="req"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="endDate" locale="bg" value="#{campaignBean.camp.dateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="#{campaignBean.disabledDates}"/>
+									<p:message for="endDate" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.rankingDate']}: " styleClass="#{(campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR) ? 'req' : ''}"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="rankingDate" locale="bg" value="#{campaignBean.camp.rankingDate}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="#{campaignBean.disabledDates and campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}"/>
+									<p:message for="rankingDate" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-6">	
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.beginDateConf']}: "  styleClass="#{(campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR) ? 'req' : ''}"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="begDateConf" locale="bg" value="#{campaignBean.camp.confirmDateFrom}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="#{campaignBean.disabledDates and campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+	    								<p:ajax event="change" update="campForm:endDateConf" listener="#{campaignBean.actionSetDateToConfirm}" />	  
+	    								<p:ajax event="dateSelect" update="campForm:endDateConf" listener="#{campaignBean.actionSetDateToConfirm}"/>        
+	    							</p:calendar>
+									<p:message for="begDateConf" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.endDateConf']}: "  styleClass="#{(campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR) ? 'req' : ''}"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="endDateConf" locale="bg" value="#{campaignBean.camp.confirmDateTo}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="#{campaignBean.disabledDates and campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}"/>
+									<p:message for="endDateConf" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.rankingDate2']}: " styleClass="#{(campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR) ? 'req' : ''}"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="rankingDate2" locale="bg" value="#{campaignBean.camp.rankingDate2}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    							 disabled="#{campaignBean.disabledDates and campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}"/>
+									<p:message for="rankingDate2" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<div class="p-col-12 p-md-12 p-lg-6">	
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.beginDateConf2']}: "  styleClass="#{(campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR) ? 'req' : ''}"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="begDateConf2" locale="bg" value="#{campaignBean.camp.confirmDateFrom2}" showOn="button" mask="true" pattern="dd.MM.yyyy" 
+	    							disabled="#{campaignBean.disabledDates and campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}">
+	    								<p:ajax event="change" update="campForm:endDateConf2" listener="#{campaignBean.actionSetDateToConfirm2}" />	  
+	    								<p:ajax event="dateSelect" update="campForm:endDateConf2" listener="#{campaignBean.actionSetDateToConfirm2}"/>            					
+	    							</p:calendar>
+									<p:message for="begDateConf2" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+								
+								<div class="p-col-12 p-md-6 p-lg-3 cc-right">
+									<h:outputText value="#{labels['campaign.endDateConf2']}: "  styleClass="#{(campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR) ? 'req' : ''}"/>
+								</div>
+	
+								<div class="p-col-12 p-md-6 p-lg-3">											
+	    							<p:calendar id="endDateConf2" locale="bg" value="#{campaignBean.camp.confirmDateTo2}" showOn="button" mask="true" pattern="dd.MM.yyyy"
+	    							 disabled="#{campaignBean.disabledDates and campaignBean.camp.typeCamp == IBConstants.CODE_ZNACHENIE_TYPE_CAMPAIGN_CENTR}"/>
+									<p:message for="endDateConf2" display="tooltip">
+											<p:autoUpdate/>
+									</p:message>    
+								</div>
+															
+						</div>
+							
+					</p:panel>	 				
+										
+					<br/>
+					
+						
+					<p:toolbar>
+					
+						<f:facet name="left">
+							<p:commandButton id="bntSaveDown" action="#{campaignBean.actionSave}" update="campForm:panelData "  icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+						
+						<f:facet name="right">
+							<p:commandButton id="bntDelete"  action="#{campaignBean.actionDelete}" rendered="#{campaignBean.camp.id!=null }"
+							 style="color: #d90000;" icon="fa fa-fw fa-trash"  value="#{labels['general.delete']}" update="campForm:panelData" >
+								<p:confirm header="#{labels['general.delete']}" message="#{labels['general.confirm']}" icon="ui-icon-alert" />
+							</p:commandButton>
+						</f:facet>
+						
+						
+					</p:toolbar>
+					
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
+				    </div>
+				</p:outputPanel>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

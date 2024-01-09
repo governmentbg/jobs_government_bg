@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+<f:view locale="#{environment.language}">
+
+	<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+	<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+
+	<h:head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+		<meta charset="UTF-8"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<!--Let browser know website is optimized for mobile-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"></link>
+
+		<!-- meta -->
+		<ui:insert name="metatags"></ui:insert>
+
+		<title><ui:insert name="title">Main</ui:insert></title>
+		<link href="resources/cssExt/primeflex.css" rel="stylesheet"></link>
+		<link href="resources/cssExt/bootstrap-custom.css" rel="stylesheet"></link>
+		<link href="resources/cssExt/main.css" rel="stylesheet"></link>
+		<link href="resources/cssExt/color-blind.css" rel="stylesheet"></link>
+		<link href="resources/cssExt/navbar.css" rel="stylesheet"></link>
+
+		<link href="resources/cssExt/jssocials.css" rel="stylesheet" />
+    	<link href="resources/cssExt/jssocials-theme-flat.css" rel="stylesheet" />
+
+ 		<link rel="shortcut icon" href="./resources/images/favicon.ico"/>
+	</h:head>
+
+   <h:body styleClass="#{cookie.colorBlind.value ? 'color-blind': ''}">
+
+     <!-- AJAX STATUS AND JSF MESSAGE INCLUDE -->
+     <p:ajaxStatus onstart="ajaxStatus(true)" oncomplete="ajaxStatus(false)"/>
+
+     <!-- SESSION EXPIRED MONITOR -->
+      <p:idleMonitor timeout="#{session.maxInactiveInterval * 1000 - 125000}" onidle="PF('sessionDialog').show();" />
+
+
+     <ui:include src="/resources/fragments/ajaxStatus.xhtml"/>
+
+
+		<!-- HEADER -->
+		<header class="header-wrapper">
+			<div class="header">
+	        	<h:form>
+
+	        		<div class="container top-menu-wrapper">
+			            <!-- TOP MENU -->
+			            <div class="top-menu">
+		            		<div class="menu-option" jsf:rendered="#{userData.userId ==null or userData.userId ==-1}">
+		            			<a href="regAdmin.jsf" >
+		            				<span class="icon fas fa-user-edit"></span> #{labels['general.formAdmin']}
+		            			</a>
+		            		</div>
+		            		<div class="menu-option" jsf:rendered="#{userData.hasAccess(7,55)}">
+		            			<span class="icon fas fa-user"></span> #{userData.liceNames}
+		            		</div>
+
+		            		<div class="menu-option font">
+		            			<a href="#" title="#{labels['mainExt.letterSizeMin']}" onclick="font(false)">
+	                            	<span id="decrease-font" class="icon fas fa-font"></span>
+	                               	<span class="icon fas fa-caret-down font-caret"></span>
+	                            </a>
+
+	                            <a href="#" title="100%" onclick="resetFont()">100%</a>
+
+  	                            <a href="#" title="#{labels['mainExt.letterSizePlus']}" onclick="font(true)">
+	                               <span id="increase-font" class="icon fas fa-font"></span>
+	                               <span class="icon fas fa-caret-up font-caret"></span>
+	                            </a>
+
+		            		</div>
+
+		            		<div class="menu-option">
+								<a href="#" title="#{labels['mainExt.changeColor']}" onclick="colorBlind()">
+	                                <span class="icon fas fa-palette"></span>
+	                            </a>
+		            		</div>
+
+		            		<div class="menu-option">
+
+		            			<p:commandLink action="index.jsf?faces-redirect=true" actionListener="#{environment.changeLanguage('bg')}" ajax="false">BG</p:commandLink>
+		            			<span class="separator">|</span>
+								<p:commandLink action="index.jsf?faces-redirect=true" actionListener="#{environment.changeLanguage('en')}" ajax="false">EN</p:commandLink>
+
+		            		</div>
+			            </div>
+	        		</div>
+
+		            <div class="container" style="position: relative">
+
+			            <!-- LOGO & TITLE -->
+			            <div class="logo-container">
+			            	<div class="logos-wrapper">
+			            		<img src="resources/images/gerb.png" class="logo-gerb" alt="#{labels['general.gerbBG']}"/>
+			            		<img src="resources/images/logo.png" class="logo-image"/>
+			            	</div>
+							<div class="logo-text">
+								<h2>#{labels['general.title']}</h2>
+							</div>
+
+			            </div>
+		            </div>
+
+	            </h:form>
+			</div>
+		</header>
+
+		<!-- NAVBAR -->
+		<ui:insert name="menu-items"></ui:insert>
+
+		<!-- CONTENT -->
+		<div class="wrapper page-content">
+
+	  		<p:messages id="messagesGl" showDetail="false" closable="true">
+	  			 <p:autoUpdate />
+	  		</p:messages>
+
+	  		<!-- INSERT CONTENT HERE -->
+			<ui:insert name="content"></ui:insert>
+
+	  	</div>
+
+	  	<!-- FOOTER -->
+		<footer class="footer">
+			<div class="footer-flag">
+			  	<div></div>
+				<div></div>
+				<div></div>
+			</div>
+
+			<div class="container">
+
+				<div class="p-grid footer-links">
+
+					<div class="p-col-12 p-md-4">
+
+						<ul>
+							<li><a href="gdpr.jsf?sect=42" class="footer-link">#{labels['general.gdpr']}</a></li>
+						</ul>
+					</div>
+
+					<div class="p-col-12 p-md-4">
+						<ul>
+
+							<li><a href="uslovia.jsf?sect=43" class="footer-link">#{labels['general.uslovia']}</a></li>
+						</ul>
+
+					</div>
+
+					<div class="p-col-12 p-md-4">
+						<ul>
+							<li><a href="contactForm.jsf" class="footer-link">#{labels['general.footerContacts']}</a></li>
+
+						</ul>
+					</div>
+					<div class="p-col-12 footer-project" style="border-top: 1px solid #fff"><i>
+						#{labels['general.footerText']}
+					</i></div>
+				</div>
+
+				<div class="footer-logos p-grid p-justify-around p-align-center">
+					<a href="#"><img class="footer-logo" src="./resources/images/eu_white.png" alt="eu"/></a>
+					<a href="#"><img class="footer-logo" src="./resources/images/op_white.png" alt="op"/></a>
+
+					<div class="footer-socials p-grid p-align-center" id="shareSocial">
+						<script>
+							$("#shareSocial").jsSocials({
+							    shareIn: "popup",
+							    showLabel: false,
+							    url: "#{systemData.getSettingsValue('oauth.spprovided.id.value')}" ,
+								text: "#{labels['general.title']}",
+							    shares: ["facebook","email"]
+							});
+
+						</script>
+					</div>
+				</div>
+
+				<ui:remove>
+				<!--
+
+				<div class="p-grid footer-links">
+
+					<div class="p-col-12 p-md-4">
+
+						<ul>
+							<li><a href="contactForm.jsf" class="footer-link">#{labels['general.footerContacts']}</a></li>
+							<li><a href="questExtList.jsf" class="footer-link">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 28, environment.currentLang, null, null)}</a></li>
+							<li><a href="gdpr.jsf?sect=42" class="footer-link">#{labels['general.gdpr']}</a></li>
+							<li><a href="uslovia.jsf?sect=43" class="footer-link">#{labels['general.uslovia']}</a></li>
+						</ul>
+					</div>
+
+					<div class="p-col-12 p-md-4">
+
+						<ul>
+							<li><a href="https://iisda.government.bg/competitions/competitions_list" target="_blank" class="footer-link">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 6, environment.currentLang, null, null)}</a></li>
+							<li><a href="adverExtList.jsf"  class="footer-link">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 7, environment.currentLang, null, null)}</a></li>
+							<li><a href="https://iisda.government.bg/ras/executive_power" target="_blank" class="footer-link">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 18, environment.currentLang, null, null)}</a></li>
+						</ul>
+					</div>
+
+					<div class="p-col-12 p-md-4">
+						<div class="footer-heading empty">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 3, environment.currentLang, null, null)}</div>
+						<ul>
+							<li><a href="http://staj.government.bg/" target="_blank"  class="footer-link">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 25, environment.currentLang, null, null)}</a></li>
+							<li><a href="https://www.az.government.bg/pages/programa-start-na-karierata/"  target="_blank"  class="footer-link">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 26, environment.currentLang, null, null)}</a></li>
+						</ul>
+					</div>
+					<div class="p-col-12 footer-project" style="border-top: 1px solid #fff"><i>
+						#{labels['general.footerText']}
+					</i></div>
+				</div>
+
+
+				<div class="footer-logos p-grid p-justify-around p-align-center">
+					<a href="#"><img class="footer-logo" src="./resources/images/eu_white.png" alt="eu"/></a>
+					<a href="#"><img class="footer-logo" src="./resources/images/op_white.png" alt="op"/></a>
+
+					<div class="footer-socials p-grid p-align-center" id="shareSocial">
+						<script>
+							$("#shareSocial").jsSocials({
+							    shareIn: "popup",
+							    showLabel: false,
+							    url: "#{systemData.getSettingsValue('oauth.spprovided.id.value')}" ,
+								text: "#{labels['general.title']}",
+							    shares: ["twitter","facebook","email"]
+							});
+
+						</script>
+					</div>
+				</div>
+				 -->
+				</ui:remove>
+			</div>
+			<div style="color:#2c2e35; text-align:right">v 3.01 ${build.timestamp} #{facesContext.application.projectStage} </div>
+
+		</footer>
+
+
+	   	<!-- SESSION EXPIRED DIALOG -->
+		<p:dialog id="expired-dialog" widgetVar="sessionDialog" modal="true" closable="false" visible="false" resizable="false" showHeader="false" width="400">
+			<div class="expired-wrapper">
+				<h2 class="expired-title">#{labels['general.sessionExpire']}</h2>
+				<div class="expired-text">#{labels['general.sessionExpireRedirect']}</div>
+			</div>
+			<div class="expired-footer">
+				<a href="api/auth/logout" class="expired-button">OK</a>
+			</div>
+		</p:dialog>
+
+	   <!-- COOKIE CONSENT BUTTON -->
+	   <div class="cookie-consent" id="cookies">
+	   		<h:outputText value="#{labels['general.cookies']}" styleClass="cookie-text"/>
+	   		<p:commandButton value="#{labels['general.cookiesAccept']}" styleClass="cookie-button" onclick="cookiesAccepted('cookiesConsent')"/>
+	   </div>
+
+
+	   <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+	   <h:outputScript library="primefaces" name="jquery/jquery-plugins.js" target="head" />
+	   <h:outputScript library="js" name="jquery.hotkeys.js"/>
+	   <h:outputScript library="js" name="jquery.webui-popover.min.js"/>
+	   <h:outputScript library="jsExt" name="mainExt.js"/>
+	   <h:outputScript library="jsExt" name="navbar.js"/>
+	   <h:outputScript library="jsExt" name="carousel.js"/>
+
+	   <h:outputScript library="jsExt" name="jssocials.min.js"  target="head"/>
+
+	   <ui:insert name="cc-script"></ui:insert>
+
+	   	<script>
+			$(document).ready(setContentHeight);
+			$(window).resize(setContentHeight);
+
+			(function() {
+				if(!localStorage.getItem('cookiesConsent')){
+					$('#cookies').show();
+				}
+			})();
+
+		</script>
+
+ 	</h:body>
+</f:view>
+</html>

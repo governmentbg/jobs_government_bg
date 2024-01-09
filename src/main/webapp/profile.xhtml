@@ -1,0 +1,1098 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+		<ui:define name="title">#{labels['profile.title']}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		
+		<ui:define name="content">
+		
+			<style>
+				.right {
+					float: right;
+				}
+				
+				.text-right {
+					text-align: right;
+				}
+				
+				.section-text {
+					font-size: 1.25em;
+					font-variant: small-caps;
+				}
+				
+				.margin-after {
+					margin-bottom: 1em;
+				}
+				
+				.section-separator {
+				    height: 1px;
+				    width: 75%;
+				    margin: 1.75em auto;
+				    background-color: rgba(0, 0, 0, 0.25);
+				    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.10);
+				}
+				
+				.link-button {
+					display: inline-block;
+					padding: 0.5em 1em;
+				}
+				
+				.fa-trash {
+					color: #d22134;
+				}
+				
+				.small-caps {
+					font-variant: small-caps;
+				}
+				
+				.popup {
+					position: relative;
+					display: inline-block;
+				}
+				
+				.popup .icon:hover + .text {
+					visibility: visible;
+					opacity: 1;
+				}
+				
+				.popup .text {
+					pointer-events: none;
+				    background-color: #F9A339;
+				    color: #333333;
+				    box-shadow: 1px 1px 3px 0px #0000005c;
+				    font-weight: bold;
+				    font-size: 0.9em;
+				    border-radius: 3px;
+				    padding: 0.25em 0.5em;
+				    position: absolute;
+				    top: 0;
+				    left: 0;
+				    transform: translateY(-100%) translateY(-10px);
+				    min-width: 100px;
+				    opacity: 0;
+				    visibility: hidden;
+				    transition: opacity 0.1s linear;
+				}
+				
+				.popup .text:after {
+				    content: "";
+				    background-color: #F9A339;
+				    /* box-shadow: 1px 1px 3px 0px #0000005c; */
+				    position: absolute;
+				    width: 10px;
+				    height: 10px;
+				    bottom: -5px;
+				    left: 1em;
+				    transform: rotate(45deg);
+				}
+				
+				.action-button {
+					padding: 0.5em;
+					font-variant: all-petite-caps;
+					transition: background-color 0.1s linear;
+				}
+				
+				.action-button.save {
+					background-color: #0077b3;
+					color: #ffffff;
+				}
+				
+				.action-button.save:hover {
+					background-color: #005783;
+				}
+				
+				body.color-blind .action-button.save {
+					background-color: #000000;
+					color: #ffffff;
+					border: 1px solid #ffffff;
+				}
+				
+				body.color-blind  .action-button.save:hover {
+					background-color: #333333;
+				}
+				
+				@media (max-width: 640px) {
+					.ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title {
+						font-weight: bold;
+					}
+					
+					.ui-datatable-tablewrapper {
+						border-left: 1px solid #dddddd;
+						border-right: 1px solid #dddddd;
+					}
+				}
+				
+				.ui-fileupload-buttonbar {
+				    margin: 0px 0px 0px 0px !important;
+				    padding: 0px 0px 0px 0px !important;
+				    border: none;
+				    position: relative;  
+				    background-color: #fff;
+				    float: right;
+				}
+				
+				.ui-fileupload {
+				    margin: 0px 0px 0px 0px !important;
+				    padding: 0px 0px 0px 0px !important;
+				    display: inline-block;
+				    border: none;
+				   
+				}
+				
+				.ui-fileupload-content { 
+				   border: none;
+				   padding: 0px !important;
+				}
+				
+				.ui-fileupload-files {
+					display: none;
+				}
+				
+				.symbol-counter {
+					font-size: 0.85em;
+					text-align: right;
+				}
+				
+				body.color-blind .button-main {
+					color: #ffff00;
+					border-color: #ffff00;
+				}
+			</style>
+			
+			<h:form id="formProfile" >
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			<p:tooltip/>
+			
+			<!-- PAGE TITLE -->
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{labels['profile.profileFor']}: <span style="margin-left: 1em;">#{profileBean.user.username}</span></h3>
+				</div>
+ 			</div>
+		
+			<div class="container">
+			
+				<!-- TAB LAYOUT -->
+				<p:remoteCommand name="updateTable" update="education_tbl experience_tbl language_tbl files_tbl" /> 
+				<div class="p-grid tab-layout">
+					
+					<!-- TAB DEFINITIONS -->
+					<div class="p-col-12 p-lg-3 column-tabs">
+						<div class="p-grid tabs">
+							
+							<div class="p-lg-12 tab" id="tab-main">
+								<i class="fas fa-user tab-icon"></i>
+								<div class="tab-title">#{labels['profile.description']}</div>
+							</div>
+							
+							<div class="p-lg-12 tab" id="tab-education">
+								<i class="fas fa-scroll tab-icon"></i>
+								<div class="tab-title">#{labels['profile.eduProfExp']}</div>
+							</div>
+							
+							<h:panelGroup layout="block" id="tab-bursary" styleClass=" p-lg-12 tab #{profileBean.userBursar == null ? 'disabled' : ''}" rendered="#{profileBean.userBursar != null}">
+								<i class="fas fa-address-card tab-icon"></i>
+								<div class="tab-title">#{labels['profile.apprBursarData']}</div>
+							</h:panelGroup>
+							
+							<ui:remove>
+								<div class="p-lg-12 tab" id="tab-practices">
+									<i class="fas fa-ad tab-icon"></i>
+									<div class="tab-title">#{labels['profile.practice']}</div>
+								</div>
+							</ui:remove>	
+												
+							<div class="p-lg-12 tab" id="tab-password">
+								<i class="fas fa-unlock-alt tab-icon"></i>
+								<div class="tab-title">#{labels['profile.changePass']}</div>
+							</div>
+							
+							<div class="p-lg-12 tab" id="tab-certificate">
+								<i class="fas fa-shield-alt tab-icon"></i>
+								<div class="tab-title">#{labels['admSettingsCert.title']}</div>
+							</div>
+							
+						</div>
+						
+					</div>
+					
+					<!-- TAB CONTENTS -->
+					<div class="p-col-12 p-lg-9 column-contents">
+						
+						<!-- TAB - MAIN -->
+						<div id="tab-content-main" class="tab-content">
+							<p:outputPanel id="panelFirst" styleClass="margin-after">
+								
+								<div class="p-col-12 title-box">
+									<span class="section-text">#{labels['profile.userInfo']}:</span>
+								</div>
+								
+								<!-- PIN -->
+								<div class="p-grid">
+									<div class="p-col-4">
+										<span class="form-text">#{labels['general.pin']}:</span>
+									</div>
+									<div class="p-col-8">
+										<h:panelGroup rendered="#{profileBean.user.userAdd.pin != null}" styleClass="bolded">#{profileBean.user.userAdd.pin}</h:panelGroup>
+										<h:panelGroup rendered="#{profileBean.user.userAdd.pin == null}">#{beanMessages['profile.generatePin']}</h:panelGroup>
+									</div>
+								</div>
+
+								<!-- NAME -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="name" value="#{labels['general.fname']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:inputText id="name" value="#{profileBean.user.userAdd.name}"/>
+										<p:message for="name" display="tooltip"> <p:autoUpdate/> </p:message>
+									</div>
+								</div>
+								
+								<!-- FATHER'S NAME -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="surname" value="#{labels['general.secondName']}:"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:inputText id="surname" value="#{profileBean.user.userAdd.surname}"/>
+									</div>
+								</div>
+							
+								<!-- SURNAME -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="family" value="#{labels['general.lname']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:inputText id="family" value="#{profileBean.user.userAdd.family}"/>
+										<p:message for="family" display="tooltip"> <p:autoUpdate/> </p:message>
+									</div>
+								</div>
+								
+								<!-- APPLY FOR -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="applyFor" value="#{labels['profile.candidateFor']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">						
+										<p:selectOneMenu value="#{profileBean.user.userAdd.applyFor}" id="applyFor">  
+											<p:ajax update="formProfile:studentDataPanel" listener="#{profileBean.actionChangedApplyFor}" />                             
+		                               		<f:selectItem itemLabel="" itemValue="" />
+		                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_APPLY_FOR, now, profileBean.currentLang, profileBean.userId)}"  
+		                                    			   var="apply" itemLabel="#{apply.tekst}" itemValue="#{apply.code}" />			                                    
+		                                </p:selectOneMenu>
+		                                <p:tooltip for="applyFor" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('applyFor', view).clientId)}">
+											<p:message for="applyFor"  display="text" style="color:#ffffff; background:none; border:0px">
+												<p:autoUpdate/>
+											</p:message>
+										</p:tooltip>
+		                                
+									</div>
+								</div>
+
+								<!-- EMAIL -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="email" value="#{labels['general.email']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:inputText id="email" value="#{profileBean.user.email}" maxlength="100"/>
+										<p:message for="email" display="tooltip"> <p:autoUpdate/> </p:message>
+									</div>
+								</div>
+								<ui:remove>
+								<!-- ADDRESS -->
+								<div class="p-grid">
+									<div class="p-col-12 p-lg-4">
+										<span class="form-text">#{labels['profile.adresCoresp']}:</span>
+									</div>
+									<div class="p-col-12 p-lg-8">
+										<!-- REGION -->
+										<div class="p-grid space-before-sm">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel for="region" value="#{labels['general.oblast']}:"/>
+											</div>
+											<div class="p-col-12 p-md-8">
+												<p:selectOneMenu id="region" value="#{profileBean.user.userAdd.region}" filter="true" filterMatchMode="contains">
+													<f:selectItem itemLabel="" itemValue="" />
+													<f:selectItems value="#{profileBean.regionList}" var="region" itemLabel="#{region.tekst}" itemValue="#{region.code}"/>
+													<p:ajax event="change" update="formProfile:municipality formProfile:town" listener="#{profileBean.actionChangedRegion}"/>
+												</p:selectOneMenu>
+											</div>
+										</div>
+										
+										<!-- MUNICIPALITY -->
+										<div class="p-grid space-before-sm">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel for="municipality" value="#{labels['general.obshtina']}:"/>
+											</div>
+											<div class="p-col-12 p-md-8">
+												<p:selectOneMenu id="municipality" value="#{profileBean.user.userAdd.municipality}" filter="true" filterMatchMode="contains">
+													<f:selectItem itemLabel="" itemValue="" />
+													<f:selectItems value="#{profileBean.municipalityList}" var="municipality" itemLabel="#{municipality.tekst}" itemValue="#{municipality.code}"/>
+													<p:ajax event="change" update="formProfile:town" listener="#{profileBean.actionChangedMunicipality}"/>
+												</p:selectOneMenu>
+											</div>
+										</div>
+										
+										<!-- TOWN -->
+										<div class="p-grid space-before-sm">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel for="town" value="#{labels['general.nasMiasto']}:"/>
+											</div>
+											<div class="p-col-12 p-md-8">
+												<p:selectOneMenu id="town" value="#{profileBean.user.userAdd.town}" filter="true" filterMatchMode="contains">
+													<f:selectItem itemLabel="" itemValue="" />
+													<f:selectItems value="#{profileBean.townList}" var="town" itemLabel="#{town.tekst}" itemValue="#{town.code}"/>
+												</p:selectOneMenu>			
+											</div>
+										</div>
+										
+										<!-- STREET -->
+										<div class="p-grid space-before-sm">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel for="adres" value="Квартал, Улица, №, вх. ет. ап:"/>
+											</div>
+											<div class="p-col-12 p-md-8">
+												<p:inputText id="adres" value="#{profileBean.user.userAdd.address}"/>
+											</div>
+										</div>
+										
+									</div>
+								</div>
+								</ui:remove>
+								<!-- PHONE -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="phone" value="#{labels['general.telefon']}:"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:inputText id="phone" value="#{profileBean.user.phone}"/>
+									</div>
+								</div>
+								<ui:remove>
+								<!-- LINKEDIN -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="linkedin" value="#{labels['profile.linkedIn']}:"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:inputText id="linkedin" value="#{profileBean.user.userAdd.linkedIn}"/>
+									</div>
+								</div>
+								
+								<!-- INTERESTS -->
+								<div class="p-grid">
+									<div class="p-col-12 p-lg-4">
+										<p:outputLabel for="interests" value="#{labels['profile.interesi']}:" />
+									</div>
+									<div class="p-col-12 p-lg-8">
+										<p:inputTextarea id="interests" value="#{profileBean.user.userAdd.interests}" maxlength="500"/>
+									</div>
+								</div>
+								</ui:remove>
+								<div class="p-grid">
+									<div class="p-col-12">
+										<h:outputText value="#{labels['profile.problems']}" style="font-style: italic;" />
+									</div>
+								</div>
+				
+								<!-- MOBILITY PROBLEMS -->
+								<div class="p-grid">
+									<h:panelGroup layout="block" styleClass="p-col-4 #{profileBean.user.userAdd.candidateStatus == IBConstants.CODE_ZNACH_CANDIDATE_APPROVED ? 'req' : ''}">
+										<p:outputLabel for="probMove" value="#{labels['profile.motorProblems']}:" />
+									</h:panelGroup>
+									<div class="p-col-8">
+										<p:selectOneRadio id="probMove" value="#{profileBean.user.userAdd.mobilityProblems}">
+											<f:selectItem itemValue="true" itemLabel="#{labels['general.yes']}"/>
+											<f:selectItem itemValue="false" itemLabel="#{labels['general.no']}"/>
+										</p:selectOneRadio>
+										<p:message for="probMove" display="tooltip"> <p:autoUpdate/> </p:message>
+									</div>
+								</div>
+								
+								<!-- HEARING PROBLEMS -->
+								<div class="p-grid margin-after">
+									<h:panelGroup layout="block" class="p-col-4 #{profileBean.user.userAdd.candidateStatus == IBConstants.CODE_ZNACH_CANDIDATE_APPROVED ? 'req' : ''}">
+										<p:outputLabel for="probHear" value="#{labels['profile.hearProblems']}:" />
+									</h:panelGroup>
+									<div class="p-col-8">
+										<p:selectOneRadio id="probHear" value="#{profileBean.user.userAdd.hearingProblems}">
+											<f:selectItem itemValue="true" itemLabel="#{labels['general.yes']}"/>
+											<f:selectItem itemValue="false" itemLabel="#{labels['general.no']}"/>
+										</p:selectOneRadio>
+										<p:message for="probHear" display="tooltip"> <p:autoUpdate/> </p:message>
+									</div>
+								</div>
+								
+								<!-- STUDENT DATA -->
+								<h:panelGroup id="studentDataPanel">
+									<p:outputPanel rendered="#{profileBean.user.userAdd.applyFor == IBConstants.CODE_ZNACH_CANDIDATE_BURSARY}">
+										<div class="p-col-12 title-box">
+											<span class="section-text">#{labels['profile.studentData']}:</span>
+										</div>
+				
+										<!-- STUDENT EDUCATION DEGREE -->
+										<div class="p-grid">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel for="studentDegree" value="#{labels['profile.studentDegree']}:" styleClass="req"/>
+											</div>
+											<div class="p-col-12 p-md-8">
+												<p:selectOneMenu value="#{profileBean.user.userStudent.educationDegree}" id="studentDegree">                                     
+								                   <f:selectItem itemLabel="" itemValue="" />
+								                   <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, now, profileBean.currentLang, profileBean.userId)}"  
+								                   			   var="degree" itemLabel="#{degree.tekst}" itemValue="#{degree.code}" />			                                    
+								               	</p:selectOneMenu>
+								               	<p:tooltip for="studentDegree" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('studentDegree', view).clientId)}">
+													<p:message for="studentDegree" display="text" style="color:#ffffff; background:none; border:0px">
+														<p:autoUpdate/>
+													</p:message>
+												</p:tooltip>
+											</div>
+										</div>
+										
+										<!-- STUDENT COURSE -->
+										<div class="p-grid">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel for="studentCourse" value="#{labels['profile.studentCourse']}:" styleClass="req"/>
+											</div>
+											<div class="p-col-12 p-md-8">
+												<p:selectOneMenu value="#{profileBean.user.userStudent.course}" id="studentCourse">
+													<f:selectItem itemLabel="" itemValue="" />
+													<f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_STUDENT_COURSE, now, profileBean.currentLang, profileBean.userId)}"  
+								                   			   var="course" itemLabel="#{course.tekst}" itemValue="#{course.code}" />
+												</p:selectOneMenu>
+												<p:tooltip for="studentCourse" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('studentCourse', view).clientId)}">
+													<p:message for="studentCourse" display="text" style="color:#ffffff; background:none; border:0px">
+														<p:autoUpdate/>
+													</p:message>
+												</p:tooltip>
+											</div>
+										</div>
+										
+										
+										<!-- STUDENT University -->
+										<div class="p-grid margin-after">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel for="studentSubject" value="#{labels['bursary.university']}:" styleClass="req"/>
+											</div>
+											<div class="p-col-12 p-md-8">
+												<div class="ibg-modal-button">									
+									 				<p:inputText value="#{profileBean.studentUniText}" id="studentUniversity" readonly="true" placeholder="#{labels['bursary.university']}"/>
+									 				<ibg:selectOneModal header="#{labels['bursary.university']}" userId="#{profileBean.userId}" lang="#{profileBean.currentLang}" 
+									 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_UNIVERSITY}"     
+									 				selectedCode="#{profileBean.studentUni}" selectedText="#{profileBean.studentUniText}" update="formProfile:studentUniversity" 
+									 				/>
+									 				<p:message for="studentUniversity" display="tooltip"><p:autoUpdate/></p:message>
+										 		</div>   
+											</div>
+										</div>
+										
+										<!-- STUDENT SUBJECT -->
+										<div class="p-grid margin-after">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel for="studentSubject" value="#{labels['bursary.subject']}:" styleClass="req"/>
+											</div>
+											<div class="p-col-12 p-md-8">
+												<div class="ibg-modal-button">									
+									 				<p:inputText value="#{profileBean.studentSubjectText}" id="studentSubject" readonly="true" placeholder="#{labels['bursary.subject']}"/>
+									 				<ibg:selectOneModal header="#{labels['bursary.subject']}" userId="#{profileBean.userId}" lang="#{profileBean.currentLang}" 
+									 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_SUBJECT}"     
+									 				selectedCode="#{profileBean.studentSubject}" selectedText="#{profileBean.studentSubjectText}" update="formProfile:studentSubject formProfile:edArea" 
+									 				/>
+									 				<p:message for="studentSubject" display="tooltip"><p:autoUpdate/></p:message>
+										 		</div>   
+											</div>
+										</div>
+										
+										<div class="p-grid margin-after">
+											<div class="p-col-12 p-md-4">
+												<p:outputLabel value="#{labels['practice.educationArea']}:" />
+											</div>
+											<div class="p-col-12 p-md-8">
+												<p:inputText id="edArea" value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, profileBean.user.userStudent.educationArea , profileBean.currentLang, now, profileBean.userId)}" readonly="true"/>
+											</div>
+										</div>
+									
+									</p:outputPanel>
+								</h:panelGroup>
+									
+								<!-- AGREEMENTS -->
+								<div class="p-grid">
+									
+									<!-- SEARCH AGREEMENT -->	
+									<div class="p-col-10">
+										<p:outputLabel for="agreeSearch" value="#{labels['profile.declare']}:" />
+									</div>
+									<div class="p-col-2">
+										<p:selectBooleanCheckbox id="agreeSearch" value="#{profileBean.user.userAdd.searchAgreement}" />
+										
+									</div>
+									
+									<!-- CONDITIONS AGREEMENT -->
+									<div class="p-col-10">
+										<p:outputLabel for="agreeConditions" value="#{labels['profile.uslovia']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-2">
+										<p:selectBooleanCheckbox id="agreeConditions" value="#{profileBean.user.userAdd.conditionsAgreement}"/>
+										<p:tooltip for="agreeConditions" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('agreeConditions', view).clientId)}">
+										<p:message for="agreeConditions" display="text" style="color:#ffffff; background:none; border:0px">
+											<p:autoUpdate/>
+										</p:message>
+									</p:tooltip>
+									</div>
+										
+								</div>
+
+							</p:outputPanel>
+								
+							<!-- CONFIRM BUTTONS -->
+							<div class="p-grid">
+								<div class="p-col-12 text-right">
+									<p:commandLink styleClass="action-button save" action="#{profileBean.actionSubmitFirstTab}" update="formProfile:panelFirst" oncomplete="scrollToErrors()">
+										<span class="icon"><i class="fas fa-save"></i></span>
+										<span class="text">#{labels['general.save']}</span>
+									</p:commandLink>
+								</div>
+							</div>
+							
+						</div>
+						
+						<!--  TAB EDUCATION, EXPERIENCE -->
+						<div id="tab-content-education" class="tab-content">
+							<p:outputPanel id="panelSecond" styleClass="margin-after">
+						
+						 							 		
+								<!-- SECTION -->
+								<div class="p-grid" id="sectionEducation">
+									<div class="p-col-12 title-box">
+										<span class="section-text">#{labels['profile.education']}</span>
+										<!-- NEW EDUCATION BUTTON -->
+										<p:commandButton class="button-add right" icon="fa fa-plus" onclick="$('.add-education').slideToggle();" id="buttonNewEdu" global="false"/>
+										<p:tooltip for="buttonNewEdu" value="#{labels['profile.addEducation']}" position="left"/>
+									</div>
+								</div>
+								
+								<!--  NEW EDUCATION -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-9">
+										<div class="add-education" style="display: none;">
+											<p:outputPanel id="newEducationForm">
+												<div class="p-grid" style="border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 3px;">
+													<div class="p-col-12 small-caps">
+														<h:outputText value="#{labels['profile.addEducation']}:"/>
+													</div>
+													
+													<!--  NEW EDUCATION DEGREE -->
+													<div class="p-col-12 p-md-4">
+														<p:outputLabel for="newEducationDegree" value="#{labels['profile.eduDegreeShort']}:"/>
+													</div>
+													<div class="p-col-12 p-md-8">
+														<p:selectOneMenu value="#{profileBean.newEducation.educationDegree}" id="newEducationDegree" autoWidth="false" filter="true" filterMatchMode="contains">
+															<p:ajax update="formProfile:addEducationButton"/>
+															<f:selectItem itemLabel="" itemValue="" />                                     
+										                   	<f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, now, profileBean.currentLang, profileBean.userId)}"  
+										                   			   var="degree" itemLabel="#{degree.tekst}" itemValue="#{degree.code}" />			                                    
+										               	</p:selectOneMenu>
+													</div>
+													
+													<!-- NEW EDUCATION CATEGORY -->
+													<div class="p-col-12 p-md-4">
+														<p:outputLabel for="newEducationCategory" value="#{labels['profile.eduField']}:"/>
+													</div>
+													<div class="p-col-12 p-md-8">
+														<p:selectOneMenu value="#{profileBean.newEducation.category}" id="newEducationCategory" autoWidth="false" panelStyle="max-width: 90%;" filter="true" filterMatchMode="contains">
+															<p:ajax event="change" update="formProfile:addEducationButton formProfile:newEducationSubject" listener="#{profileBean.actionChangedCategory}"/>
+															<f:selectItem itemLabel="" itemValue="" />                                     
+										                   	<f:selectItems value="#{profileBean.educationCategoriesList}"  
+										                   			   var="category" itemLabel="#{category.tekst}" itemValue="#{category.code}" />            
+										               	</p:selectOneMenu>
+													</div>
+													
+													<!-- NEW EDUCATION SUBJECT -->
+													<div class="p-col-12 p-md-4">
+														<p:outputLabel for="newEducationSubject" value="#{labels['bursary.subject']}:"/>
+													</div>
+													<div class="p-col-12 p-md-8">												 		
+												 		<p:selectOneMenu id="newEducationSubject" value="#{profileBean.newEducation.subject}" autoWidth="false" panelStyle="max-width: 90%;" filter="true" filterMatchMode="contains">
+												 			<p:ajax event="change" update="formProfile:addEducationButton"/>
+															<f:selectItem itemLabel="" itemValue="" />
+															<f:selectItems value="#{profileBean.educationSubjectList}" var="subject" itemLabel="#{subject.tekst}" itemValue="#{subject.code}"/>
+														</p:selectOneMenu>
+													</div>
+													
+													<!-- SAVE EDUCATION BUTTON -->
+													<div class="p-col-12">
+														<div class="popup">
+															<p:commandLink id="addEducationButton" class="button-main link-button icon" action="#{profileBean.addEducation()}" update="formProfile:education_tbl formProfile:newEducationForm"
+																disabled="#{profileBean.newEducation.educationDegree == null || profileBean.newEducation.category == null || profileBean.newEducation.subject == null}">
+																<i class="fas fa-save"></i>
+															</p:commandLink>
+															<div class="text">#{labels['general.save']}</div>
+														</div>
+													</div>
+												</div>
+											</p:outputPanel>
+										</div>
+									</div>
+								</div>
+								
+								<!-- EDUCATION TABLE -->
+								<div class="p-grid margin-after">
+									<div class="p-col-12">
+										<p:dataTable id="education_tbl" rowIndexVar="index" var="row" value="#{profileBean.user.userEducation}" emptyMessage="#{labels['profile.noEdu']}" reflow="true">
+											
+											<p:column headerText="#{labels['general.No-symbol']}" style="" width="5%" responsivePriority="4">
+												<h:outputText value="#{index + 1}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['profile.eduDegreeShort']}">
+												<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, row.educationDegree, profileBean.currentLang, now, profileBean.userId)}"
+															  title="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, row.educationDegree, profileBean.currentLang, now, profileBean.userId)}"/>
+											</p:column>
+										 
+											<p:column headerText="#{labels['profile.eduField']}">
+												<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row.category, profileBean.currentLang, now, profileBean.userId)}"
+															  title="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row.category, profileBean.currentLang, now, profileBean.userId)}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['bursary.subject']}">
+												<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row.subject, profileBean.currentLang, now, profileBean.userId)}"
+															  title="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row.subject, profileBean.currentLang, now, profileBean.userId)}" />
+											</p:column>
+											
+											<p:column width="60" style="text-align: right;">
+												<p:commandButton action="#{profileBean.deleteEducation(index)}" update="formProfile:education_tbl" title="#{labels['general.delete']}" icon="fa fa-fw fa-trash">
+													<p:confirm header="" message="#{labels['general.confirmDelete']}" icon="fa fa-exclamation-triangle" />
+												</p:commandButton>
+											</p:column>
+											
+										</p:dataTable>
+									</div>
+								</div>
+			
+								<!-- SECTION -->
+								<div class="p-grid" id="sectionExperience">
+									<div class="p-col-12 title-box">
+										<span class="section-text">#{labels['profile.expYears']}:</span>
+										<!-- NEW EXPERIENCE BUTTON -->
+										<p:commandButton class="button-add right" icon="fa fa-plus" onclick="$('.add-experience').slideToggle();" id="buttonNewExp" global="false"/>
+										<p:tooltip for="buttonNewExp" value="#{labels['profile.addExperience']}" position="left"/>
+									</div>
+								</div>
+			
+								<!--  NEW EXPERIENCE -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-9">
+										<div class="add-experience" style="display: none;">
+											<p:outputPanel id="newExperienceForm">
+												<div class="p-grid" style="border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 3px;">
+													<div class="p-col-12 small-caps">
+														<h:outputText value="#{labels['profile.addExperience']}:"/>
+													</div>
+													
+													<!-- NEW EXPERIENCE YEARS -->
+													<div class="p-col-12 p-md-4">
+														<p:outputLabel for="newExperienceYears" value="#{labels['profile.years']}:"/>
+													</div>
+													<div class="p-col-12 p-md-8">
+														<p:inputNumber id="newExperienceYears" value="#{profileBean.newExperience.years}" minValue="0" maxValue="99" decimalPlaces="0">
+															<p:ajax event="keyup" update="formProfile:addExperienceButton" />
+														</p:inputNumber>
+													</div>
+													
+													<!-- NEW EXPERIENCE POSITION -->
+													<div class="p-col-12 p-md-4">
+														<p:outputLabel for="newExperiencePosition" value="#{labels['advertisement.dlajnost']}:"/>
+													</div>
+													<div class="p-col-12 p-md-8">														
+														<div class="ibg-modal-button">									
+											 				<p:inputText value="#{profileBean.newExperiencePositionText}" id="newExperiencePosition" readonly="true" placeholder="#{labels['advertisement.dlajnost']}"/>
+											 				<ibg:selectOneModal header="#{labels['advertisement.dlajnost']}" userId="#{profileBean.userId}" lang="#{profileBean.currentLang}" 
+												 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_JOBS}"
+												 	 			selectedCode="#{profileBean.newExperience.position}" selectedText="#{profileBean.newExperiencePositionText}" update="formProfile:newExperiencePosition formProfile:addExperienceButton" />
+												 		</div>
+													</div>
+													
+													<!-- NEW EXPERIENCE INFO -->
+													<div class="p-col-12 p-md-4">
+														<p:outputLabel for="newExperienceInfo" value="#{labels['profile.descInfo']}"/>
+													</div>
+													<div class="p-col-12 p-md-8">
+														<p:inputTextarea id="newExperienceInfo" value="#{profileBean.newExperience.addInfo}" autoResize="true" maxlength="500">
+															<p:ajax event="keyup" update="formProfile:addExperienceButton" global="false" oncomplete="setCounter()"/>
+														</p:inputTextarea>
+														<div class="symbol-counter">0/500</div>
+													</div>
+													
+													<!-- SAVE EXPERIENCE BUTTON -->
+													<div class="p-col-12">
+														<div class="popup">
+															<p:commandLink id="addExperienceButton" class="button-main link-button icon" action="#{profileBean.addExperience()}" update="formProfile:experience_tbl formProfile:newExperienceForm"
+																disabled="#{(profileBean.newExperience.years == null) || (profileBean.newExperience.position == null and (profileBean.newExperience.addInfo == null || profileBean.newExperience.addInfo.length() &lt; 1))}">
+																<i class="fas fa-save"></i>
+															</p:commandLink>
+															<div class="text">#{labels['general.save']}</div>
+														</div>
+													</div>
+												</div>
+											</p:outputPanel>
+										</div>
+									</div>
+								</div>
+								
+								<!-- EXPERIENCE TABLE -->
+								<div class="p-grid margin-after">
+									<div class="p-col-12">
+										<p:dataTable id="experience_tbl" rowIndexVar="index" var="row" value="#{profileBean.user.userExperience}" emptyMessage="#{labels['profile.noExp']}" reflow="true">
+											
+											<p:column headerText="#{labels['general.No-symbol']}" width="5%">
+												<h:outputText value="#{index + 1}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['profile.years']}" width="10%">
+												<h:outputText value="#{row.years}" title="#{row.years}"/>
+											</p:column>
+										 
+											<p:column headerText="#{labels['advertisement.dlajnost']}">
+												<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_JOBS, row.position, profileBean.currentLang, now, profileBean.userId)}"
+															  title="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_JOBS, row.position, profileBean.currentLang, now, profileBean.userId)}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['profile.descInfo']}:">
+												<h:outputText value="#{row.addInfo}" title="#{row.addInfo}" />
+											</p:column>
+											
+											<p:column width="60" style="text-align: right;">
+												<p:commandButton action="#{profileBean.deleteExperience(index)}" update="formProfile:experience_tbl" title="#{labels['general.delete']}" icon="fa fa-fw fa-trash">
+													<p:confirm header="" message="#{labels['general.confirmDelete']}" icon="fa fa-exclamation-triangle" />
+												</p:commandButton>
+											</p:column>
+											
+										</p:dataTable>
+									</div>
+								</div>
+
+								<!-- SECTION -->
+								<div class="p-grid" id="sectionLanguages">
+									<div class="p-col-12 title-box">
+										<span class="section-text">#{labels['profile.forLangs']}:</span>
+										<!-- NEW LANGUAGE BUTTON -->
+										<p:commandButton class="button-add right" icon="fa fa-plus" onclick="$('.add-language').slideToggle();" id="buttonNewLan" global="false"/>
+										<p:tooltip for="buttonNewLan" value="#{labels['profile.addLanguage']}" position="left"/>
+									</div>
+								</div>
+								
+								<!--  NEW lANGUAGE -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-9">
+										<div class="add-language" style="display: none;">
+											<p:outputPanel id="newLanguageForm">
+												<div class="p-grid" style="border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 3px;">
+													<div class="p-col-12 small-caps">
+														<h:outputText value="#{labels['profile.addLanguage']}:"/>
+													</div>
+													
+													<!-- NEW LANGUAGE LANUAGE-->
+													<div class="p-col-12 p-md-4">
+														<p:outputLabel for="newLanguageLang" value="#{labels['profile.lang']}:"/>
+													</div>
+													<div class="p-col-12 p-md-8">													
+														<p:selectOneMenu value="#{profileBean.newLanguage.language}" id="newLanguageLang" autoWidth="false" filter="true" filterMatchMode="contains">
+															<p:ajax update="formProfile:addLanguageButton" />
+															<f:selectItem itemLabel="" itemValue="" />                                     
+										                   	<f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_LANGUAGES, now, profileBean.currentLang, profileBean.userId)}"  
+										                   			   var="lang" itemLabel="#{lang.tekst}" itemValue="#{lang.code}" />            
+										               	</p:selectOneMenu>
+													</div>
+													
+													<!-- NEW LANGUAGE LEVEL -->
+													<div class="p-col-12 p-md-4">
+														<p:outputLabel for="newLanguageLevel" value="#{labels['profile.langLevel']}"/>
+													</div>
+													<div class="p-col-12 p-md-8">
+														<p:selectOneMenu value="#{profileBean.newLanguage.level}" id="newLanguageLevel" autoWidth="false">
+															<p:ajax update="formProfile:addLanguageButton" />
+															<f:selectItem itemLabel="" itemValue="" />                                     
+										                   	<f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_LANGUAGE_LEVEL, now, profileBean.currentLang, profileBean.userId)}"  
+										                   			   var="level" itemLabel="#{level.tekst}" itemValue="#{level.code}" />            
+										               	</p:selectOneMenu>
+													</div>
+													
+													<!-- SAVE LANGUAGE BUTTON -->
+													<div class="p-col-12">
+														<div class="popup">
+															<p:commandLink id="addLanguageButton" class="button-main link-button icon" action="#{profileBean.addLanguage()}" update="formProfile:language_tbl formProfile:newLanguageForm"
+																disabled="#{profileBean.newLanguage.language == null || profileBean.newLanguage.level == null}">
+																<i class="fas fa-save"></i>
+															</p:commandLink>
+															<div class="text">#{labels['general.save']}</div>
+														</div>
+													</div>
+												</div>
+											</p:outputPanel>
+										</div>
+									</div>
+								</div>
+							
+								<!-- LANGUAGES TABLE -->
+								<div class="p-grid margin-after">
+									<div class="p-col-12">
+										<p:dataTable id="language_tbl" rowIndexVar="index" var="row" value="#{profileBean.user.userLanguages}" emptyMessage="#{labels['profile.noLan']}" reflow="true">
+											<p:column headerText="#{labels['general.No-symbol']}" width="5%">
+												<h:outputText value="#{index + 1}" />
+											</p:column>
+										 
+											<p:column headerText="#{labels['profile.lang']}" width="60%">
+												<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_LANGUAGES, row.language, profileBean.currentLang, now, profileBean.userId)}"
+															  title="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_LANGUAGES, row.language, profileBean.currentLang, now, profileBean.userId)}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['profile.langLevel']}" width="40%">
+												<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_LANGUAGE_LEVEL, row.level, profileBean.currentLang, now, profileBean.userId)}"
+															  title="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_LANGUAGE_LEVEL, row.level, profileBean.currentLang, now, profileBean.userId)}"/>
+											</p:column>
+											
+											<p:column width="60" style="text-align: right;">
+												<p:commandButton action="#{profileBean.deleteLanguage(index)}" update="formProfile:language_tbl" title="#{labels['general.delete']}" icon="fa fa-fw fa-trash">
+													<p:confirm header="" message="#{labels['general.confirmDelete']}" icon="fa fa-exclamation-triangle" />
+												</p:commandButton>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							
+								<!-- FILES -->
+								<div class="p-grid">
+									<div class="p-col-12 title-box">
+										<span class="section-text">#{labels['general.attachedDoc']}:</span>
+										<p:fileUpload
+											mode="advanced" 
+											skinSimple="true"
+											auto="true"
+											multiple="true"
+											previewWidth="10"
+											update="formProfile:files_tbl"
+											label=""
+											styleClass="right"
+											allowTypes="#{systemData.getSettingsValue('fileExtensionsForAttaching')}"
+											listener="#{profileBean.fileUpload}"
+											invalidSizeMessage="#{labels['general.invalidFileSize']}" 
+					    					invalidFileMessage="#{labels['general.invalidFileTypeAt']}"/>
+									</div>
+								</div>
+
+								<!-- FILES TABLE -->
+								<div class="p-grid">
+									<div class="p-col-12">
+										<p:dataTable id="files_tbl" rowIndexVar="index" var="row" value="#{profileBean.filesList}" styleClass="paginator-custom"
+											emptyMessage="#{labels['profile.noFiles']}" rows="10" paginator="true" reflow="true" paginatorPosition="bottom"
+											paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+											
+											<p:column headerText="#{labels['general.No-symbol']}" width="5%" >
+												<h:outputText value="#{index + 1}" />
+											</p:column>
+
+											<p:column headerText="#{labels['file.filename']}">
+									             <h:outputText value="#{row.filename}" escape="false" />									             
+									        </p:column>
+									        
+									        <p:column width="100" style="text-align: right;">
+								        		<p:commandButton  id="download" ajax="false" actionListener="#{profileBean.fileDownload(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" style="margin-right: 8px;"/> 
+												<p:commandButton action="#{profileBean.deleteFile(index)}" update="formProfile:files_tbl" icon="fa fa-fw fa-trash" title="#{labels['general.delete']}">
+													<p:confirm header="" message="#{labels['general.confirmDelete']}" icon="fa fa-exclamation-triangle" />
+												</p:commandButton>
+											</p:column>
+											
+										</p:dataTable>
+									</div>
+								</div>
+
+							</p:outputPanel>
+							
+							<!-- CONFIRM BUTTONS -->
+							<div class="p-grid">
+								<div class="p-col-12 text-right">
+									<p:commandLink styleClass="action-button save" action="#{profileBean.actionSubmitSecondTab}" update="formProfile:panelSecond" oncomplete="scrollToErrors()">
+										<span class="icon"><i class="fas fa-save"></i></span>
+										<span class="text">#{labels['general.save']}</span>
+									</p:commandLink>
+								</div>
+							</div>
+						</div>
+						
+						<!-- TAB BURSARY -->
+						<div id="tab-content-bursary" class="tab-content">
+							<p:outputPanel rendered="#{profileBean.userBursar != null}">
+								<div class="p-grid">
+									<div class="p-col-12 p-md-8">
+										<span class="form-text">#{labels['bursary.bursaryTerm']}:</span>
+									</div>
+									<div class="p-col-12 p-md-4">
+					           			<h:outputText value="#{profileBean.userBursar.bursaryTerm != null ? profileBean.userBursar.bursaryTerm : 'N/A'}" />
+									</div>
+								</div>
+							
+								<div class="p-grid">
+									<div class="p-col-12 p-md-8">
+										<span class="form-text">#{labels['bursary.graduationTerm']}:</span>
+									</div>
+									<div class="p-col-12 p-md-4">
+					           			<h:outputText value="#{profileBean.userBursar.graduationTerm != null ? profileBean.userBursar.graduationTerm : 'N/A'}" />
+									</div>
+								</div>
+								
+								<div class="p-grid">
+									<div class="p-col-12 p-md-8">
+										<span class="form-text">#{labels['bursary.jobTerm']}:</span>
+									</div>
+									<div class="p-col-12 p-md-4">
+					           			<h:outputText value="#{profileBean.userBursar.jobTerm != null ? profileBean.userBursar.jobTerm : 'N/A'}" />
+									</div>
+								</div>
+							</p:outputPanel>
+
+						</div>
+					
+						<!-- TAB PASSWORD -->
+						<div id="tab-content-password" class="tab-content">
+							<p:outputPanel id="panelPassword" styleClass="margin-after">
+							
+								<!-- PASSWORD -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="pass" value="#{labels['general.pass']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:password id="pass" value="#{profileBean.password[0]}" />
+										<p:message for="pass" display="tooltip"><p:autoUpdate/></p:message>
+									</div>
+								</div>
+								
+								<!-- NEW PASSWORD -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="pass-new" value="#{labels['general.passNew']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:password id="pass-new" value="#{profileBean.password[1]}"/>
+										<p:message for="pass-new" display="tooltip"><p:autoUpdate/></p:message>
+									</div>
+								</div>
+								
+								<!-- NEW PASSWORD -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="pass-new2" value="#{labels['general.pass1']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:password id="pass-new2" value="#{profileBean.password[2]}"/>
+										<p:message for="pass-new2" display="tooltip"><p:autoUpdate/></p:message>
+									</div>
+								</div>
+								
+							</p:outputPanel>
+							
+							<!-- CONFIRM BUTTONS -->
+							<div class="p-grid">
+								<div class="p-col-12 text-right">
+									<p:commandLink styleClass="action-button save" action="#{profileBean.actionChangePassword}" update="formProfile:panelPassword">
+										<span class="icon"><i class="fas fa-save"></i></span>
+										<span class="text">#{labels['general.save']}</span>
+									</p:commandLink>
+								</div>
+							</div>
+							
+						</div>
+
+						<!-- TAB CERTIFICATE -->
+						<div id="tab-content-certificate" class="tab-content">
+							<p:outputPanel id="panelCert" styleClass="margin-after">
+								<!-- SECTION -->
+								<div class="p-grid" id="sectionCert">
+									<div class="p-col-12 title-box">
+										<span class="section-text">#{labels['admSettingsCert.certificates']}</span>
+										<!-- NEW CERTIFICATE BUTTON -->										
+										<p:commandButton class="button-add right" icon="fa fa-plus" onclick="addCert();" id="buttonNewCert" process="formProfile:panelCert" title="#{labels['admSettingsCert.addCert']}" />
+									</div>
+								</div>
+
+								<div class="p-grid margin-after">
+									<div class="p-col-12">					
+										<table class="highlight bordered cert_table" style="width: 100%;" id="tblCert">
+									        <thead>
+									          <tr>
+									              <th>Issuer</th>
+									              <th>#{labels['general.expireDate']}:</th>
+									              <th>#{labels['general.active']}:</th>
+									              <th></th>
+									          </tr>
+									        </thead>
+								        	<tbody></tbody> 
+								      	</table>
+									</div>
+								</div>
+							</p:outputPanel>
+						</div>
+					</div>
+					
+				</div>
+	
+			</div>
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closable="false">
+		        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+		        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+		    </p:confirmDialog>   
+		    
+		     
+			
+			</h:form>
+			
+			<script>
+				$(document).ready(function() {
+					attachTabClickListeners();
+					updateTable();
+					
+					$(".tab-layout").each(function() {
+						$(this).find(".tab").bind("click", function() {
+							setTimeout(function() {updateTable();}, 500);
+						})
+					});
+				});
+
+				function scrollToErrors() {
+					if($("#messagesGl").children().length > 0) {
+						$('html, body').animate({
+						    scrollTop: $("#messagesGl").offset().top - $(".navbar").height() - 10
+						}, 500);
+					}
+				}
+
+				function setCounter() {
+					$(".symbol-counter").text($("#formProfile\\:newExperienceInfo").val().length + "/500");
+				}
+			</script>
+			
+			
+		</ui:define>
+	</ui:composition>
+	
+</html>	

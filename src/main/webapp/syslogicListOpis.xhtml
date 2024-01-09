@@ -1,0 +1,274 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	<!-- <f:metadata> TODO constant
+		  <f:viewAction action="#{userData.hasAccessPage(7,62)}" />		   
+	</f:metadata> -->
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+	
+		<ui:define name="title">#{labels['syslogic.syslogicLists']}</ui:define>
+		
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">
+		
+			<h:form>
+				 <p:remoteCommand name="rc" actionListener="#{syslogicListOpis.changePage}" immediate="true" update="@this"/> 
+			</h:form>
+			
+			<h:form id="logicListForm">
+			
+				<h:inputHidden value="#{syslogicListOpis.pageHidden}" />
+				
+				<!-- TITLE -->
+				<div class="title-page">
+					<div class="container">	 
+						<h3>#{labels['syslogic.syslogicLists']}</h3>
+					</div>
+				</div>
+				
+				<div class="container">
+					<p:focus context="panelData"/>
+					<p:outputPanel id="panelData">
+						<div class="container-white">
+							<p:panel header="" style="margin-bottom:10px">
+								<div class="p-grid">
+									<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+										<h:outputText value="Логически списък:"/>
+									</div>
+									<div class="p-col-12 p-md-4 p-lg-3">
+										<p:inputText id="nameLogicList" 
+											value="#{syslogicListOpis.nameLogicList}"/>
+			                        </div>
+			                        <div class="p-col-12 p-md-6 p-lg-7 cc-right" >
+										<p:commandButton action="#{syslogicListOpis.actionSearch()}" 
+											value="#{labels['general.search']}" 
+											icon="fas fa-search" 
+											update="panelData" />
+									</div>
+								</div>
+							</p:panel>
+							
+							<p:panel header="" id="panelTable" >
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.result']}: #{syslogicListOpis.listSc.size()}"/>
+									<span jsf:rendered="#{syslogicListOpis.listSc.size() > 0}" style="margin: auto 0.5rem;"> 
+										<span class="fas fa-ellipsis-v" />
+									</span>
+									
+									<p:commandButton action="#{syslogicListOpis.actionNewOpis}"
+                                         update="logicListForm:modalSyslogicListOpisPanel" 
+                                         icon="fas fa-plus" value="Нов"
+                                         title="#{labels['syslogic.new']} "
+                                         oncomplete="PF('modalOpisClassif').show();"
+                                         style="margin-right: 0.5rem;"
+                                         styleClass="button-green"/>
+
+			                        <p:fileUpload id="filesUpload" skinSimple="true" label=""
+										invalidFileMessage="Невалиден формат"
+										allowTypes="/(\.|\/)(xml|txt)$/" update="modalImportClassifPanel"
+										auto="true" styleClass="upload-basic"
+										listener="#{syslogicListOpis.handleFileUpload}"/>
+			                        <p:tooltip for="filesUpload" value="#{labels['general.import']}"/>
+								</f:facet>
+								
+								<p:dataTable var="row" value="#{syslogicListOpis.listSc}" id="listSc"
+                                     rowIndexVar="index" emptyMessage="#{labels['general.norows']}" 
+                                     rows="10" paginator="true" paginatorPosition="bottom"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                     style="margin-bottom:20px">
+									
+									<f:facet name="{Exporters}">
+		                                <h:commandLink>
+		                                    <p:graphicImage library="images" name="excel.png" width="24"/>
+		                                    <p:dataExporter type="xls" target="listSc" fileName="listSc" encoding="utf-8"/>
+		                                </h:commandLink>
+		                                <h:commandLink>
+		                                    <p:graphicImage library="images" name="pdf.png" width="24"/>
+		                                    <p:dataExporter type="pdf" target="listSc" fileName="listSc" encoding="utf-8"/>
+		                                </h:commandLink>
+		                                <h:commandLink>
+		                                    <p:graphicImage library="images" name="csv.png" width="24"/>
+		                                    <p:dataExporter type="csv" target="listSc" fileName="listSc" encoding="utf-8"/>
+		                                </h:commandLink>
+		                                <h:commandLink>
+		                                    <p:graphicImage library="images" name="xml.png" width="24"/>
+		                                    <p:dataExporter type="xml" target="listSc" fileName="listSc" encoding="utf-8"/>
+		                                </h:commandLink>
+		                            </f:facet>
+									
+									<p:column style="text-align: center" width="75" headerText="No" sortBy="#{row.id}">
+										<h:outputText value="#{row.id}" />
+									</p:column>
+									
+									<p:column style="text-align: center" width="65" exportable="false">
+		                                <p:button outcome="syslogicList" 
+											icon="fas fa-edit"
+											title="#{labels['syslogicList.opis']}" 
+											onclick="rc()">
+		                                    <f:param name="idObj" value="#{row.id}"/>
+		                                    <f:param name="idVod" value="#{row.codeClassifVod}"/>
+		                                    <f:param name="idPod" value="#{row.codeClassifPod}"/>
+		                                </p:button>
+									</p:column>
+									
+									<p:column headerText="#{labels['syslogic.name']}"
+										sortBy="#{row.getTekst()}">
+		                                <h:outputText value="#{row.getTekst()}"/>
+		                            </p:column>
+		                            
+		                            <p:column headerText="#{labels['syslogic.vod']}" sortBy="#{row.vodText}">
+		                                <h:outputText value="#{row.vodText}"/>
+		                            </p:column>
+                            
+		                            <p:column headerText="#{labels['syslogic.pod']}" sortBy="#{row.podText}">
+		                                <h:outputText value="#{row.podText}"/>
+		                            </p:column>
+                            
+		                            <p:column headerText="" width="96" exportable="false">
+		                                <p:commandButton action="#{syslogicListOpis.actionEditOpis}"
+											update="logicListForm:modalSyslogicListOpisPanel" icon="fas fa-cog"
+											title="#{labels['syslogicList.opis1']} "
+											oncomplete="PF('modalOpisClassif').show();">
+		                                    <f:param name="idObj" value="#{row.id}"/>
+		                                </p:commandButton>
+		                                <p:commandButton id="export" 
+		                                	action="#{syslogicListOpis.exportList}"
+											icon="fas fa-download" 
+											title="#{labels['general.export']} "
+											ajax="false">
+		                                    <f:param name="idObj" value="#{row.id}"/>
+		                                </p:commandButton>
+		                            </p:column>
+                            
+		                            <p:column headerText="" width="52" exportable="false">
+		                                <p:commandButton actionListener="#{syslogicListOpis.actionDeleteList(index)}"
+		                                        update="logicListForm:listSc" icon="fas fa-trash "
+		                                        title="#{labels['general.delete']} ">
+		                                    
+		                                    <p:confirm header="#{labels['general.comfirmation']} "
+		                                               message="#{labels['syslogicList.delete']}" icon="ui-icon-alert"/>
+		                                </p:commandButton>
+		                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		                                    <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+		                                    <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+		                                </p:confirmDialog>
+		                            </p:column>
+																		
+								</p:dataTable>
+							</p:panel>
+						</div>
+					</p:outputPanel>
+					
+				</div>
+				
+				<!-- panel za opisanie na klasifikaciya -->
+	            <p:dialog header="#{labels['syslogic.syslogicListOpis']}" widgetVar="modalOpisClassif" modal="true"
+	                      resizable="false" width="900">
+	                <div jsf:id="modalSyslogicListOpisPanel">
+	                    <div class="p-grid">
+	                        <div class="p-col-3">
+	                            <h:outputText value="#{labels['syslogic.vod']}"/>
+	                        </div>
+	                        <div class="p-col-9">
+	                            <p:selectOneMenu id="codeClassifVod" 
+	                            	value="#{syslogicListOpis.sysOpis.codeClassifVod}"
+									disabled="#{!syslogicListOpis.visible}">
+	                                <f:selectItems value="#{syslogicListOpis.clasifs}" var="vodText"
+										itemLabel="#{vodText.tekst}"
+										itemValue="#{vodText.id}"/>
+	                            </p:selectOneMenu>
+	                            
+	                            <p:tooltip for="codeClassifVod"
+                                       rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('codeClassifVod',view))}">
+	                                <p:message for="codeClassifVod" display="text"
+										style="color:#ffffff; background:none; border:0px"/>
+	                            </p:tooltip>
+	                        </div>
+	                        <div class="p-col-3">
+	                            <h:outputText value="#{labels['syslogic.pod']}"/>
+	                        </div>
+	                        <div class="p-col-9">
+	                            <p:selectOneMenu id="codeClassifPod" value="#{syslogicListOpis.sysOpis.codeClassifPod}"
+									disabled="#{!syslogicListOpis.visible}">
+	                                <f:selectItems value="#{syslogicListOpis.clasifs}" var="vodText"
+										itemLabel="#{vodText.tekst}"
+										itemValue="#{vodText.id}"/>
+	                            </p:selectOneMenu>
+	                            <p:tooltip for="codeClassifPod"
+	                                       rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('codeClassifPod',view))}">
+	                                <p:message for="codeClassifPod" display="text"
+	                                           style="color:#ffffff; background:none; border:0px"/>
+	                            </p:tooltip>
+	                        </div>
+	                    </div>
+	                    
+	                    <div class="p-grid">
+	                    	<p:panel style="margin-bottom: 0.5rem;">
+		                    
+		                        <f:facet name="header" styleClass="req">
+		                            <h:outputText value="#{labels['syslogic.name']}"/>
+		                        </f:facet>
+		                        
+	                            <p:dataTable var="myRow" value="#{syslogicListOpis.sysLangs}" id="opisNameTbl"
+	                                         rowIndexVar="rkvt">
+	                                <p:column width="100" style="text-align:left"
+	                                          rendered="#{syslogicListOpis.multipleLang}">
+	                                    <h:outputText value="#{myRow.tekst}"/>
+	                                </p:column>
+	                                <p:column>
+	                                    <p:inputText id="nameItem" value="#{syslogicListOpis.textNode[myRow.code]}"/>
+	                                    <p:message for="nameItem" display="tooltip"/>
+	                                </p:column>
+	                            </p:dataTable>
+		                    </p:panel>
+	                    </div>
+	                </div>
+	                <p:commandButton value="#{labels['general.save']}"
+						update="logicListForm:listSc modalSyslogicListOpisPanel"
+						ajax="true"
+						oncomplete="handleOpisClassif(xhr, status, args)"
+						action="#{syslogicListOpis.actionSaveOpis}" icon="fas fa-save"/>
+	            </p:dialog>
+	            
+	            
+	            
+	            <p:dialog header="#{labels['syslogicList.importList']}" widgetVar="modalImportClassif" modal="true"
+	                      resizable="false" width="500">
+	                <div jsf:id="modalImportClassifPanel">
+	                    <i class="fas fa-exclamation-triangle"/>
+	                    <p><h:outputText value="Сигурни ли сте че искате да импортнете логическия списък?"/></p>
+	                    <p><h:outputText value=" #{syslogicListOpis.importListName}" escape="false"/></p>
+	
+	                    <p:commandButton value="#{labels['general.yes']}" action="#{syslogicListOpis.importlogicalList}"
+							icon="fas fa-check" oncomplete="PF('modalImportClassif').hide();"/>
+	                    <p:commandButton value="#{labels['general.no']}" type="button" icon="fas fa-times"
+							onclick="PF('modalImportClassif').hide();"/>
+	                </div>
+	            </p:dialog>
+	            
+	            <script type="text/javascript">
+	                function handleOpisClassif(xhr, status, args) {
+	                    if (args.validationFailed || !args.validOpisClassif) {
+	                        PF('modalOpisClassif').jq.effect("shake", {times: 5}, 100);
+	                    } else {
+	                        PF('modalOpisClassif').hide();
+	                    }
+	                }
+	            </script>
+			
+			</h:form>
+			
+		</ui:define>
+	</ui:composition>
+</html>

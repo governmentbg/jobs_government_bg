@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/ibg">
+	 
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+		<ui:define name="title">indexTest</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		
+		<ui:define name="content">
+		
+			<style>
+				.box {
+			        background-color: #cce4f7;
+			        text-align: center;
+			        padding-top: 1em;
+			        padding-bottom: 1em;
+			        border-radius: 4px;
+			    }
+			    .definition {
+			    	display: inline-block;
+			    	margin-right: 20px;
+			    	font-weight: bold;
+			    }
+			    .red {
+			    	color: #E3170A;
+			    }
+			    
+			    .container li {
+			    	margin: 0.5em auto;
+			    }
+			    
+			    .code-box {
+			    	border: 1px solid #777;
+			    	border-radius: 5px;
+			    	background-color: #333333;
+			    	color: #f1f1f1;
+			    }
+			    
+			</style>
+		
+			<div class="container">
+
+				<div class="red">
+					<h2>Важно</h2>
+					<div>Моля, при изготвянето на екраните спазвайте следните принципи:</div>
+					<ul>
+						<li>Не задавайте <code>width</code> на input елементите в атрибутите <code>style</code> или <code>styleClass</code>. 
+							<br/>В стиловете е зададено да заемат цялата дължина на родителя си. Ако някой елемент не го прави, бързо ще бъде нагласен.
+						</li>
+						<li>
+							Избягвайте да задавате <code>font-size</code> или <code>font-family</code> на който и да е елемент по индивидуално.
+							<br/>Ако се напълни с елементи, всеки с произволен шрифт, поддръжката става особено трудна.
+						</li>
+						
+					</ul>
+					
+				</div>
+				
+				
+				
+				<div class="section-title">
+					<h3>Размери на заглавия</h3>
+				</div>
+				<div>
+					<h1>&lt;h1&gt;Ето така изглежда заглавие &lt;/h1&gt;</h1>
+					<h2>&lt;h2&gt;Ето така изглежда заглавие &lt;/h2&gt;</h2>
+					<h3>&lt;h3&gt;Ето така изглежда заглавие &lt;/h3&gt;</h3>
+					<h4>&lt;h4&gt;Ето така изглежда заглавие &lt;/h4&gt;</h4>
+				</div>
+
+				<div class="section-title">
+					<h3>&lt;p:panel&gt;</h3>
+				</div>
+				<p:panel id="basic" header="Header header" footer="Footer footer" style="margin-bottom:20px">
+			        <h:panelGrid columns="2" cellpadding="10">
+			            <h:outputText
+			                value="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis, dolore deleniti in delectus incidunt dicta. Officia soluta fugit, dolorem non cum quo, similique quia ad molestias sed autem aperiam repellat!Iste iure harum veniam. Vero rem fuga itaque, possimus quasi, laudantium illo nemo maiores, cumque optio blanditiis unde dolores earum hic laborum aliquid similique non cum iste. Molestiae, dicta in." />
+			        </h:panelGrid>
+			    </p:panel>
+
+				<div class="section-title">
+					<h3>&lt;p:dataTable&gt;</h3>
+				</div>
+				<p:dataTable var="car" value="#{testBean.cars}">
+				    <p:column headerText="Id">
+				        <h:outputText value="#{car.id}" />
+				    </p:column>
+				 
+				    <p:column headerText="Year">
+				        <h:outputText value="#{car.year}" />
+				    </p:column>
+				 
+				    <p:column headerText="Brand">
+				        <h:outputText value="#{car.brand}" />
+				    </p:column>
+				 
+				    <p:column headerText="Color">
+				        <h:outputText value="#{car.color}" />
+				    </p:column>
+				</p:dataTable>
+
+				<div class="section-title">
+					<h3>&lt;p:tabView&gt;</h3>
+				</div>
+				<p:tabView>
+			        <p:tab title="Godfather Part I">
+			            <h:panelGrid columns="2" cellpadding="10">
+			                <h:outputText
+			                    value="The story begins as Don Vito Corleone, the head of a New York Mafia family, oversees his daughter's wedding. 
+			                    His beloved son Michael has just come home from the war, but does not intend to become part of his father's business.
+			                    Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family, kind and benevolent to those who give respect, 
+			                    but given to ruthless violence whenever anything stands against the good of the family." />
+			            </h:panelGrid>
+			        </p:tab>
+			        <p:tab title="Godfather Part II">
+			            <h:panelGrid columns="2" cellpadding="10">
+			                <h:outputText value="Francis Ford Coppola's legendary continuation and sequel to his landmark 1972 film, The_Godfather, parallels the young Vito Corleone's rise with his son Michael's spiritual fall, deepening The_Godfather's depiction of the dark side of the American dream. 
+			                In the early 1900s, the child Vito flees his Sicilian village for America after the local Mafia kills his family. Vito struggles to make a living, legally or illegally, for his wife and growing brood in Little Italy, 
+			                killing the local Black Hand Fanucci after he demands his customary cut of the tyro's business. With Fanucci gone, Vito's communal stature grows." />
+			            </h:panelGrid>
+			        </p:tab>
+			        <p:tab title="Godfather Part III">
+			            <h:panelGrid columns="2" cellpadding="10">
+			                <h:outputText value="After a break of more than 15 years, director Francis Ford Coppola and writer Mario Puzo returned to the well for this third and final story of the fictional Corleone crime family. 
+			                    Two decades have passed, and crime kingpin Michael Corleone, now divorced from his wife Kay has nearly succeeded in keeping his promise that his family would one day be completely legitimate." />
+			            </h:panelGrid>
+			        </p:tab>
+			    </p:tabView>
+			    
+			    <div class="section-title">
+			    	<h3>&lt;form&gt; полета</h3>
+			    </div>
+			    <div>
+				    <div class="p-grid">
+						<div class="p-col-12 p-md-4">
+							<span class="form-text">Статус на кандидата:</span>
+						</div>
+						<div class="p-col-12 p-md-8">
+		           			<p:selectOneMenu id="status" value="">
+					            <f:selectItem itemLabel="Очаква потвърждение за регистрация" itemValue="1" />
+					            <f:selectItem itemLabel="Регистриран на сайта" itemValue="2" />
+					            <f:selectItem itemLabel="Обезличен" itemValue="3" />
+					        </p:selectOneMenu>
+						</div>
+				    </div>
+				    
+				    <div class="p-grid">
+						<div class="p-col-12 p-md-4">
+							<p:outputLabel for="fname" value="Име:" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-8">
+		           			<p:inputText id="fname" value=""/>
+						</div>
+					</div>
+					
+					<div class="p-grid">
+						<div class="p-col-12 p-md-4">
+							<p:outputLabel for="surname" value="Фамилия:" styleClass="req" />
+						</div>
+						<div class="p-col-12 p-md-8">
+		           			<p:inputText id="surname" value=""/>
+						</div>
+					</div>
+					
+					<div class="p-grid">
+						<div class="p-col-12 p-md-4">
+							<p:outputLabel for="prob1" value="Пол" styleClass="req"/>
+						</div>
+						<div class="p-col-12 p-md-8">
+		           			<p:selectOneRadio id="prob1" value="">
+					            <f:selectItem itemLabel="Мъж" itemValue="1" />
+					            <f:selectItem itemLabel="Жена" itemValue="2" />
+					            <f:selectItem itemLabel="Не" itemValue="2" />
+					        </p:selectOneRadio>
+						</div>
+					</div>
+					
+			    </div>
+
+				<div class="section-title">
+					<h3>flexGrid</h3>
+				</div>
+				<div>
+					<div>
+						<ul>
+							<li>Заменяте <span class="definition">&lt;ui-g&gt;</span> с <span class="definition">&lt;p-grid&gt;</span></li>
+							<li>Колоните вътре са 5 вида:</li>
+							<li>
+								<ul>
+									<li><span class="definition">p-col-*</span>: default</li> 
+									<li><span class="definition">p-sm-*</span>: 576px - 767px</li>
+									<li><span class="definition">p-md-*</span>: 768px - 991px</li>
+									<li><span class="definition">p-lg-*</span>: 992px - 1199px</li>
+									<li><span class="definition">p-xl-*</span>: 1200px - Inf</li>
+								</ul>
+							</li>
+							<li><a href="https://www.primefaces.org/showcase/ui/panel/flexGrid.xhtml" target="_blank">За повече примери</a></li>
+						</ul> 
+					</div>
+					<div class="p-grid">
+					    <div class="p-col-12 p-md-6 p-lg-3">
+					        <div class="box">p-col-12 p-md-6 p-lg-3</div>
+					    </div>
+					    <div class="p-col-12 p-md-6 p-lg-3">
+					        <div class="box">p-col-12 p-md-6 p-lg-3</div>
+					    </div>
+					    <div class="p-col-12 p-md-6 p-lg-3">
+					        <div class="box">p-col-12 p-md-6 p-lg-3</div>
+					    </div>
+					    <div class="p-col-12 p-md-6 p-lg-3">
+					        <div class="box">p-col-12 p-md-6 p-lg-3</div>
+					    </div>
+					</div>
+				</div>
+
+				
+				<div class="section-title">
+					<h3>Tabs</h3>
+				</div>
+				<div class="p-grid tab-layout">
+					<div class="p-col-12 p-lg-3 column-tabs">
+						<div class="p-grid tabs">
+							
+							<div class="p-lg-12 tab" id="tab-users">
+								<i class="fas fa-user tab-icon"></i>
+								<div class="tab-title">Таб 1</div>
+							</div>
+							
+							<div class="p-lg-12 tab" id="tab-news">
+								<i class="fas fa-scroll tab-icon"></i>
+								<div class="tab-title">Таб 2</div>
+							</div>
+							
+							<div class="p-lg-12 tab" id="tab-messages">
+								<i class="fas fa-address-card tab-icon"></i>
+								<div class="tab-title">Таб 3</div>
+							</div>
+							
+						</div>
+					</div>
+					
+					<div class="p-col-12 p-lg-9 column-contents">
+						<div id="tab-content-users" class="tab-content">Съдържание 1</div>
+						<div id="tab-content-news" class="tab-content">Съдържание 2</div>
+						<div id="tab-content-messages" class="tab-content">Съдържание 3</div>
+					</div>
+				</div>
+				<div>
+					<div>Всеки таб трябва да има <code>id="tab-foo"</code> и съответното му съдържание да има <code>id="tab-content-foo"</code>.
+						Накрая на страницата се закача скриптът, който ги оразмерява при зареждане на страницата. Иконките са по желание.</div>
+					<pre class="code-box">
+&lt;div class="p-grid tab-layout"&gt;
+  &lt;div class="p-col-12 p-lg-3 column-tabs"&gt;
+    &lt;div class="p-grid tabs"&gt;
+			
+      &lt;div class="p-lg-12 tab" <span class="red">id="tab-users"</span>&gt;
+        &lt;i class="fas fa-user tab-icon"&gt;&lt;/i&gt;
+        &lt;div class="tab-title"&gt;Таб 1&lt;/div&gt;
+      &lt;/div&gt;
+			
+      &lt;div class="p-lg-12 tab" <span class="red">id="tab-news"</span>&gt;
+        &lt;i class="fas fa-scroll tab-icon"&gt;&lt;/i&gt;
+        &lt;div class="tab-title"&gt;Таб 2&lt;/div&gt;
+      &lt;/div&gt;
+			
+      &lt;div class="p-lg-12 tab" <span class="red">id="tab-messages"</span>&gt;
+        &lt;i class="fas fa-address-card tab-icon"&gt;&lt;/i&gt;
+        &lt;div class="tab-title"&gt;Таб 3&lt;/div&gt;
+      &lt;/div&gt;
+			
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="p-col-12 p-lg-9 column-contents"&gt;
+    &lt;<span class="red">id="tab-content-users"</span> class="tab-content"&gt;Съдържание 1&lt;/div&gt;
+    &lt;<span class="red">id="tab-content-news"</span> class="tab-content"&gt;Съдържание 2&lt;/div&gt;
+    &lt;<span class="red">id="tab-content-messages"</span> class="tab-content"&gt;Съдържание 3&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  $(document).ready(function() {
+    attachTabClickListeners();
+  });
+&lt;/script&gt;
+					</pre>
+				</div>
+			</div>
+			
+			<script>
+				$(document).ready(function() {
+					attachTabClickListeners();
+				});
+			</script>
+	
+			
+		</ui:define>
+	</ui:composition>
+	
+</html>	

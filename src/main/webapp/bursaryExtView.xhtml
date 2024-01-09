@@ -1,0 +1,165 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+	 <ui:remove> <f:metadata>
+	  		<f:viewAction action="#" />		   
+	  </f:metadata> </ui:remove>
+	  
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 9, environment.currentLang, null, Constants.PORTAL_USER)}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+	<ui:define name="content">
+	
+		<style>
+			.ql-container.ql-snow {
+			    border: none;
+			}
+			
+			.ql-editor {
+				padding: 0;
+				white-space: normal;
+			}
+		</style>
+	
+	  <h:form id="bursaryViewForm">
+		   
+		  <p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+
+		  	 <!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+						<div class="p-col-fixed back-col">
+							<p:link outcome="bursaryExtList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					     <div class="p-col">  
+							<h3 class="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 9, environment.currentLang, null, Constants.PORTAL_USER)}</h3>
+						 </div>
+					</div>
+				</div>
+			</div>	
+		  			  
+			  <div class="container">	
+			  
+			  <div class="container-white">
+			  
+			  			  		
+			  		<div class="p-grid">
+			  			
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['general.admStruc']}: " style="font-weight: bold;"/>
+							</div>
+	
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, bursaryProgramsView.bursary.administration, bursaryProgramsView.currentLang, bursaryProgramsView.today, Constants.PORTAL_USER)}"/>						 		
+						 	</div>
+
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['bursary.subject']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{bursaryProgramsView.bursary.subject}"/>																	                        
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['bursary.size']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{bursaryProgramsView.bursary.bursary}"/>
+							</div>	
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['bursary.num']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{bursaryProgramsView.bursary.num}"/>																		                        
+							</div>
+											
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['bursary.dateFrom']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<h:outputText value="#{bursaryProgramsView.bursary.dateFrom}">
+					        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{bursaryProgramsView.timeZone}"/>
+					            </h:outputText>
+							</div>								
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['bursary.dateTo']}: " style="font-weight: bold;"/> 
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<h:outputText value="#{bursaryProgramsView.bursary.dateTo}">
+					        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{bursaryProgramsView.timeZone}"/>
+					            </h:outputText>
+							</div>									
+										
+			  		</div>
+			  		
+				  	<div class="title-box">		  		
+				  			#{labels['general.dopalnitelnaInformacia']}
+				  	</div>	
+
+				  	<p:textEditor value="#{bursaryProgramsView.bursary.addInfo}" readonly="true" toolbarVisible="false" secure="true"/>
+			  		
+			  		<p:panel header="#{labels['general.attachedDoc']}" style="margin-bottom:10px">
+					
+						<div class="p-grid">
+						
+
+						<div class="p-col-12 p-md-12 p-lg-12">	
+							
+							 <p:dataTable id="fileList" var="row" value="#{bursaryProgramsView.filesList}" reflow="true" 
+							 			  rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" rows="10" style="margin-bottom:10px" paginator="true" 
+							 			  paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+							      
+							        <p:column headerText="#{labels['general.No-symbol']}" width="40">
+										<h:outputText value="#{rkv + 1}" />
+									</p:column>
+									
+									 <p:column headerText="" width="60">									           	
+								        <p:commandButton ajax="false" actionListener="#{bursaryProgramsView.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+								     </p:column>
+									
+							       	<p:column headerText="#{labels['file.filename']}" width="30%" >
+							       		 <h:outputText value="#{row.filename}" />     
+							         </p:column>
+							       	
+							       <p:column headerText="#{labels['file.description']}" width="60%" >									   
+							            <h:outputText value="#{row.description}" />									            								           
+							       </p:column>				       
+									
+							  
+							   </p:dataTable>
+							   
+							  
+								
+							</div>
+						</div>
+					</p:panel>		
+			  	
+					 	
+			 	</div>	
+			</div>			  	 
+		</h:form>
+		
+			
+		
+	</ui:define>
+
+</ui:composition>
+		
+</html>	

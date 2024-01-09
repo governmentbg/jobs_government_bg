@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="hibernate" transaction-type="RESOURCE_LOCAL">
+		
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		${jndi.begin}
+		<non-jta-data-source>${pjobs.data.source}</non-jta-data-source>
+		${jndi.end}
+  	  
+  	  
+  	  
+  		<class>com.indexbg.system.db.dto.SystemJournal</class>
+  		<class>com.indexbg.system.db.dto.SystemOption</class> 
+		<class>com.indexbg.system.db.dto.SystemClassifOpis</class>
+		<class>com.indexbg.system.db.dto.SystemClassif</class>	
+		<class>com.indexbg.system.db.dto.SyslogicListOpisEntity</class>			
+		<class>com.indexbg.system.db.dto.SyslogicListEntity</class>
+		
+		<class>com.indexbg.system.db.dto.JobHistory</class>
+		
+		<class>indexbg.pjobs.db.Advertisement</class>
+		<class>indexbg.pjobs.db.Publication</class>
+		<class>indexbg.pjobs.db.Bursary</class>
+		<class>indexbg.pjobs.db.Administration</class>
+		<class>indexbg.pjobs.db.Subscription</class>
+		<class>indexbg.pjobs.db.Campaign</class>
+		<class>indexbg.pjobs.db.Practice</class>
+		<class>indexbg.pjobs.db.PracticeLice</class>
+		<class>indexbg.pjobs.db.UsersBursar</class>
+		
+		<class>indexbg.pjobs.db.PublicationLang</class>
+		<class>indexbg.pjobs.db.Files</class>
+		<class>indexbg.pjobs.db.AdmUser</class>
+		<class>indexbg.pjobs.db.UserAdd</class>		
+		<class>indexbg.pjobs.db.UserStudent</class>
+		<class>indexbg.pjobs.db.UserEducation</class>
+		<class>indexbg.pjobs.db.UserExperience</class>
+		<class>indexbg.pjobs.db.UserLanguage</class>
+		<class>indexbg.pjobs.db.Jobs</class>
+		<class>indexbg.pjobs.db.Questions</class>
+		<class>indexbg.pjobs.db.Contacts</class>
+		<class>indexbg.pjobs.db.PageText</class>
+		
+		<class>indexbg.pjobs.db.UsersTests</class>
+		<class>indexbg.pjobs.db.Mail</class>
+		
+		<class>indexbg.pjobs.db.AdmGroupRoles</class>
+		<class>indexbg.pjobs.db.AdmGroups</class>		
+		<class>indexbg.pjobs.db.AdmUserRoles</class>
+		<class>indexbg.pjobs.db.AdmUsers</class>				
+		
+		<!-- This is with local data source. ONLY for development -->
+		
+		<properties>
+
+			<property name="db.vendor.name" value="${db.vendor.name}" />
+			<!-- POSTGRE (Indexbg) -->
+
+			${conn.params.begin}
+
+			<property name="hibernate.connection.driver_class" value="${hibernate.connection.driver_class}" />
+			<property name="hibernate.connection.url" value="${hibernate.connection.url}" />
+			 <property name="hibernate.connection.username" value="${hibernate.connection.username}" />
+			<property name="hibernate.connection.password" value="${hibernate.connection.password}" />
+			<property name="hibernate.connection.isolation" value="${hibernate.connection.isolation}" />
+
+			<property name="connection.pool_size" value="10"/>
+			${conn.params.end}
+
+			<property name="hibernate.dialect" value="${hibernate.dialect}" />
+			<property name="hibernate.current_session_context_class" value="${hibernate.current_session_context_class}" />
+			<property name="hibernate.show_sql" value="${hibernate.show_sql}" />
+			
+			<property name="hibernate.generate_statistics" value="false"/>
+			<property name="hibernate.cache.infinispan.statistics" value="false"/>
+			
+	
+			<!-- <property name="hibernate.cache.use_second_level_cache" value="true" /> -->   
+            <!-- <property name="hibernate.cache.use_query_cache" value="true" /> -->
+                  
+            
+		             
+			
+		</properties>
+
+	</persistence-unit>
+</persistence>

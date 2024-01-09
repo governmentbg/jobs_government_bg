@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"> 
+	  
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,76)}" />   
+ </f:metadata>
+<ui:composition template="/templateExt/mainExt.xhtml">
+
+  <ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 65, environment.currentLang, null, null)}</ui:define>
+  
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+   
+    <ui:define name="content">
+		
+		<h:form id="backgroundProcess-form">
+		
+		<!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+
+					     <div class="p-col">  
+							<h3 class="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 65, environment.currentLang, null, null)}</h3>
+						 </div>
+					</div>
+				</div>
+			</div>	
+		
+		<p:importConstants type="com.indexbg.system.SysConstants" var="SysConstants" className="com.indexbg.system.SysConstants"/>
+
+			<p:outputPanel id="panelData">
+				
+				<p:tabView dynamic="true" cache="true" effect="fold">
+	       				
+	       			<p:tab title="Активни процеси">
+	       				<div class="container">
+		       				<p:outputPanel id="panelProcess">
+								<div class="container-white">
+					        		<p:dataTable id="manageService" var="process" value="#{manageQuartzProcess.allSystemProcess}" tableStyle="table-layout: auto;"
+												  emptyMessage="#{labels['general.norows']}" paginator="false" style="margin:20px 0px">
+											
+											<p:column headerText="Scheduler" width="*">
+												<h:outputText value="#{process.scheduler.getSchedulerName()}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['manageQuartzProc.task']}" width="300">
+												<h:outputText value="#{process.description}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['manageQuartzProc.triger']}" width="350">
+												<h:outputText value="#{process.trigger.description}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['general.status']}" style="background-color: #{!process.isPaused() ? 'rgb(51, 204, 51)' : 'rgb(255, 77, 77)'}; text-align:center; font-weight: bold;" width="250">
+												<h:outputText id="status" style="font-size:1rem !important"  value="#{!process.isPaused() ? 'Активен' : 'Неактивен'}" />
+											</p:column>
+											
+											<p:column headerText="" width="50">
+												<p:commandButton style="width:100%; font-size:1rem !important" disabled="#{process.isPaused()}" update="manageService" action="#{manageQuartzProcess.stopProcess(process)}"  value="#{labels['manageQuartzProcess.stop']}" ajax="true"/>
+											</p:column>
+											
+											<p:column headerText="" width="50">
+												<p:commandButton style="width:100%; font-size:1rem !important" disabled="#{!process.isPaused()}" update="manageService" action="#{manageQuartzProcess.startProcess(process)}"  value="#{labels['manageQuartzProcess.start']}" ajax="true" />
+											</p:column>
+									</p:dataTable>
+								</div>
+							</p:outputPanel>
+						</div>
+			        </p:tab>
+			        	
+			        <p:tab title="Журнал">
+			        		
+						<div class="container">
+			  			<p:focus context="panelData"/>
+						   <div class="container-white">	
+			
+							<p:outputPanel id="panelData">	
+								
+								<p:panel header="#{labels['general.search']}" style="margin-bottom:10px">
+									
+									<div class="p-grid">	
+								
+									
+										<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+											<h:outputText value="#{labels['manageQuartzProc.taskKey']}"/>	
+										</div>
+										
+										<div class="p-col-12 p-md-2 p-lg-2 ">
+											<p:inputText id="jobName" value="#{manageQuartzProcess.filterEntity.jobKeyName}" />	
+										</div>
+										
+										<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+											<h:outputText value="#{labels['manageQuartzProc.trigerKey']}"/>
+										</div>
+											
+										<div class="p-col-12 p-md-2 p-lg-2">
+											<p:inputText id="triggerName" value="#{manageQuartzProcess.filterEntity.triggerKeyName}" />
+										</div>
+										
+										<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+											<h:outputText value="#{labels['general.status']}"/>
+										</div>
+											
+										<div class="p-col-12 p-md-2 p-lg-2 ">
+											<p:selectOneMenu value="#{manageQuartzProcess.filterEntity.status}" >
+											  	<f:selectItem  value="#{null}" itemValue="#{null}"/>  
+			                                   <f:selectItems value="#{systemData.getSysClassification(SysConstants.CLASSIF_JOB_STATUS, manageQuartzProcess.today, manageQuartzProcess.currentLang, null)}"
+			                                   var="var" itemValue="#{var.code}" itemLabel="#{var.tekst}"/>
+			                                </p:selectOneMenu>
+										</div>
+										
+							
+									
+										<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+											<h:outputText value="#{labels['manageQuartzProc.startTime']}"/>	
+										</div>
+										
+										<div class="p-col-12 p-md-2 p-lg-2 ">
+											<p:calendar id="starTime" pattern="dd.MM.yyyy HH:mm:ss" value="#{manageQuartzProcess.filterEntity.startTime}" />	
+										</div>
+										
+										<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+											<h:outputText value="#{labels['manageQuartzProc.endTime']}"/>
+										</div>
+											
+										<div class="p-col-12 p-md-2 p-lg-2">
+											<p:calendar id="endTime" pattern="dd.MM.yyyy HH:mm:ss" value="#{manageQuartzProcess.filterEntity.endTime}" />
+										</div>
+										
+										 <div class="p-col-6 p-md-12 p-lg-12 cc-rightAll" >
+										 	<p:commandButton icon="ui-icon-search" update="systemProcessJournal" action="#{manageQuartzProcess.searchJournal()}" 
+												ajax="true"  value="#{labels['general.search']}"/>	
+										 </div>
+										
+								</div>
+							</p:panel>
+						</p:outputPanel>
+					</div>
+				</div>
+								
+				<br />
+					
+				<div class="container-white">		
+															
+			       	<p:panel header="#{labels['general.result']}: #{manageQuartzProcess.systemProcessJournal.rowCount}" id="panelTable">
+			        	<p:dataTable id="systemProcessJournal" var="jobHistory" value="#{manageQuartzProcess.systemProcessJournal}" lazy="true" rows="15" tableStyle="table-layout: auto;"
+								  rowIndexVar="rkv" sortMode="single" emptyMessage="#{labels['general.norows']}"
+								  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+								  rowsPerPageTemplate="15,20,25,30" paginatorPosition="bottom"
+								  paginator="true" style="margin-bottom:20px">
+
+							<p:column headerText="#{labels['general.No-symbol']}" width="25">
+								<h:outputText value="#{rkv + 1}" />
+							</p:column>
+							
+							<p:column headerText="#" width="5" >
+								<p:commandButton title="#{labels['general.view']}" icon="fa fa-fw fa-eye" action="#{manageQuartzProcess.setJobHistoryDetails(jobHistory)}" update="backgroundProcess-form:jobDetailsId" oncomplete="PF('jobDetails').show();"/>
+							</p:column>
+							
+							<p:column headerText="#{labels['manageQuartzProc.taskKey']}" width="*" sortBy="#{JOB_NAME}">
+								<h:outputText value="#{jobHistory[1]}" />
+							</p:column>
+							
+							<p:column headerText="#{labels['manageQuartzProc.trigerKey']}" width="*" sortBy="#{TRIGGER_NAME}">
+								<h:outputText value="#{jobHistory[2]}" />
+							</p:column>
+							
+							<p:column headerText="#{labels['manageQuartzProc.startTime']}" width="*" sortBy="#{START_TIME}">
+								<h:outputText value="#{manageQuartzProcess.formatDate(jobHistory[3])}"/>
+							</p:column>
+							
+							<p:column headerText="#{labels['manageQuartzProc.endTime']}" width="*" sortBy="#{END_TIME}">
+								<h:outputText value="#{manageQuartzProcess.formatDate(jobHistory[4])}" />
+							</p:column>
+							
+							<p:column headerText="#{labels['general.status']}" width="20" >
+								<h:graphicImage width="20" height="20" name="#{manageQuartzProcess.getImageSource(jobHistory[5])}" title="#{manageQuartzProcess.getImageSourceAlt(jobHistory[5])}" library="images"/>
+							</p:column>
+
+						</p:dataTable>
+							
+					</p:panel>
+				</div>
+			   </p:tab>
+			        	
+			</p:tabView>				
+						
+		</p:outputPanel>
+			
+		<p:dialog header="Детайли"  widgetVar="jobDetails" id="jobDetailsId" modal="true" height="400" width="550" closeOnEscape="true" >
+				
+				<h:panelGroup >#{labels['manageQuartzProc.coment']}</h:panelGroup>
+				<h:panelGroup layout="block" styleClass="row">
+					<p:inputTextarea id="comment" rows="10"
+						value="#{manageQuartzProcess.jobHistoryDetails[6]}" rendered="#{manageQuartzProcess.jobHistoryDetails != null}"
+						styleClass="col s12" />
+				</h:panelGroup>
+				
+				<h:panelGroup >#{labels['general.infoError']}</h:panelGroup>
+				<h:panelGroup layout="block" styleClass="row">
+					<p:inputTextarea id="exception" rows="10"
+						value="#{manageQuartzProcess.jobHistoryDetails[7]}" rendered="#{manageQuartzProcess.jobHistoryDetails != null}" 
+						styleClass="col s12" />
+				</h:panelGroup>
+				
+		</p:dialog>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

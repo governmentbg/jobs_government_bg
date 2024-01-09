@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+	 <f:metadata>
+	  		<f:viewAction action="#{userData.hasAccessPage(7,61)}" />   
+	  </f:metadata>
+	  
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 34, environment.currentLang, null, null)}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+	<ui:define name="content">
+	
+		<h:form>
+			 <p:remoteCommand name="rc" actionListener="#{advertisementsList.changePage}" immediate="true" update="@this"/> 
+		</h:form>
+	
+		<h:form id="formAdverList">
+			
+			  <p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  	  <p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+		  	  
+		  	  <h:inputHidden value="#{advertisementsList.pageHidden}" />
+			
+			  <p:tooltip/>	
+			 	
+			  
+			  <!-- PAGE TITLE -->
+			  <div class="title-page">
+				 <div class="container">	 
+					<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 34, environment.currentLang, null, null)} </h3>
+				 </div>
+			  </div>	 
+			  			  
+			  <div class="container">
+			  
+			   <div class="container-white" onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('formAdverList:btnSearch').click()}">
+			   				
+					
+					<p:panel header="#{labels['general.search']}"  toggleable="true" toggleOrientation="vertical" collapsed="true">	
+						
+						<p:ajax event="toggle" listener="#{advertisementsList.onToggle}" update="panelData" />
+						
+						<p:outputPanel id="panelData">	
+						<p:focus context="panelData"  rendered="#{advertisementsList.showFocus}"/>	
+						
+						<div class="p-grid">							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+								<h:outputText value="#{labels['general.admStruc']}: "/>
+							</div>
+	
+							<div class="p-col-12 p-md-10 p-lg-10">							
+								
+								<div class="ibg-modal-button">
+							     
+							     <h:panelGroup rendered="#{advertisementsList.admin}">
+									<p:inputText value="#{advertisementsList.admText}" id="admStr" readonly="true" />
+				                	<ibg:selectOneModal header="#{labels['general.admStruc']}" userId="#{advertisementsList.userId}" lang="#{advertisementsList.currentLang}" 
+							 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_ADM_REGISTER}"     
+							 				update="formAdverList:admStr formAdverList:zveno formAdverList:zvenoId" selectedCode="#{advertisementsList.adminStruc}" selectedText="#{advertisementsList.admText}"  />
+						 		 </h:panelGroup>
+						 		 
+						 		 <h:panelGroup rendered="#{!advertisementsList.admin}">
+									<p:inputText id="admin" value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, advertisementsList.adminStruc, advertisementsList.currentLang, now, advertisementsList.userId)}" readonly="true"/>		
+						 		 </h:panelGroup>
+						 	 </div> 
+						
+						</div>
+							
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.zveno']}: " />
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">
+                                <div class="ibg-modal-button" jsf:id="zvenoId">
+									<p:inputText value="#{advertisementsList.zvenoText}" id="zveno" readonly="true" />
+				                	<ibg:selectDirAdmStruct header="#{labels['advertisement.zveno']}" userId="#{advertisementsList.userId}" lang="#{advertisementsList.currentLang}" 
+							 	 			saveStateTree="false" isSelectNode="true" withBtnClear="true" codeClassif="#{advertisementsList.adminStruc}"     
+							 				update="formAdverList:zveno" selectedCode="#{advertisementsList.zveno}" selectedText="#{advertisementsList.zvenoText}" />
+						 		</div>								                        
+							</div>
+						</div>
+											
+						<div class="p-grid">
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.period']}:"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">
+								<p:selectOneMenu id="idPer" value="#{advertisementsList.period}" >
+		                             <f:selectItem value="#{null}" itemValue="#{null}"/>          
+		                             <f:selectItems  value="#{advertisementsList.periodList}"  var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+		                             <p:ajax event="change" update="formAdverList:idPer formAdverList:dateOt formAdverList:dateDo" listener="#{advertisementsList.changePeriod}"/>   
+		                        </p:selectOneMenu>
+	                        </div>
+	                                
+	                        <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.dataOt']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								 <p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true"  showOn="button" timeZone="#{advertisementsList.timeZone}" size="10" locale="bg" 
+							         	value="#{advertisementsList.dateFrom}" label="#{labels['publ.dateFrom']}" styleClass="form-control #{applicationFilter.hasMessages('formAdverList:dateOt') ? 'cc-red ': '' }" />
+							      <p:message for="dateOt" showDetail="true" showSummary="true" display="tooltip">
+							      		<p:autoUpdate/>
+							      </p:message>
+							</div>
+							
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.dataDo']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{advertisementsList.timeZone}" size="10" locale="bg" 
+						         	value="#{advertisementsList.dateTo}" label="#{labels['publ.dateTo']}"  styleClass="form-control #{applicationFilter.hasMessages('formAdverList:dateDo') ? 'cc-red' : '' }" />
+							     <p:message for="dateDo" showDetail="true" showSummary="true" display="tooltip">
+							     	 <p:autoUpdate/>
+							     </p:message> 
+							</div> 
+						</div>
+							
+						<div class="p-grid">
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right">
+			  					<h:outputText value="#{labels['general.oblast']}: " />
+			  				</div>
+			  				<div class="p-col-12 p-md-2 p-lg-2">
+			  					<p:selectOneMenu id="oblast" value="#{advertisementsList.oblast}" autoWidth="false">
+			  					    <f:selectItem itemLabel="" itemValue="" />
+						            <f:selectItems value="#{advertisementsList.oblastList}" var="obl" itemLabel="#{obl.tekst}" itemValue="#{obl.code}"/>
+                                    <p:ajax event="change" update="panelData" listener="#{advertisementsList.actionChangeOblast}" process="@form"/>	
+						        </p:selectOneMenu>
+						       
+						        <p:tooltip for="oblast" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('oblast', view).clientId)}" >
+									<p:message for="oblast" display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+			  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+			  					<h:outputText value="#{labels['general.obshtina']}: " />
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3">
+			  					<p:selectOneMenu id="obshtina" value="#{advertisementsList.obshtina}" autoWidth="false">
+			  						<f:selectItem itemLabel="" itemValue="" />
+						            <f:selectItems value="#{advertisementsList.obshtiniList}" var="obsh" itemLabel="#{obsh.tekst}" itemValue="#{obsh.code}"/>
+                                    <p:ajax event="change" update="panelData" listener="#{advertisementsList.actionChangeObshtina}" process="@form"/>
+						        </p:selectOneMenu>
+						        
+						        <p:tooltip for="obshtina" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('obshtina', view).clientId)}">
+									<p:message for="obshtina"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+			  				<div class="p-col-12 p-md-1 p-lg-1 cc-right">
+			  					<h:outputText value="#{labels['general.nasMiasto']}: " />
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3">
+			  					<p:selectOneMenu id="nasMesto" value="#{advertisementsList.nasMiasto}" autoWidth="false">
+						            <f:selectItem itemLabel="" itemValue="" />
+						             <f:selectItems value="#{advertisementsList.nasMestoList}" var="nasM" itemLabel="#{nasM.tekst}" itemValue="#{nasM.code}"/>
+						        </p:selectOneMenu>
+						        
+						        <p:tooltip for="nasMesto" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('nasMesto', view).clientId)}" >
+									<p:message for="nasMesto"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>
+			  				</div>
+			  			</div>
+				  				
+				  		<div class="p-grid">			
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.dlajnost']}: " />
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">								
+                                <div class="ibg-modal-button">
+									<p:inputText value="#{advertisementsList.dlajnostText}" id="dlajnost" readonly="true" />
+				                	<ibg:selectOneModal header="#{labels['advertisement.dlajnost']}" userId="#{advertisementsList.userId}" lang="#{advertisementsList.currentLang}" 
+							 	 			saveStateTree="true" isSelectNode="false" withBtnClear="true" codeClassif="#{IBConstants.CODE_SYSCLASS_JOBS}"     
+							 				update="formAdverList:dlajnost" selectedCode="#{advertisementsList.dlajnost}" selectedText="#{advertisementsList.dlajnostText}"  />
+						 		</div>                                										                        
+							</div>
+							
+						</div>
+						
+						<div class="p-grid">
+						
+						<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.profNapr']}: " />
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">
+								<p:selectOneMenu value="#{advertisementsList.profField}" id="profNapr" autoWidth="false">                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_PROFESSIONAL_FIELD, now, advertisementsList.currentLang, advertisementsList.userId)}"  
+                                    			   var="profNaprJ" itemLabel="#{profNaprJ.tekst}" itemValue="#{profNaprJ.code}" />			                                    
+                                </p:selectOneMenu>
+                                 <p:tooltip for="profNapr" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('profNapr', view).clientId)}">
+									<p:message for="profNapr"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								</p:tooltip>                                										                        
+							</div>
+						
+						</div>
+				  				
+				  		<ui:remove> <div class="p-grid">	
+				  				
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['advertisement.rang']}: " />
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:selectOneMenu value="#{advertisementsList.rang}" id="rang" autoWidth="false" >                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_RANK, now, advertisementsList.currentLang, advertisementsList.userId)}" 
+                                    			   var="rank" itemLabel="#{rank.tekst}" itemValue="#{rank.code}" />				                                    
+                                </p:selectOneMenu>											                        
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.dlajNivo']}: " />
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:selectOneMenu value="#{advertisementsList.dlajNivo}" id="dljNivo" autoWidth="false" >                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_POSITION_LEVEL, now, advertisementsList.currentLang, advertisementsList.userId)}"  
+                                    			   var="dlajNivo" itemLabel="#{dlajNivo.tekst}" itemValue="#{dlajNivo.code}" />				                                    
+                                </p:selectOneMenu>											                        
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['advertisement.minObrazStepen']}: " />
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">
+								<p:selectOneMenu value="#{advertisementsList.obrazovanie}" id="obrazovanie" autoWidth="false" >                                     
+                               		<f:selectItem itemLabel="" itemValue="" />
+                                     <f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, now, advertisementsList.currentLang, advertisementsList.userId)}" 
+                                    			    var="obraz" itemLabel="#{obraz.tekst}" itemValue="#{obraz.code}" />			                                    
+                                </p:selectOneMenu>											                        
+							</div>
+							
+						</div> </ui:remove>
+				  				
+				  		<div class="p-grid">							
+									
+							<div class="p-col-6 p-md-10 p-lg-10 cc-left">
+				 				<p:commandButton action="#{advertisementsList.actionClear}" value="#{labels['general.clear']}" update="formAdverList:panelData formAdverList:panelTable" id="btnClear" tabindex="-1" /> 
+
+						 	</div>						 	
+						 	
+						    <div class="p-col-6 p-md-2 p-lg-2 cc-rightAll" >
+						        <p:commandButton action="#{advertisementsList.actionSearch}" value="#{labels['general.search']}" icon="fa fa-search" update="formAdverList:panelData formAdverList:panelTable" id="btnSearch" />
+						    </div>
+						
+						</div>
+						
+						</p:outputPanel>
+					</p:panel>	
+					
+						
+					
+					</div>
+					
+					</div>
+					 
+					<br />
+					
+					<div class="container-white">	
+					
+					<p:panel id="panelTable">
+						
+						<f:facet name="header">
+						
+							<h:outputText value="#{labels['advertisementList.obiavi']}: #{advertisementsList.adversList.rowCount} " styleClass="form-label" rendered="#{advertisementsList.adversList.rowCount > 0}"/>
+							
+							<span class="p-mx-2" jsf:rendered="#{advertisementsList.adversList.rowCount > 0}"> 
+								<span class="fas fa-ellipsis-v" />
+							</span>	
+							
+							<p:spacer width="5"/>	
+							
+							<p:commandButton  icon="fa fa-fw fa-plus" action="advertisementEdit.jsf" ajax="false" title="#{labels['general.new']}" value="#{labels['general.new']}" styleClass="button-green"/>
+							
+						</f:facet>			
+			 						 	
+					 	 <p:dataTable id="tbl" var="row" value="#{advertisementsList.adversList}" lazy="true" rows="15"
+							rowIndexVar="idx" sortMode="single" reflow="true" emptyMessage="#{labels['general.norows']}" rendered="#{advertisementsList.adversList ne null}"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom" paginator="true" style="margin-bottom:20px" paginatorAlwaysVisible="false">
+
+                             <f:facet name="{Exporters}">
+                                 <h:commandLink >
+                                     <p:graphicImage library="images" name="excel.png" width="24"/>
+                                     <p:dataExporter type="xls" target="tbl" fileName="advertisements" encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="csv.png" width="24"/>
+                                     <p:dataExporter type="csv" target="tbl" fileName="advertisements"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="xml.png" width="24"/>
+                                     <p:dataExporter type="xml" target="tbl" fileName="advertisements"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                             </f:facet>
+
+                             <p:column style="text-align: center" width="5">
+								<f:facet name="header">
+					              <h:outputText value=" #{labels['general.No-symbol']}" /> 
+					            </f:facet>
+								<h:outputText value="#{idx + 1}" />
+							</p:column>
+							
+							 <p:column style="text-align: center" width="25" exportable="false">
+
+								 <p:commandButton  icon="fa fa-fw fa-edit" action="advertisementEdit.jsf" ajax="false" title="#{labels['general.edit']}" onclick="rc()">
+								 	<f:param name="idObj" value="#{row[0]}" />
+								 </p:commandButton>
+
+					        </p:column>	
+							
+							<p:column width="45" sortBy="#{row.A1}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['advertisement.datePubl']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[1]}">
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{advertisementsList.timeZone}"/>
+								</h:outputText>
+							</p:column>	
+							
+							<p:column width="120" sortBy="#{row.A6}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.admStruc']}" />
+								</f:facet>								
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, row[6], advertisementsList.currentLang, now, advertisementsList.userId)}" />
+							</p:column>							
+							
+							<p:column width="200" sortBy="#{row.A2}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['advertisement.zveno']}" />
+								</f:facet>								
+								<p:outputLabel value="#{row[2] ne null ? advertisementsList.getDirekciaForZveno(row[6], row[2]) : ''}" styleClass="panel-job-label" escape="false" style="font-style: italic;"/>	
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, row[2], advertisementsList.currentLang, now, advertisementsList.userId)}" />
+							</p:column>
+							
+							<p:column width="60" sortBy="#{row.A3}">
+								 <f:facet name="header">
+									 <h:outputText value="#{labels['advertisement.nasMestoPubl']}" />
+								 </f:facet>
+								 <h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row[3], advertisementsList.currentLang, now, advertisementsList.userId)}" />
+							 </p:column>							
+							
+							<p:column width="120" sortBy="#{row.A4}">
+								<f:facet name="header">
+									<h:outputText value="#{labels['advertisement.dlajnost']}" />
+								</f:facet>
+								<h:outputText value="#{row[4]}" />
+							</p:column>												
+							
+							<p:column width="45" sortBy="#{row.A5}">
+								<f:facet name="header">
+									 <h:outputText value="#{labels['advertisement.srokPodavDocum']}" />									  
+								</f:facet>
+								<h:outputText value="#{row[5]}" >
+								     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{advertisementsList.timeZone}"/>
+								</h:outputText>
+							</p:column>		       
+
+						</p:dataTable>
+
+			         </p:panel>
+				
+				</div>			
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+		
+</html>	

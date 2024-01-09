@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<ui:composition>
+	
+		<!-- NAVBAR (Main) -->
+		<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+		<h:form>
+		<nav class="container-fluid navbar navbar-main" jsf:id="pjmenu">
+			<!-- Title row (mobile only) -->
+			<div class="navbar-title-row">
+				<div class="flex">
+					<div class="navbar-button-container">
+						<button type="button" class="navbar-icon navbar-toggle-button">
+							<span class="sr-only">Toggle navigation</span>
+							<span><i class="fas fa-bars"></i></span>
+						</button>
+						
+						<div class="options-toggle" onclick="toggleNavbarOptions()">
+							<i class="navbar-icon fas fa-wrench"></i>
+						</div>
+					</div>
+					
+					<div class="main-icons-container">
+					
+						<div class="main-icons">
+							<div>
+								<a href="index.jsf"><i class="navbar-icon fas fa-home"></i></a>
+							</div>
+							<div>
+								<a jsf:action="entryPage.jsf@clear@?faces-redirect=true" jsf:rendered="#{!userData.hasAccess(7,55)}" title="#{labels['general.login']}"><i class="navbar-icon fas fa-sign-in-alt"></i></a>
+								<span  jsf:rendered="#{userData.hasAccess(7,55)}">
+									<a  href="api/auth/logout"  title="#{labels['general.logout']}"><i class="navbar-icon fas fa-sign-out-alt"></i></a>
+								</span>
+							</div>
+						</div>
+						
+						<div class="options">
+						
+							<a href="#" title="#{labels['mainExt.letterSizeMin']}" onclick="font(false)" class="navbar-icon">
+                            	<span class="fas fa-font"></span>
+                               	<span class="fas fa-minus font-caret"></span>
+                            </a>
+                            
+                            <a href="#" title="#{labels['mainExt.letterSizePlus']}" onclick="font(true)" class="navbar-icon">
+                               <span class="fas fa-font"></span>
+                               <span class="fas fa-plus font-caret"></span>
+                            </a>  
+							
+							<a href="#" title="#{labels['mainExt.changeColor']}" onclick="colorBlind()">
+                                <span class="navbar-icon fas fa-palette"></span>
+                            </a>
+                            
+                            <div jsf:rendered="#{userData.userId ==null or userData.userId ==-1}">
+		            			<a href="regAdmin.jsf" title="#{labels['general.formAdmin']}">
+		            				<span class="navbar-icon fas fa-user-edit"></span>
+		            			</a> 
+	            			</div>
+                            
+							<p:commandLink action="index.jsf?faces-redirect=true" actionListener="#{environment.changeLanguage('bg')}" rendered="#{environment.language.equals('en')}" class="navbar-icon">BG</p:commandLink>
+							<p:commandLink action="index.jsf?faces-redirect=true" actionListener="#{environment.changeLanguage('en')}" rendered="#{environment.language.equals('bg')}" class="navbar-icon">EN</p:commandLink>
+						</div>
+					
+					</div>
+				</div>
+			</div>
+			
+			<div class="navbar-content">
+				<ul class="navbar-item-main-list">
+					
+					<li class="navbar-item-main navbar-main-icon home">
+						<a href="index.jsf" class="navbar-title"><i class="fas fa-home"></i></a>
+					</li>
+					
+					<li class="navbar-item-main">
+						<span class="navbar-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 1, environment.currentLang, null, null)}</span>
+						<ul class="navbar-dropdown">
+							<li class="navbar-dropdown-item final external"><a href="adverJobs.jsf?sect=6">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 6, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="adverExtList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 7, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item expand">
+								<span>
+									#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 12, environment.currentLang, null, null)}
+								</span>
+								<ul class="navbar-dropdown navbar-dropdown-submenu">
+									<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_PRAVILA_INSTR}">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 13, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_PRIMEREN_TEST}">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 15, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_MATERIAL_SAMOPODG}">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 14, environment.currentLang, null, null)}</a></li>
+									<ui:remove>
+										<!-- <li class="navbar-dropdown-item final"><a href="#">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 16, environment.currentLang, null, null)}</a></li> -->
+									</ui:remove>
+									<li class="navbar-dropdown-item expand">
+										<span>
+											#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 17, environment.currentLang, null, null)}
+										</span>
+										<ul class="navbar-dropdown navbar-dropdown-submenu">
+											<li class="navbar-dropdown-item final"><a href="statCandAppeared.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 54, environment.currentLang, null, null)}</a></li>
+											<li class="navbar-dropdown-item final"><a href="statBroiIzdarjali.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 55, environment.currentLang, null, null)}</a></li>
+											<li class="navbar-dropdown-item final"><a href="statAvgResByArea.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 56, environment.currentLang, null, null)}</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+	
+					<li class="navbar-item-main">
+						<span class="navbar-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 2, environment.currentLang, null, null)}</span>	
+						<ul class="navbar-dropdown">
+							<ui:remove>
+							<!--
+							<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_PRINZIP_DA_DSL}">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 8, environment.currentLang, null, null)}</a></li>
+							-->
+							</ui:remove>
+							<li class="navbar-dropdown-item final external"><a href="https://iisda.government.bg/ras/executive_power" target="_blank">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 18, environment.currentLang, null, null)}</a></li> <ui:remove><!-- publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_STR_FUNC_ADM_STR} --></ui:remove>
+							<ui:remove>
+							<!--
+							<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_NORM_UREDBA_DSL}">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 19, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_REQ_CAND_FOR_DSL}">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 20, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_PRED_RAB_V_DA}">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 21, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=#{IBConstants.CODE_ZNACH_PUBL_INTERVUTA}">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 22, environment.currentLang, null, null)}</a></li>
+							-->
+							</ui:remove>
+							
+							<li class="navbar-dropdown-item final"><a href="roleGame.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 24, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="calculatorSalary.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 38, environment.currentLang, null, null)}</a></li>
+						</ul>
+					</li>
+	
+					<li class="navbar-item-main">
+						<span class="navbar-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 3, environment.currentLang, null, null)}</span>
+						<ul class="navbar-dropdown">
+							<li class="navbar-dropdown-item final"><a href="bursaryExtList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 9, environment.currentLang, null, null)}</a></li>
+							
+							<li class="navbar-dropdown-item expand">
+								<span>
+									#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 81, environment.currentLang, null, null)}
+								</span>
+								<ul class="navbar-dropdown navbar-dropdown-submenu">	
+									<li class="navbar-dropdown-item final"><a href="practiceExtList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 70, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=76">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 76, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final"><a href="reportsRankingCandidates.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 77, environment.currentLang, null, null)}</a></li>
+								</ul>
+							</li>
+							
+							<li class="navbar-dropdown-item final external"><a href="portalStartKariera.jsf?sect=26">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 26, environment.currentLang, null, null)}</a></li>
+							
+							<ui:remove>
+							<!--
+							<li class="navbar-dropdown-item final"><a href="publExtList.jsf?sect=58">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, IBConstants.CODE_ZNACH_DLAJN_BEZ_OPIT, environment.currentLang, null, null)}</a></li>
+							-->
+							</ui:remove>
+						</ul>
+					</li>
+					
+					<li class="navbar-item-main home">
+						<a href="questExtList.jsf"  class="navbar-title" style="cursor: pointer;">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 28, environment.currentLang, null, null)}</a>
+					</li>
+					<li class="navbar-item-main home">
+						<a href="contactForm.jsf"  class="navbar-title" style="cursor: pointer;">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 10, environment.currentLang, null, null)}</a>
+					</li>
+					
+					
+					<ui:remove>
+					<!-- 
+					<li class="navbar-item-main">
+						<span class="navbar-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 4, environment.currentLang, null, null)}</span>
+						<ul class="navbar-dropdown">
+							<li class="navbar-dropdown-item final"><a href="contactForm.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 27, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="questExtList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 28, environment.currentLang, null, null)}</a></li>
+						</ul>
+					</li> 
+					 -->
+					</ui:remove>
+					<li class="navbar-item-main"  jsf:rendered="#{userData.hasAccess(7,59)}">
+						<span class="navbar-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 5, environment.currentLang, null, null)}</span>
+						<ul class="navbar-dropdown">
+							<li class="navbar-dropdown-item final"><a href="profile.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 11, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="userMailMessages.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 29, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="testResults.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 30, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="subscrAdverstUser.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 31, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final"><a href="confirmPractice.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 74, environment.currentLang, null, null)}</a></li>
+						</ul>
+					</li>
+					
+					<li class="navbar-item-main" jsf:rendered="#{userData.hasAccess(7,60)}">
+						<span class="navbar-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 33, environment.currentLang, null, null)}</span>
+						<ul class="navbar-dropdown">
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,77)}"><a href="admSettings.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 50, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,61)}"><a href="advertisementsList.jsf" >#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 34, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,62)}"><a href="bursaryProgramsList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 35, environment.currentLang, null, null)}</a></li>
+									
+							<li class="navbar-dropdown-item expand">
+								<span>
+									#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 69, environment.currentLang, null, null)}
+								</span>
+								<ul class="navbar-dropdown navbar-dropdown-submenu">									
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,104)}"><a href="campaignList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 68, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,105)}"><a href="practiceList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 73, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,107)}"><a href="practiceProcessList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 72, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,112)}"><a href="reportsVacantPositions.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 82, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,111)}"><a href="reportPracticeAll.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 80, environment.currentLang, null, null)}</a></li>
+								</ul>
+							</li>
+							
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,63)}"><a href="publDataList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 39, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,65)}"><a href="candidatesList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 40, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,66)}"><a href="bursar.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 36, environment.currentLang, null, null)}</a></li>	
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,67)}"><a href="checkForTest.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 45, environment.currentLang, null, null)}</a></li>	
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,68)}"><a href="testsResult.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 47, environment.currentLang, null, null)}</a></li>	
+							
+							<li class="navbar-dropdown-item expand" jsf:rendered="#{userData.hasAccess(7,64) or userData.hasAccess(7,69) or userData.hasAccess(7,70) or userData.hasAccess(7,71)
+								or userData.hasAccess(7,72) or userData.hasAccess(7,73) or userData.hasAccess(7,103) or userData.hasAccess(7,88) or userData.hasAccess(7,89)}">
+								<span>
+									#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 67, environment.currentLang, null, null)}
+								</span>
+								<ul class="navbar-dropdown navbar-dropdown-submenu">
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,64)}"><a href="questDataList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 44, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,69)}"><a href="contacts.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 37, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,70)}"><a href="descriptionCalc.jsf?sect=41">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 41, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,71)}"><a href="descriptionGdpr.jsf?sect=42">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 42, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,72)}"><a href="descriptionUslovia.jsf?sect=43">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 43, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,103)}"><a href="descriptionRegAdmin.jsf?sect=66">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 66, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,73)}"><a href="descriptionAdverJobs.jsf?sect=6">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 6, environment.currentLang, null, null)}</a></li>	
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,88)}"><a href="descriptionPortalStaj.jsf?sect=25">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 25, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,89)}"><a href="descriptionPortalStartKariera.jsf?sect=26">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 26, environment.currentLang, null, null)}</a></li>
+							
+								</ul>
+							</li>	
+							
+							<li class="navbar-dropdown-item expand" jsf:rendered="#{userData.hasAccess(7,1)}">
+								<span>
+									#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 48, environment.currentLang, null, null)}
+								</span>
+								<ul class="navbar-dropdown navbar-dropdown-submenu">
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,2)}"><a href="systemClassifList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 62, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,3)}"><a href="syslogicListOpis.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 63, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,4)}"><a href="systemOptions.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 64, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,39)}"><a href="manageQuartzProcess.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 65, environment.currentLang, null, null)}</a></li>
+								</ul>
+							</li>
+							
+							<li class="navbar-dropdown-item expand" jsf:rendered="#{userData.hasAccess(7,6)}">
+								<span>
+									#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 49, environment.currentLang, null, null)}
+								</span>
+								<ul class="navbar-dropdown navbar-dropdown-submenu">
+									<li class="navbar-dropdown-item final"  jsf:rendered="#{userData.hasAccess(7,7)}"><a href="usersList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 60, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final"  jsf:rendered="#{userData.hasAccess(7,8)}"><a href="groupsList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 61, environment.currentLang, null, null)}</a></li>
+									<li class="navbar-dropdown-item final"  jsf:rendered="#{userData.hasAccess(7,76)}"><a href="usersGroupDeleteList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 71, environment.currentLang, null, null)}</a></li>
+								</ul>
+							</li>
+							
+							
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,78)}"><a href="admMailList.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 51, environment.currentLang, null, null)}</a></li>												
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,97)}"><a href="deleteUserData.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 57, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,98)}"><a href="updateSalaryTable.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 59, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,99)}"><a href="statCandNum.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 53, environment.currentLang, null, null)}</a></li>
+							<li class="navbar-dropdown-item final" jsf:rendered="#{userData.hasAccess(7,108)}"><a href="journal.jsf">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 75, environment.currentLang, null, null)}</a></li>
+						
+						</ul>
+					</li>
+					
+					
+					<li class="navbar-item-main navbar-main-icon home">
+						<h:panelGroup rendered="#{!userData.hasAccess(7,55)}">
+							<a class="navbar-title" jsf:action="entryPage.jsf@clear@?faces-redirect=true" title="#{labels['general.login']}">
+								<i class="fas fa-sign-in-alt"></i>
+							</a>
+						</h:panelGroup>
+						
+						<h:panelGroup rendered="#{userData.hasAccess(7,55)}">
+							<a class="navbar-title" href="api/auth/logout"  title="#{labels['general.logout']}">
+								<i class="fas fa-sign-out-alt"></i>
+							</a>
+						</h:panelGroup>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		
+		<p:sticky target="pjmenu" />
+		</h:form>
+
+	</ui:composition>
+</html>

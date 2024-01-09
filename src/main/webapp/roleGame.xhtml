@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/ibg">
+
+	
+	<f:metadata>
+        <f:viewAction action="#{userData.hasFillProfilе}"  />		   
+	</f:metadata>
+	
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		<ui:define name="title">#{labels['general.roleGame']}</ui:define>
+	
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml" />
+		</ui:define>	
+	
+		<ui:define name="content">
+			
+			<style type="text/css">
+				.title-page {
+					position: relative;
+					overflow: hidden;
+				}
+				
+				.graphic {
+					color: #b8b8b8;
+					position: absolute;
+					opacity: 0;
+					animation-name: rise;
+				    animation-duration: 1s;
+				    animation-iteration-count: 1;
+				    animation-fill-mode: forwards;
+				}
+				
+				.icons-container .graphic:nth-of-type(1) {
+					right: calc(1rem + 8px);
+					top: 50%;
+					animation-delay: 0.5s;
+					font-size: 4rem;
+				}
+				
+				.icons-container .graphic:nth-of-type(2) {
+					right: calc(1rem + 55px);
+					top: calc(50% - 15px);
+					animation-delay: 1.25s;
+					font-size: 2rem;
+				}
+				
+				.icons-container .graphic:nth-of-type(3) {
+					right: 1rem;
+					top: calc(50% - 20px);
+					animation-delay: 1s;
+					font-size: 1.5rem;
+				}
+				
+				@media screen and (max-width: 767px) {
+					
+					.icons-container .graphic:nth-of-type(1) {
+						font-size: 3rem;
+					}
+					
+					.icons-container .graphic:nth-of-type(2) {
+						right: calc(1rem + 45px);
+						top: calc(50% - 13px);
+						font-size: 1.25rem;
+					}
+					
+					.icons-container .graphic:nth-of-type(3) {
+						font-size: 1rem;
+						top: calc(50% - 15px);
+					}
+				}
+				
+				.icons-container .graphic:nth-of-type(2) .fa-question {
+					transform: rotate(-20deg);
+				}
+				
+				.icons-container .graphic:nth-of-type(3) .fa-question {
+					transform: rotate(30deg);
+				}
+				
+				@keyframes rise {
+					0% {
+						opacity: 0;
+						-webkit-transform: translate3d(0, 50%, 0);
+						-ms-transform: translate3d(0, 50%, 0);
+						transform: translate3d(0, 50%, 0);
+					}
+					100% {
+						opacity: 1;
+						-webkit-transform: translate3d(0, -50%, 0);
+						-ms-transform: translate3d(0, -50%, 0);
+						transform: translate3d(0, -50%, 0);
+					}
+				}
+				
+			</style>
+		
+			<!-- TITLE -->
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{labels['general.roleGame']}</h3>
+				</div>
+				
+				<div class="icons-container">
+	 				<div class="graphic">
+						<i class="fas fa-user-tie"></i>
+					</div>
+					
+					<div class="graphic">
+	 					<i class="fas fa-question"></i>
+	 				</div>
+					
+					<div class="graphic">
+	 					<i class="fas fa-question"></i>
+	 				</div>
+ 				</div> 			
+			</div>
+			
+			<div class="container container-white">		
+				<ui:include src="/resources/fragments/game.xhtml" />
+			</div>
+			
+		</ui:define>
+	</ui:composition>
+
+</html>

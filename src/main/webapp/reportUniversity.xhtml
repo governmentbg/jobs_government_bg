@@ -1,0 +1,351 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,110)}" />		   
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 79, environment.currentLang, null, null)}</ui:define> 
+	
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	
+		<style>
+		
+			.ui-datagrid.padding-between .ui-datagrid-column {
+				padding: 4px;
+			}
+
+			.search-main {
+				height: auto !important;
+				width: auto !important;
+				flex-grow: 1;
+			}
+			
+			.search-main .col {
+				padding-top: 0;
+				padding-bottom: 0;
+			}
+			
+			.search-main .ibg-modal-button input,
+			.search-main .ibg-modal-button button {
+				height: 40px;
+			}
+			
+			.search-main .ibg-modal-button input,
+			.search-main .ui-inputtext {
+				font-size: 1em;
+			}
+					
+			
+			.search-main .ibg-modal-button button {
+				width: 36px;
+			}
+			
+			.search-main .ui-inputtext {
+				height: 40px;
+			}
+			
+			.search-filter .search-button {
+				float: right;
+				height: 40px;
+			}
+			
+			.clear-button {
+				display: inline-block;
+				margin-left: 0.5em;
+			}
+			
+			.clear-button a {
+				color: #005E8B;
+			}
+			
+			.panel-job .panel-heading {
+				min-height: auto;
+			}
+			
+			@media only screen and (max-width: 991px) {
+				.search-main {
+					width: 100% !important;
+				}
+				
+				.search-main .col {
+					padding-top: 0.5em;
+					padding-bottom: 0.5em;
+				}
+				
+				.search-filter .search-button {
+					margin-left: 0.5em;
+					margin-top: 0.5em;
+					height: 32px;
+				}
+				
+				.search-main .ibg-modal-button input,
+				.search-main .ibg-modal-button button {
+					height: 32px;
+				}
+
+				.search-main .ibg-modal-button button {
+					width: 28px;
+				}
+				
+				.search-main .ui-inputtext {
+					height: 32px;
+				}				
+			}
+			
+		</style>
+	
+		<h:form id="reportForm">
+			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+						
+			<div class="search-filter">
+			
+				<div class="container">
+				
+					<h3 class="search-title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 79, environment.currentLang, null, null)}</h3>
+								
+					<div style="display: flex; flex-wrap: wrap;">
+						<div class="search-main p-grid p-align-stretch">
+												
+							<!-- Кампания -->
+							<ui:remove>		
+							<div class="p-col-12 p-md-12 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['practice.campaign']}: " />
+							</div>
+							</ui:remove>
+							<div class="p-col-12 p-lg-4 col">											
+	    						<p:selectOneMenu  value="#{reportUniversity.idCamp}" id="idCampaign"  >	
+	    							  <f:selectItem itemLabel="--#{labels['report.camp']}--" itemValue="" />											     			                     
+				                      <f:selectItems value="#{reportUniversity.campList}" var="camp" itemLabel="#{camp.label}" itemValue="#{camp.value}" />	       				                          
+				                </p:selectOneMenu>    							
+	    						<p:message for="idCampaign" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>                        
+							</div>	
+							
+							<!-- Справка -->	
+							<ui:remove>	
+							<div class="p-col-12 p-md-12 p-lg-2 cc-right req" >
+								<h:outputText value="#{labels['reportsRankingCandidates.tipReport']}: " />
+							</div>
+							</ui:remove>
+							<div class="p-col-12 p-lg-4 col">											
+	    						<p:selectOneMenu  height="300px" value="#{reportUniversity.typeSpr}" id="typeSpr"  >
+	    							  								     				                     
+				                      <f:selectItems value="#{reportUniversity.sprList}" var="typeSpr" itemLabel="#{typeSpr.label}" itemValue="#{typeSpr.value}" />	       				                          
+				                </p:selectOneMenu>    							
+	    						<p:message for="typeSpr" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>                        
+							</div>	
+							
+							<div class="p-col-12 p-lg-2 col ibg-modal-button">		 
+								<p:inputText value="#{reportUniversity.year}" placeholder="#{labels['general.year']}"   style="height: 30px;">
+									 <p:keyFilter mask="num" preventPaste="true"/>
+								</p:inputText>
+							</div>		
+							<div class="p-col-12 p-md-12 p-lg-1">
+								<p:commandButton action="#{reportUniversity.actionSearch()}" styleClass="search-button" style="height: 30px"
+								 icon="fa fa-search" id="btnSearch" update="reportForm:panelTable" />	
+						    </div>					
+						</div>	
+						
+															
+						
+					</div>	
+					<ui:remove>
+					<!-- ADDITIONAL FIELDS -->
+					<div class="search-add" jsf:id="panelSearchAdd">
+						
+						<!-- TOGGLE BUTTON -->	
+						<div class="clear-button">
+							<p:commandLink action="#{reportUniversity.actionClear}" update="reportForm" id="btnClear">
+								<h:outputText value="#{labels['general.clear']}" /><i class="fas fa-trash-alt" style="margin-left: 6px;"></i>
+							</p:commandLink>
+						</div>
+					</div>
+					</ui:remove>
+				</div>			
+			</div>
+			
+			<br />
+			<div class="container" style="padding: 0 4px;"> 
+				<p:outputPanel id="panelTable">
+					<h:panelGroup class="results-summary p-grid p-align-center p-justify-between" layout="block">
+	       				<div class="results-count bolded">
+	       					<h:outputText value="#{labels['general.result']}: " />
+	       					<h:outputText value="#{reportUniversity.result.size()}"/>
+	       				</div>       			      			
+	       			</h:panelGroup>
+			 						 	
+					 	 <p:dataTable id="tbl" var="row" value="#{reportUniversity.result}"  rows="15" 
+							rowIndexVar="idx" sortMode="single" reflow="true" rendered="#{reportUniversity.result.size()>0 and reportUniversity.typeSpr == 1}"
+							emptyMessage="" 
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+							paginator="true" style="margin-bottom:20px">
+
+                             <f:facet name="{Exporters}">
+                                 <h:commandLink >
+                                     <p:graphicImage library="images" name="excel.png" width="24"/>
+                                     <p:dataExporter type="xls" target="tbl" fileName="app" encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="csv.png" width="24"/>
+                                     <p:dataExporter type="csv" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="xml.png" width="24"/>
+                                     <p:dataExporter type="xml" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                             </f:facet>
+
+
+                             <p:column style="text-align: center" width="30">
+								<f:facet name="header">
+					                 No
+					            </f:facet>
+								<h:outputText value="#{idx + 1}" />
+							</p:column>
+							
+							<p:column width="100" >
+								<f:facet name="header">
+									<h:outputText value="#{labels['bursary.university']}" />
+								</f:facet>
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_UNIVERSITY, row[1], reportUniversity.currentLang, reportUniversity.today, reportUniversity.userId)}"/>
+							</p:column>
+	 
+							<p:column width="250" >
+								<f:facet name="header">
+									<h:outputText value="#{labels['reportUniversity.broiStudentiCamp']}" />
+								</f:facet>
+								<h:outputText value="#{row[0]}"/>
+							</p:column>
+																			
+						</p:dataTable>
+						
+						 <p:dataTable id="tbl2" var="row" value="#{reportUniversity.result}" rows="15" 
+							rowIndexVar="idx" sortMode="single" reflow="true" rendered="#{reportUniversity.result.size()>0 and reportUniversity.typeSpr == 2}"
+							emptyMessage="" 
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+							paginator="true" style="margin-bottom:20px">
+
+                             <f:facet name="{Exporters}">
+                                 <h:commandLink >
+                                     <p:graphicImage library="images" name="excel.png" width="24"/>
+                                     <p:dataExporter type="xls" target="tbl" fileName="app" encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="csv.png" width="24"/>
+                                     <p:dataExporter type="csv" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="xml.png" width="24"/>
+                                     <p:dataExporter type="xml" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                             </f:facet>
+
+
+                             <p:column style="text-align: center" width="30">
+								<f:facet name="header">
+					                 No
+					            </f:facet>
+								<h:outputText value="#{idx + 1}" />
+							</p:column>
+							
+							<p:column width="100" >
+								<f:facet name="header">
+									<h:outputText value="#{labels['practice.educationArea']}" />
+								</f:facet>
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row[0], reportUniversity.currentLang, reportUniversity.today, reportUniversity.userId)}"/>
+							</p:column>
+	 
+							<p:column width="250" >
+								<f:facet name="header">
+									<h:outputText value="#{labels['reportUniversity.possition']}" />
+								</f:facet>
+								<h:outputText value="#{row[1]}"/>
+							</p:column>
+																			
+						</p:dataTable>
+						
+						<p:dataTable id="tbl3" var="row" value="#{reportUniversity.result}" rows="15" 
+							rowIndexVar="idx" sortMode="single" reflow="true" rendered="#{reportUniversity.result.size()>0 and reportUniversity.typeSpr == 3}"
+							emptyMessage="" 
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+							paginator="true" style="margin-bottom:20px">
+
+                             <f:facet name="{Exporters}">
+                                 <h:commandLink >
+                                     <p:graphicImage library="images" name="excel.png" width="24"/>
+                                     <p:dataExporter type="xls" target="tbl" fileName="app" encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="csv.png" width="24"/>
+                                     <p:dataExporter type="csv" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                                 <h:commandLink>
+                                     <p:graphicImage library="images" name="xml.png" width="24"/>
+                                     <p:dataExporter type="xml" target="tbl" fileName="app"  encoding="utf-8"/>
+                                 </h:commandLink>
+
+                             </f:facet>
+
+
+                             <p:column style="text-align: center" width="30">
+								<f:facet name="header">
+					                 No
+					            </f:facet>
+								<h:outputText value="#{idx + 1}" />
+							</p:column>
+							
+							<p:column width="100" >
+								<f:facet name="header">
+									<h:outputText value="#{labels['practice.educationArea']}" />
+								</f:facet>
+								<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row[0], reportUniversity.currentLang, reportUniversity.today, reportUniversity.userId)}"/>
+							</p:column>
+	 
+							<p:column width="250" >
+								<f:facet name="header">
+									<h:outputText value="#{labels['reportUniversity.possitionsByArea']}" />
+								</f:facet>
+								<h:outputText value="#{row[1]}"/>
+							</p:column>
+																			
+						</p:dataTable>
+						
+					</p:outputPanel>
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

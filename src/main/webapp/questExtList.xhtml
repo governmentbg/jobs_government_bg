@@ -1,0 +1,183 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+		
+	<ui:define name="title">  #{labels['quest.vaprosi']} </ui:define> 
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+	<ui:define name="content">
+	
+		<style>
+		
+			.title-page {
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.graphic {
+				font-size: 4em;
+				color: #b8b8b8;
+				position: absolute;
+				right: 1rem;
+				top: 50%;
+				opacity: 0;
+				animation-name: rise;
+			    animation-duration: 1s;
+			    animation-iteration-count: 1;
+			    animation-fill-mode: forwards;
+			    animation-delay: 0.5s;
+			}	
+			
+			@media screen and (max-width: 767px) {
+				.graphic {
+					font-size: 3em;
+				}
+			}		
+			
+			.group-toggle {
+				background-color: #8BC1DC;
+				padding: .8em .5em .8em 2.2em;
+				margin: 1px auto;
+				display: block;
+				width: 100%;
+				color: #ffffff;
+				font-weight: bold;
+				transition: all 0.1s linear;
+			}
+			
+			.group-content {
+				display: none;
+			}
+			
+			.group-toggle.opened + .group-content {
+				display: block;
+			}
+
+			.ui-accordion .ui-accordion-header {
+				background-color: #D0E6F1;
+				color: #333333;
+				text-shadow: none;
+				border-radius: 0;
+			}
+			
+			.ui-accordion .ui-accordion-header.ui-state-default {
+				border: none;
+				transition: background-color 0.1s linear;
+			}
+			
+			.ui-accordion .ui-accordion-header.ui-state-default.ui-state-active {
+				background-color: #B9D9EA;
+			}
+			
+			.ui-accordion .ui-accordion-content {
+				background-color: white;
+			}
+			
+			body.color-blind .group-toggle {
+				background-color: #000000;
+				border: 1px solid #ffffff;
+			}
+			
+			body.color-blind .group-toggle.opened {
+				border-left: 20px solid #ffffff;
+			}
+			
+			body.color-blind .ui-accordion .ui-accordion-header.ui-state-default {
+				background-color: transparent;
+				color: #ffffff;
+				text-shadow: none;
+				text-decoration: underline;
+			}
+			
+			body.color-blind .ui-accordion .ui-accordion-content {
+				background-color: transparent;
+				color: white;
+				text-shadow: none;
+			}	
+			
+			@keyframes rise {
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, 50%, 0) rotateY(135deg);
+					-ms-transform: translate3d(0, 50%, 0) rotateY(135deg);
+					transform: translate3d(0, 50%, 0) rotateY(135deg);
+				}
+				100% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, -50%, 0) rotateY(0);
+					-ms-transform: translate3d(0, -50%, 0) rotateY(0);
+					transform: translate3d(0, -50%, 0) rotateY(0);
+				}
+			}
+			
+		</style>
+
+		<h:form id="formExtQuestList" >
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			<p:tooltip/>
+					
+			
+			<div class="title-page">
+				<div class="container">
+					<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 28, environment.currentLang, null, null)}</h3>
+				</div>
+				
+				<i class="fas fa-question graphic"></i>
+			</div>
+					
+			<div class="container" style="padding: 0 4px;"> 
+			
+				<h:panelGroup id="groups" style="padding-top: 10px; background:#fff;">
+					<br/>
+
+					<ui:repeat value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_QUEST_GRUPA, questExtList.currentDate, questExtList.currentLang, questExtList.idUser)}" var="group" varStatus="repeat">
+						<p:commandLink styleClass="group-toggle" actionListener="#{questExtList.changeGrupa(group.code)}" update="accordion" oncomplete="openGroup(#{repeat.index})">
+							<i class="fas fa-th-list" style="padding-right:10px"></i> 
+							<h:outputText value="#{group.tekst}" />
+						</p:commandLink>
+						<div class="group-content">
+							<p:accordionPanel value="#{questExtList.questListT}" var="row" activeIndex="-1" id="accordion">
+						        <p:tab title="#{row.quest}" titleStyle="font-weight: bold" >
+						            <h:panelGrid columns="1" cellpadding="1" >
+						                <h:outputText value="#{row.answer}" />
+						            </h:panelGrid>
+						        </p:tab>
+						    </p:accordionPanel>
+						</div>
+					</ui:repeat>
+				</h:panelGroup>
+
+			</div>
+		</h:form>
+		<script>
+			function openGroup(index) {
+				let $group = $(".group-toggle").eq(index);
+				
+				if($group.hasClass('opened')) {
+					$group.next('.group-content').slideUp();
+				}
+				else {
+					$('.group-toggle.opened').next('.group-content').slideUp();
+					$('.group-toggle.opened').toggleClass('opened');
+					$group.next(".group-content").slideDown();
+				}
+				$group.toggleClass('opened');
+			}
+		</script>
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

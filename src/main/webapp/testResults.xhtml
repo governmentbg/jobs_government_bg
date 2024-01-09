@@ -1,0 +1,231 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 30, environment.currentLang, null, null)}</ui:define>
+
+    <ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+	</ui:define>
+
+	<ui:define name="content">
+	
+		<style>
+		
+			.title-page {
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.title-page h3 {
+				max-width: 80%;
+			}
+			
+			.graphic {
+			    position: absolute;
+			    opacity: 0;
+			    animation-duration: 1s;
+			    animation-iteration-count: 1;
+			    animation-fill-mode: forwards;
+			}
+			
+			.graphic:nth-of-type(1) {
+				right: 1em;
+				width: 90px;
+				top: 50%;
+				animation-name: rise;
+				animation-delay: 0.5s;
+			}
+			
+			.graphic:nth-of-type(2) {
+				width: 33px;
+				right: calc(1em + 5px);
+				top: 30%;
+				animation-name: left;
+				animation-delay: 1.5s;
+			}
+			
+			@media screen and (max-width: 767px) {
+				.graphic:nth-of-type(1) {
+					right: 1em;
+					width: 60px;
+					top: 50%;
+				}
+				
+				.graphic:nth-of-type(2) {
+					width: 18px;
+					right: calc(1em + 5px);
+					top: 30%;
+				}
+			}	
+			
+			@keyframes rise {
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, 50%, 0);
+					-ms-transform: translate3d(0, 50%, 0);
+					transform: translate3d(0, 50%, 0);
+				}
+				100% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, -50%, 0);
+					-ms-transform: translate3d(0, -50%, 0);
+					transform: translate3d(0, -50%, 0);
+				}
+			}
+			
+			@keyframes left {
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(100%, 0, 0);
+					-ms-transform: translate3d(100%, 0, 0);
+					transform: translate3d(100%, 0, 0);
+				}
+				100% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 0, 0);
+					-ms-transform: translate3d(0, 0, 0);
+					transform: translate3d(0, 0, 0);
+				}
+			}
+			
+		</style>
+		
+		<p:tooltip />
+		<h:form id="testForm">
+		 
+		 			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+			
+			<!-- TITLE -->
+				<div class="title-page">
+					<div class="container">	 
+						<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 30, environment.currentLang, null, null)}</h3>
+					</div>
+					
+					<img src="resources/images/icons/test.png" alt="" class="graphic"/>
+ 					<img src="resources/images/icons/check.png" alt="" class="graphic"/>
+				</div>	
+						
+			<div class="container">
+
+				<p:outputPanel id="panelData">
+				
+					 <div class="container-white">
+				     			
+						 	 <p:dataTable id="tbl" var="row" value="#{testResults.tests}"  rows="15"
+								rowIndexVar="idx" sortMode="single" reflow="true" rendered="#{testResults.tests!=null}"
+								emptyMessage="" 
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+								rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+								paginator="true" style="margin-bottom:20px">
+								
+							    <p:ajax event="rowToggle" listener="#{testResults.onRowToggle}"  />
+						
+								<p:column style="width:35px">
+									<p:rowToggler >
+										            	
+									</p:rowToggler>
+								</p:column>
+	
+	                             <p:column style="text-align: center" width="5">
+									<f:facet name="header">
+						                 No
+						            </f:facet>
+									<h:outputText value="#{idx + 1}" />
+								</p:column>
+								
+								<p:column width="110" sortBy="#{row.testLevel}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['profile.langLevel']}" />
+									</f:facet>
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_NIVO_TEST, row.testLevel, testResults.currentLang, testResults.today, testResults.idUser)}" />
+								</p:column>
+	
+								<p:column width="110" sortBy="#{row.testLocation}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['checkForTest.location']}" />
+									</f:facet>
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, row.testLocation, testResults.currentLang, testResults.today, testResults.idUser)}" />
+								</p:column>
+																		
+								<p:column width="60" sortBy="#{row.testDate}">
+									<f:facet name="header">
+										 <h:outputText  value="#{labels['general.data']}" />									  
+									</f:facet>
+										<h:outputText value="#{row.testDate}" >
+									     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{testResults.timeZone}"/>
+									</h:outputText>
+								</p:column>	
+								
+								<p:column width="50" sortBy="#{row.testТime}">
+									<f:facet name="header">
+										 <h:outputText value="#{labels['checkForTest.time']}" />									  
+									</f:facet>
+										<h:outputText value="#{row.testТime}" >
+									     <f:convertDateTime pattern="HH:mm:ss" timeZone="#{testResults.timeZone}"/>
+									</h:outputText>
+								</p:column>	
+								
+								
+								<p:column width="130" sortBy="#{row.administration}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['checkForTest.administration']}" />
+									</f:facet>
+										<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, row.administration, testResults.currentLang, testResults.today, testResults.idUser)}" />
+								</p:column>		
+								
+								<p:column width="100" sortBy="#{row.status}">
+									<f:facet name="header">
+										<h:outputText value="#{labels['general.result']}" />
+									</f:facet>
+										<h:outputText rendered="#{row.status!=null}" value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASSIF_TEST_RESULTS, row.status, testResults.currentLang, testResults.today, testResults.idUser)}" />
+								</p:column>	
+											 
+								<p:column width="100" >
+									<f:facet name="header">
+										<h:outputText value="#{labels['checkForTest.reason']}" />
+									</f:facet>
+										<h:outputText  value="#{row.deactivReason}" />
+								</p:column>	
+								
+								<p:rowExpansion >
+									 <div class="ui-g" jsf:rendered="#{empty row.deactivReason}">
+									 	<div class="ui-lg-12 ui-g-12">
+											 <p:dataList value="#{testResults.testResuts}" var="tResult" emptyMessage="#{labels['general.norows']}">
+											     <h:outputText value="#{systemData.decodeItem(10093, tResult[0], testResults.currentLang, now, testResults.idUser)}" rendered="#{tResult[0]==2 or tResult[0]==3}"/>
+											     <h:outputText value=" #{systemData.decodeItem(10093, tResult[1], testResults.currentLang, now, testResults.idUser)}" rendered="#{tResult[0]==1}"/>
+											     <h:outputText value=" #{labels['general.sum_result']}" rendered="#{tResult[0]==0}"/>
+											     <br/>
+											     <h:outputText value="#{labels['testResults.points']}: " style="font-style: italic; font-weight: bold;"/> #{tResult[2]}<br/>
+											     
+											 </p:dataList>
+										</div>
+										<div class="ui-lg-12 ui-g-12">
+										
+										        <p:radarChart model="#{testResults.mapRadarModel[testResults.idTestRez]}" rendered="#{!empty testResults.testResuts}"/>
+										</div>
+									</div>
+								</p:rowExpansion>
+							
+							</p:dataTable>
+			
+					</div>												
+				</p:outputPanel>
+
+			</div>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

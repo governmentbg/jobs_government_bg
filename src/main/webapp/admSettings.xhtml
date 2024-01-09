@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+		<ui:define name="title">#{labels['admSettings.title']}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">
+		
+			<style>
+				.right {
+					float: right;
+				}
+				
+				.text-right {
+					text-align: right;
+				}
+				
+				.section-separator {
+				    height: 1px;
+				    width: 75%;
+				    margin: 1.75em auto;
+				    background-color: rgba(0, 0, 0, 0.25);
+				    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.10);
+				}
+								
+				.action-button {
+					padding: 0.5em;
+					font-variant: all-petite-caps;
+					transition: background-color 0.1s linear;
+				}
+				
+				.action-button.save {
+					background-color: #0077b3;
+					color: #ffffff;
+				}
+				
+				.action-button.save:hover {
+					background-color: #005783;
+				}
+				
+				body.color-blind .action-button.save {
+					background-color: #000000;
+					color: #ffffff;
+					border: 1px solid #ffffff;
+				}
+			
+			</style>
+			
+			<h:form id="formAdmSet">
+			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  	<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			
+			<p:tooltip/>
+			
+			<!-- PAGE TITLE -->
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{labels['profile.title']}: <span style="margin-left: 1em;">#{admSettings.user.username} </span>
+						<span style="margin-left: 3em;"/>
+						#{labels['checkForTest.administration']}: <span style="margin-left: 1em;">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, userData.codeOrg, admSettings.currentLang, now, admSettings.userId)}</span>
+					</h3>
+				</div>
+ 			</div>
+		
+			<div class="container">
+			
+				<p:focus context="divData"/>	
+			
+				<!-- TAB LAYOUT -->
+				<div class="p-grid tab-layout" jsf:id="divData">
+					
+					<!-- TAB DEFINITIONS -->
+					<div class="p-col-12 p-lg-3 column-tabs">
+						<div class="p-grid tabs">
+						
+							<div class="p-lg-12 tab" id="tab-password">
+								<i class="fas fa-unlock-alt tab-icon"></i>
+								<div class="tab-title">#{labels['profile.changePass']}</div>
+							</div>
+							
+							<div class="p-lg-12 tab" id="tab-certificate">
+								<i class="fas fa-shield-alt tab-icon"></i>
+								<div class="tab-title">#{labels['admSettingsCert.title']}</div>
+							</div>
+							
+						</div>
+						
+					</div>
+					
+					<!-- TAB CONTENTS -->
+					<div class="p-col-12 p-lg-9 column-contents">
+					
+					<!-- TAB PASSWORD -->
+						<div id="tab-content-password" class="tab-content">
+							<p:outputPanel id="panelPassword" styleClass="margin-after">
+							
+								<!-- PASSWORD -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="oldPass" value="#{labels['general.pass']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:password id="oldPass" value="#{admSettings.password[0]}" />
+									</div>
+								</div>
+								
+								<!-- NEW PASSWORD -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="newPass" value="#{labels['general.passNew']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:password id="newPass" value="#{admSettings.password[1]}"/>
+									</div>
+								</div>
+								
+								<!-- NEW PASSWORD -->
+								<div class="p-grid">
+									<div class="p-col-12 p-md-4">
+										<p:outputLabel for="newPassRep" value="#{labels['general.pass1']}:" styleClass="req"/>
+									</div>
+									<div class="p-col-12 p-md-8">
+										<p:password id="newPassRep" value="#{admSettings.password[2]}"/>
+									</div>
+								</div>
+								
+							</p:outputPanel>
+							
+							<!-- CONFIRM BUTTONS -->
+							<div class="p-grid">
+								<div class="p-col-12 text-right">
+									<p:commandLink styleClass="action-button save" action="#{admSettings.actionChangePassword}" update="formAdmSet:panelPassword">
+										<span class="icon"><i class="fas fa-save"></i></span>
+										<span class="text">#{labels['general.save']}</span>
+									</p:commandLink>
+								</div>
+							</div>
+							
+						</div>
+						
+						<!-- TAB CERTIFICATE -->
+						<div id="tab-content-certificate" class="tab-content">
+							
+							<p:outputPanel id="panelCert" styleClass="margin-after">
+							
+								<!-- SECTION -->
+								<div class="p-grid" id="sectionCert">
+									<div class="p-col-12 title-box">
+										<span class="section-text">#{labels['admSettingsCert.certificates']}</span>
+										<!-- NEW CERTIFICATE BUTTON -->										
+										<p:commandButton class="button-add right" icon="fa fa-plus" onclick="addCert();" id="buttonNewCert" process="formAdmSet:panelCert" title="#{labels['admSettingsCert.addCert']}" />
+									</div>
+								</div>
+								
+								<!-- EDUCATION TABLE -->
+								<div class="p-grid margin-after">
+									<div class="p-col-12">					
+										<table class="highlight bordered cert_table" style="width: 100%;" id="tblCert">
+									        <thead>
+									          <tr>
+									              <th>Issuer</th>
+									              <th>#{labels['general.expireDate']}:</th>
+									              <th>#{labels['general.active']}:</th>
+									              <th></th>
+									          </tr>
+									        </thead>
+								        	<tbody></tbody> 
+								      	</table>
+									</div>
+								</div>
+								
+							</p:outputPanel>
+							
+						</div>
+						
+
+					</div>
+					
+				</div>
+	
+			</div>
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closable="false">
+		        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+		        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+		    </p:confirmDialog>      
+			
+			</h:form>
+			
+			<script>
+				$(document).ready(function() {
+					attachTabClickListeners();
+					loadCerts();
+				});
+			</script>
+			
+			
+		</ui:define>
+	</ui:composition>
+	
+</html>	

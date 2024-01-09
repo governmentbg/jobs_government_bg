@@ -1,0 +1,205 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	  
+	 <ui:remove> <f:metadata>
+	  		<f:viewAction action="#" />		   
+	  </f:metadata> </ui:remove>
+	  
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">#{practiceExtBean.practice.practiceTitle}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+	<ui:define name="content">
+	
+		<style>
+			.ql-container.ql-snow {
+			    border: none;
+			}
+			
+			.ql-editor {
+				padding: 0;
+				white-space: normal;
+			}
+
+			.warning-message {
+				color: #cc0000;
+			}
+
+			body.color-blind .warning-message {
+				color: #ff3333;
+			}
+		</style>
+	
+	  <h:form id="practiceViewForm">
+		   
+		  <p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+
+		  	 <!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+						<div class="p-col-fixed back-col">
+							<p:link outcome="practiceExtList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>								
+						    </p:link>
+					    </div>
+					     <div class="p-col">  
+							<h3 class="title">#{practiceExtBean.practice.practiceTitle}</h3>
+						 </div>
+					</div>
+				</div>
+			</div>	
+		  			  
+			  <div class="container">	
+			  
+			  <div class="container-white">    
+			  		<div class="p-grid">
+				  		<div class="p-col-12" align="left" jsf:rendered="#{!practiceExtBean.visibleAplly}">
+					  		<p:staticMessage severity="info" summary="#{labels['practice.login']}" detail="" style="width: 100%" />
+					  	</div>   
+					  	<div class="p-col-12" jsf:id="btnApply">   
+					  		<p:staticMessage severity="warn" summary="#{practiceExtBean.mess}" detail="" style="width: 100%" rendered="#{practiceExtBean.disableApply and practiceExtBean.mess!=''}"/>
+							<p:commandButton action="#{practiceExtBean.actionApplying}"  rendered="#{practiceExtBean.visibleAplly and !practiceExtBean.disableApply}"  icon="fas fa-file-signature"
+								value="#{labels['practice.apply']}" update="practiceViewForm:btnApply"
+								 style="padding:6px; min-height: 20px !important; font-size:18px;">
+								<p:confirm header="#{labels['general.comfirmation']}" message="#{practiceExtBean.centrCamp ? beanMessages['practiceExtView.confirmCentr'] : beanMessages['practiceExtView.confirmDecentr']}" icon="ui-icon-alert" />
+							</p:commandButton>
+						</div>
+					</div>
+			  			  	
+			  		<div class="p-grid">
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['practice.campaign']}: " style="font-weight: bold;"/>
+			  				</div>	
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+								<h:outputText value="#{practiceExtBean.campName}"/>		
+								<h:outputText value=" (#{practiceExtBean.centrCamp?labels['campaign.central']:labels['campaign.decentral']})"/>										                        
+							</div>	  			
+			  				
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['practice.number']}: " style="font-weight: bold;"/>
+							</div>
+							
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{practiceExtBean.practice.id}"/>																	                        
+							</div>
+							
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['general.admStruc']}: " style="font-weight: bold;"/>
+							</div>
+	
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, practiceExtBean.practice.administration, practiceExtBean.currentLang, practiceExtBean.today, Constants.PORTAL_USER)}"/>						 		
+						 	</div>
+						 	
+						 	<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['advertisement.zveno']}: " style="font-weight: bold;"/>
+							</div>
+	
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, practiceExtBean.practice.unit, practiceExtBean.currentLang, practiceExtBean.today, Constants.PORTAL_USER)}"/>						 		
+						 	</div>
+
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['practiceList.numPositions']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{practiceExtBean.practice.num}"/>																	                        
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['practice.educationArea']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, practiceExtBean.practice.educationArea, practiceExtBean.currentLang, practiceExtBean.today, Constants.PORTAL_USER)}"/>						 		
+							</div>	
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['practiceExtView.srokKand']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<h:outputText value="#{practiceExtBean.practice.dateFrom}">
+					        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceExtBean.timeZone}"/>
+					            </h:outputText>
+					             - 
+					            <h:outputText value="#{practiceExtBean.practice.dateTo}">
+					        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceExtBean.timeZone}"/>
+					            </h:outputText>
+							</div>	
+							
+																	
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['practice.begDatePract']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<h:outputText value="#{practiceExtBean.practice.practiceDateFrom}">
+					        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceExtBean.timeZone}"/>
+					            </h:outputText>
+							</div>								
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['practice.endDatePractice']}: " style="font-weight: bold;"/> 
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<h:outputText value="#{practiceExtBean.practice.practiceDateTo}">
+					        				<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceExtBean.timeZone}"/>
+					            </h:outputText>
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['general.oblast']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, practiceExtBean.practice.region, practiceExtBean.currentLang, practiceExtBean.today, Constants.PORTAL_USER)}"/>						 		
+							</div>	
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['general.obshtina']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, practiceExtBean.practice.municipality, practiceExtBean.currentLang, practiceExtBean.today, Constants.PORTAL_USER)}"/>						 		
+							</div>		
+							
+								<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['general.nasMiasto']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, practiceExtBean.practice.town, practiceExtBean.currentLang, practiceExtBean.today, Constants.PORTAL_USER)}"/>						 		
+							</div>											
+										
+			  		</div>
+			  		
+				  	<div class="title-box">		  		
+				  			#{labels['practice.description']}
+				  	</div>	
+
+				  	<p:textEditor value="#{practiceExtBean.practice.description}" readonly="true" toolbarVisible="false" secure="true"/>
+			  			  	
+					 	
+			 	</div>	
+			</div>	
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+				<p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>		  	 
+		</h:form>
+		
+			
+		
+	</ui:define>
+
+</ui:composition>
+		
+</html>	

@@ -1,0 +1,677 @@
+@charset "UTF-8";
+
+/***********************************************/
+/* UI ELEMENTS				                   */
+/***********************************************/
+body.color-blind {
+	background-color: #000000;
+	color: #ffffff;
+}
+
+body.color-blind .title-page {
+	background-color: #555555;
+}
+
+body.color-blind .req:after {
+	color: #ff0000;
+}
+
+body.color-blind .fa {
+	text-shadow: none;
+	color: #ffffff;
+}
+
+body.color-blind .button-main {
+	background-color: #000000;
+	border: 1px solid #ffffff;
+}
+
+body.color-blind .button-main:hover {
+	background-color: #333333;	
+}
+
+body.color-blind .toggle {
+	color: #ffff00;
+}
+
+body.color-blind .search-filter .search-input::placeholder {
+	color: #cccccc;
+}
+
+body.color-blind .container-white {
+	background-color: #000000;
+}
+body.color-blind .div-info {
+	background-color: #000000;	
+	-webkit-box-shadow:none; 
+	-moz-box-shadow:none; 
+	box-shadow:none;
+}
+body.color-blind .div-info i{
+	color: #ffff00; 
+}
+
+body.color-blind .title-page.back .back-button i {
+	color: #ffff00; 
+}
+
+
+/***********************************************/
+/* PRIMEFACES				                   */
+/***********************************************/
+body.color-blind .ui-state-default, 
+body.color-blind .ui-widget-content .ui-state-default, 
+body.color-blind .ui-widget-header .ui-state-default {
+	box-shadow: none;
+}
+
+body.color-blind .ui-inputfield {
+    background-color: #333333 !important;
+    color: white !important;
+    text-shadow: none !important;
+}
+
+body.color-blind .ui-inputfield.ui-state-focus {
+	background-color: black !important;
+	-moz-box-shadow: 0 0 8px #cccccc !important;
+	-webkit-box-shadow: 0 0 8px #cccccc !important;
+	box-shadow: 0 0 8px #cccccc !important;
+	transition: background-color .3s ease !important;
+}
+
+body.color-blind .ui-selectonemenu.ui-state-hover, .ui-selectonemenu.ui-state-focus {
+	background-color: #e6e6e6;
+}
+
+body.color-blind .ui-selectonemenu-trigger {
+	background-color: #000000;
+	border-left: 1px solid #ffffff;
+}
+
+body.color-blind .ui-datatable-empty-message {
+	background-color: #000000;
+	color: #ffffff;
+}
+
+body.color-blind .ui-datatable thead th {
+    background-color: black !important;
+    color: white !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    background-image: none !important;
+    border: 1px solid white !important;
+}
+
+body.color-blind .ui-datatable tbody tr.ui-datatable-odd {
+	color:  white !important;
+	background-color: black !important;	
+}
+
+body.color-blind .ui-datatable tbody tr.ui-datatable-even {
+	color: white !important;
+	background-color: #333333 !important;
+}
+
+body.color-blind .ui-button {
+	background:none;
+	background-color: #000000;
+	border: 1px solid #ffffff;
+	color: #ffffff;
+}  
+
+body.color-blind .ui-button {
+	background:none;
+	background-color: #000000;
+	border: 1px solid #ffffff;
+	color: #ffffff;
+	text-shadow: none;
+}
+
+body.color-blind .ui-button.ui-state-hover {
+	background-color: #333333;
+}
+
+body.color-blind .ui-icon {
+	background-image: url("#{resource['images:ui-icons_333333_256x240.png']}");
+}
+
+body.color-blind .ui-selectonemenu-trigger .ui-icon,
+body.color-blind .ui-datepicker-trigger .ui-icon,
+body.color-blind .ui-fileupload-choose .ui-icon,
+body.color-blind .ui-treetable-toggler.ui-icon,
+body.color-blind .ui-dialog-titlebar .ui-icon,
+body.color-blind .ui-sortable-column .ui-icon,
+body.color-blind .ui-resizable-handle.ui-icon,
+body.color-blind .ui-datepicker-prev .ui-icon,
+body.color-blind .ui-datepicker-next .ui-icon,
+body.color-blind .ui-messages-close .ui-icon,
+body.color-blind .ui-treenode-icon.ui-icon,
+body.color-blind .ui-tree-toggler.ui-icon,
+body.color-blind .ui-row-toggler.ui-icon,
+body.color-blind .ui-paginator .ui-icon,
+body.color-blind .ui-button .ui-icon {
+	background-image: url("#{resource['images:ui-icons_ffffff_256x240.png']}");
+}
+
+body.color-blind .ui-state-highlight {
+	background-image: none;
+	background-color: #ffff00;
+	color: #000000;
+}
+
+body.color-blind .ui-messages-error {
+	border-color: #ffff00;
+	background-color: transparent;
+	color: #ffff00;
+}
+
+body.color-blind .ui-messages-info {
+	border-color: #ffff00;
+	background-color: transparent;
+	color: #ffff00;
+}
+
+body.color-blind .ui-tooltip-right .ui-tooltip-arrow {
+	border-right-color: #ffff00;
+}
+
+body.color-blind .ui-tooltip-left .ui-tooltip-arrow {
+	border-left-color: #ffff00;
+}
+
+body.color-blind .ui-tooltip-top .ui-tooltip-arrow {
+	border-top-color: #ffff00;
+}
+
+body.color-blind .ui-tooltip-bottom .ui-tooltip-arrow {
+	border-bottom-color: #ffff00;
+}
+
+body.color-blind .ui-tooltip-text {
+	background-color: #ffff00;
+	color: #000000;
+}
+
+body.color-blind .ui-widget-header {
+	color: #ffffff;
+	background: none;
+}
+
+body.color-blind .ui-dialog {
+	background-color: #000000;
+	border: 1px solid #ffffff;
+}
+
+body.color-blind .ui-dialog .ui-dialog-titlebar {
+	background-color: transparent;
+}
+
+body.color-blind .ui-dialog .ui-dialog-titlebar-close.ui-state-hover {
+	background-color: #333333;
+}
+
+body.color-blind .ui-dialog .ui-dialog-content {
+	color: #ffffff;
+}
+
+body.color-blind .ui-dialog .ui-dialog-buttonpane {
+	background-color: transparent;
+}
+
+body.color-blind .ui-tree {
+	background-color: transparent;
+	color: #ffffff;
+}
+
+body.color-blind .ui-treenode-label.ui-state-hover {
+	background-color: #333333;
+	color: #ffffff;
+}
+
+body.color-blind .ui-panel {
+	background-color: transparent;
+	color: #ffffff;
+}
+
+body.color-blind .ui-panel-titlebar {
+	background-color: inherit;
+	border: none;
+	border-bottom: 1px solid #ffffff;
+	border-radius: 0;
+}
+
+body.color-blind .ui-panel-content {
+	color: #ffffff;
+}
+
+body.color-blind .ui-panelgrid-content {
+	background: none;
+	background-color: transparent;
+}
+
+body.color-blind .ui-treetable-data {
+	background: none;
+	background-color: #000000;
+}
+
+body.color-blind .ui-treetable-selectable-node {
+	background: none;
+	background-color: transparent;
+	color: #ffffff;
+}
+
+body.color-blind .ui-outputpanel {
+	color: #ffffff;
+	background: none;
+	background-color: #000000;	
+}
+
+body.color-blind .ui-datepicker {
+	background: none;
+	background-color: #000000;
+	color: #ffffff;
+}
+
+body.color-blind .ui-datepicker-header {
+	background-color: transparent;
+}
+
+body.color-blind .ui-datepicker-prev-hover,
+body.color-blind .ui-datepicker-next-hover {
+	background-color: #333333;
+}
+
+body.color-blind .ui-datepicker-calendar tbody td a {
+	border-color: #ffffff;
+	background-color: transparent;
+	color: #ffffff;
+	text-shadow: none;
+}
+
+body.color-blind .ui-datepicker-calendar tbody td a:hover {
+	background-color: #333333;
+}
+
+body.color-blind .ui-datepicker-calendar tbody td.ui-datepicker-today a {
+	background-color: #ffff00;
+	color: #000000;
+}
+
+body.color-blind .ui-datepicker-calendar tbody td.ui-datepicker-current-day a {
+	background-color: #777777;
+	color: #ffffff;	
+}
+
+body.color-blind .ui-tabs .ui-tabs-header a {
+	color: #ffffff;
+	text-shadow: none;
+}
+
+body.color-blind .ui-tabs .ui-tabs-header.ui-tabs-selected a {
+	background-color: #000000;
+	color: #ffffff;
+	text-shadow: none;
+}
+
+body.color-blind .ui-toolbar {
+	background-color: #000000;
+	/*border: 1px solid #ffffff;*/
+	border: none;
+	color: white;
+	background-image: none;
+}
+
+body.color-blind .jssocials-share-facebook .jssocials-share-link {
+	background: #ffff00;
+}
+
+body.color-blind .jssocials-share-facebook .jssocials-share-link:hover {
+    background: #ffff00;
+}
+
+body.color-blind .jssocials-share-logo {
+	color: #000000;
+}
+
+
+/***********************************************/
+/* NAVBAR 					                   */
+/***********************************************/
+body.color-blind .navbar {
+	background-color: #000000;
+	margin-top: 0;
+	border-top: 2px solid #ffffff;
+	border-bottom: 1px solid #aaaaaa;
+}
+
+body.color-blind .navbar-main .navbar-content {
+	background: #000000;
+	background: linear-gradient(to bottom, #000000 0%, #000000 75%, #aaaaaa 95%,#aaaaaa 100%);
+	
+	background: #ffffff;
+}
+
+body.color-blind .navbar-main .navbar-item-main .navbar-title,
+body.color-blind .navbar-main .navbar-item-main.navbar-main-icon .navbar-title {
+	color: #000000;
+}
+
+body.color-blind .navbar-main .navbar-item-main:hover .navbar-title,
+body.color-blind .navbar-main .navbar-item-main.navbar-main-icon:hover .navbar-title {
+	color: #ffffff;
+}
+
+body.color-blind .navbar-item-main {
+	background-color: transparent;
+	border-left: 1px solid transparent;
+	border-right: 1px solid transparent;
+}
+
+body.color-blind .navbar-item-main:hover {
+	background-color: #333333;
+}
+
+body.color-blind .navbar-title-row {
+	background-color: #000000;
+	margin-bottom: 2px;
+	background-color: #ffffff;
+}
+
+body.color-blind .navbar-mobile .navbar-title-row .navbar-icon {
+	color: #000000;
+}
+
+body.color-blind .options-toggle.opened .navbar-icon {
+	text-shadow: none;
+}
+
+body.color-blind .navbar-mobile .navbar-title {
+	background-color: #000000;
+	border: 1px solid #999999;
+}
+
+body.color-blind .navbar-mobile .navbar-title:hover {
+	background-color: #333333;
+}
+
+body.color-blind .navbar-mobile .navbar-dropdown {
+	background-color: #000000;
+}
+
+body.color-blind .navbar-mobile .navbar-dropdown-item.expand > span {
+	color: #ffffff;
+}
+
+body.color-blind .navbar .navbar-dropdown-item.external > a:after {
+	color: inherit;
+}
+
+body.color-blind .navbar-mobile .navbar-dropdown-item.final, 
+body.color-blind .navbar-mobile .navbar-dropdown-item.expand > span {
+	border-bottom: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+}
+
+body.color-blind .navbar-mobile .navbar-dropdown-item:hover {
+    background-color: #333333 !important;
+}
+
+body.color-blind .navbar-mobile .navbar-dropdown-item.expand > span:after {
+    color: #ffffff;
+}
+
+body.color-blind .navbar-main .navbar-dropdown-item {
+	/*background-color: #000000;*/
+	border-bottom: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+}
+
+body.color-blind .navbar-mobile .navbar-dropdown-item > a {
+	color: #ffff00;
+}
+
+body.color-blind .navbar-main .navbar-dropdown-item:before {
+    background-color: #ffff00;
+}
+
+body.color-blind .navbar-main .navbar-dropdown-item.expand:before {
+    background-color: #ffffff;
+}
+
+
+/***********************************************/
+/* HEADER 					                   */
+/***********************************************/
+body.color-blind .header {
+	background-color: #000000;
+}
+
+
+/***********************************************/
+/* FOOTER 					                   */
+/***********************************************/
+body.color-blind .footer {
+	background-color: #000000;
+}
+
+body.color-blind .footer-links a {
+	color: #ffff00;	
+}
+
+body.color-blind .footer-project {
+	color: #ffffff;
+}
+
+/***********************************************/
+/* TILES in the home page	                   */
+/***********************************************/
+body.color-blind .column-content {
+	background-color: #000000;
+	border: 1px solid #aaaaaa;
+}
+
+body.color-blind .column-content:hover {
+	background-color: #333333;
+	opacity: inherit;
+}
+
+body.color-blind .column-content .title-icon {
+	color: #ffff00;
+}
+
+
+/***********************************************/
+/* CAROUSEL		                               */
+/***********************************************/
+body.color-blind .carousel .slider-left, 
+body.color-blind .carousel .slider-right {
+	color: #cccccc;
+}
+
+body.color-blind .carousel-dots .dot {
+	background-color: #000000;
+	border-color: #cccccc; 
+}
+
+body.color-blind .carousel .carousel-dots .dot.active {
+	background-color: #ffffff;
+	border-color: #ffffff;
+}
+
+/***********************************************/
+/* ADVERTISEMENTS							   */
+/***********************************************/
+body.color-blind .panel-job {
+	border: 1px solid #aaaaaa;
+}
+
+body.color-blind .carousel .panel-job {
+	box-shadow: 3px 3px 0px 0px #333333, 3px 3px 0px 1px #ffffff;
+}
+
+body.color-blind .panel-job .panel-heading {
+	background-color: #333333;
+}
+
+body.color-blind .panel-job .panel-heading a {
+	color: #ffff00;
+}
+
+body.color-blind .panel-job .panel-body {
+	background-color: inherit;
+	border: none;
+	border-top: 2px solid #aaaaaa;
+}
+
+body.color-blind .panel-job-icon, 
+body.color-blind .panel-job-label {
+	color: #ffffff;
+} 
+
+body.color-blind .popup .icon:hover {
+	color: #ffff00;
+}
+
+body.color-blind .popup .text,
+body.color-blind .popup .text:after {
+	background-color: #ffff00;
+}
+
+
+/***********************************************/
+/* PAGINATORS								   */
+/***********************************************/
+body.color-blind .ui-paginator {
+	background-color: inherit;
+	border: none;
+}
+
+body.color-blind .ui-paginator .ui-paginator-page {
+	background-color: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+}
+
+body.color-blind .ui-paginator .ui-paginator-page:hover {
+    background-color: #333333;
+}
+
+body.color-blind .ui-paginator .ui-paginator-page.ui-state-active {
+    color: #000000;
+    background-color: #ffffff;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 8px white;
+}
+
+body.color-blind .ui-paginator .ui-paginator-first,
+body.color-blind .ui-paginator .ui-paginator-prev,
+body.color-blind .ui-paginator .ui-paginator-next,
+body.color-blind .ui-paginator .ui-paginator-last {
+    background-color: transparent;
+    border: 1px solid #ffffff;
+}
+
+body.color-blind .ui-paginator .ui-paginator-first:hover,
+body.color-blind .ui-paginator .ui-paginator-prev:hover,
+body.color-blind .ui-paginator .ui-paginator-next:hover,
+body.color-blind .ui-paginator .ui-paginator-last:hover {
+	background-color: #333333;
+}
+
+
+/***********************************************/
+/* TAB LAYOUT								   */
+/***********************************************/
+body.color-blind .tab-layout .tab {
+	border-left-color: #ffffff;
+}
+
+body.color-blind .tab-layout .tab:hover {
+	background-color: #333333;
+}
+
+body.color-blind .tab-layout .tab.active {
+	background-color: #555555;
+}
+
+body.color-blind .tab-layout .column-contents {
+	background-color: #000000;
+    box-shadow: 3px 3px 0px 0px #333333, 3px 3px 0px 1px #ffffff;
+}
+
+@media screen and (max-width: 991px) {
+	body.color-blind .tab-layout .tab.active {
+	    border-top-color: #ffffff;
+	}
+}
+
+
+/***********************************************/
+/* SEARCH FILTER		                       */
+/***********************************************/
+body.color-blind .search-filter {
+	background-color: transparent;
+}
+
+body.color-blind .clear-button a {
+	color: #ffff00;
+}
+
+
+/***********************************************/
+/* TEXT EDITOR		 	                       */
+/***********************************************/
+body.color-blind .ql-stroke {
+	stroke: #ffffff;
+}
+
+body.color-blind .ql-fill {
+	fill: #ffffff;;
+}
+
+body.color-blind .ql-transparent {
+	opacity: 0.75;
+}
+
+body.color-blind .ql-picker-label {
+	color: #ffffff;
+}
+
+body.color-blind .ql-snow.ql-toolbar button:hover .ql-stroke,
+body.color-blind .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+body.color-blind .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+body.color-blind .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke {
+	stroke: #ffff00;
+}
+
+body.color-blind .ql-snow.ql-toolbar button:hover .ql-fill,
+body.color-blind .ql-snow.ql-toolbar button.ql-active .ql-fill {
+	fill: #ffff00;
+}
+
+body.color-blind .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+body.color-blind .ql-snow.ql-toolbar .ql-picker-label:hover {
+	color: #ffff00;
+}
+
+
+body.color-blind #expired-dialog {
+	background-color: black;
+}
+
+body.color-blind #expired-dialog .expired-button {
+	background-color: #000000;
+	color: #ffffff;
+	border: 1px solid #ffffff;
+}
+
+body.color-blind #expired-dialog .expired-button:hover {
+	background-color: #333333;
+}
+
+body.color-blind .info-icon {
+	color:#ffffff !important;
+}
+body.color-blind .info-icon-small {
+	color:#ffff00;
+}

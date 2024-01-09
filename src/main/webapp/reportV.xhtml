@@ -1,0 +1,118 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<f:metadata>
+	  <f:viewAction action="#{userData.hasAccessPage(7,111)}" />   
+ </f:metadata>
+<ui:composition template="/templateExt/mainExt.xhtml">
+		
+		<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 80, environment.currentLang, null, null)} В</ui:define> 
+		
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">		
+			
+	
+			
+			<h:form id="formSpr">
+			<!-- TITLE -->
+			<div class="title-page back">
+				<div class="container">	 
+					<div class="p-grid p-align-center">
+
+					     <div class="p-col">  
+							<h3 class="title">Кандидатствали студенти</h3>
+						 </div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="container" style="padding: 0 4px;">
+			<br/>
+			<h:panelGroup id="panelResult">
+			
+				<p:dataTable id="tblReports" var="row" value="#{reportV.resultReport}" lazy="true"  rows="15"
+						 rowIndexVar="idx"  reflow="true" emptyMessage="#{labels['general.norows']}"
+						 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+						 rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+						 paginator="true">
+
+						<f:facet name="{Exporters}">
+						
+							 <div style="float:right;padding-top: 5px;">
+								
+								<h:commandLink>
+									<p:graphicImage library="images" name="excel.png" width="24" />
+									<p:dataExporter type="xls" target="tblReports" fileName="report" encoding="utf-8" />
+								</h:commandLink>
+	
+								<h:commandLink>
+									<p:graphicImage library="images" name="csv.png" width="24" />
+									<p:dataExporter type="csv" target="tblReports" fileName="report" encoding="utf-8" />
+								</h:commandLink>
+	
+								<h:commandLink>
+									<p:graphicImage library="images" name="xml.png" width="24" />
+									<p:dataExporter type="xml" target="tblReports" fileName="report" encoding="utf-8" />
+								</h:commandLink>
+							
+							</div>
+
+						</f:facet>
+
+						<p:column width="50" exportable="false">
+							<f:facet name="header">
+								<h:outputText value=" #{labels['general.No-symbol']}" />
+							</f:facet>
+							<h:outputText value="#{idx + 1}" />
+						</p:column>
+						
+						
+						<p:column width="150" >
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.pin']}" />
+							</f:facet>
+							<h:outputText value="#{row[1]}"/>
+						</p:column>
+						
+						<p:column width="200" >
+							<f:facet name="header">
+								<h:outputText value="#{labels['general.imena']}" />
+							</f:facet>
+							<h:outputText value="#{row[2]}"/>
+						</p:column>
+						
+						<p:column  >
+							<f:facet name="header">
+								<h:outputText value="#{labels['bursary.university']}" />
+							</f:facet>
+							<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_UNIVERSITY, row[3], reportV.currentLang, now, reportV.userId)}"/>
+						</p:column>
+						
+						<p:column  >
+							<f:facet name="header">
+								<h:outputText value="#{labels['practice.educationArea']}" />
+							</f:facet>
+							<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, row[4], reportV.currentLang, now, reportV.userId)}"/>
+						</p:column>
+						
+							
+				 </p:dataTable>
+			</h:panelGroup>	
+			</div>
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>
+
+</html>

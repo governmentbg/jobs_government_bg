@@ -1,0 +1,369 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	
+	<!-- <f:metadata> TODO constant
+		  <f:viewAction action="#{userData.hasAccessPage(7,62)}" />		   
+	</f:metadata> -->
+
+	<ui:composition template="/templateExt/mainExt.xhtml">
+	
+		<ui:define name="title">#{labels['general.systemClassifications']}</ui:define>
+		
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+		<ui:define name="content">
+			
+			<h:form>
+				 <p:remoteCommand name="rc" actionListener="#{systemClassifList.changePage}" immediate="true" update="@this"/> 
+			</h:form>
+		
+			<h:form id="systemClassifListForm">
+				
+				<p:importConstants type="indexbg.pjobs.system.Constants" var="Constants" className="indexbg.pjobs.system.Constants"/>
+				<p:importConstants type="com.indexbg.system.SysConstants" var="SysConstants" className="com.indexbg.system.SysConstants" />
+				<p:importEnum type="indexbg.pjobs.bean.SystemClassifListBean$ClassifType" var="ClassifTypes" />
+                  
+				<h:inputHidden value="#{systemClassifList.pageHidden}" />
+				
+				<!-- TITLE -->
+				<div class="title-page">
+					<div class="container">	 
+						<h3>#{labels['general.systemClassifications']}</h3>
+					</div>
+				</div>
+				
+				<div class="container">
+					<p:focus context="panelFilter"/>
+					<p:outputPanel id="panelData">
+						<div class="container-white">
+							<p:panel header="" style="margin-bottom:10px" id="panelFilter">
+								<div class="p-grid ui-fluid">
+									<div class="p-col-6 p-md-1 cc-right" >
+										<h:outputText value="#{labels['general.text']}:"/>
+									</div>
+									<div class="p-col-6 p-md-4">
+										<p:inputText value="#{systemClassifList.tekst}"/>
+			                        </div>
+								
+									<div class="p-col-6 p-md-1 cc-right" >
+										<h:outputText value="#{labels['general.ais']}:"/>
+									</div>
+									<div class="p-col-6 p-md-4">
+										<p:selectOneMenu value="#{systemClassifList.ais}">
+				                             <f:selectItem value="#{null}" itemValue="#{null}"/>
+				                             <f:selectItems value="#{systemData.getSysClassification(SysConstants.CODE_CLASSIF_ALL_INFO_MODELS, null, systemClassifList.currentLang, systemClassifList.userId)}"
+				                             	var="classif" itemLabel="#{classif.tekst}" itemValue="#{classif.code}" />
+				                        </p:selectOneMenu>
+			                        </div>
+			                        
+								</div>
+								
+								<div class="p-grid">		
+									<div class="p-col-6 p-md-5 cc-left">
+							 			<p:commandButton action="#{systemClassifList.actionClear()}" 
+							 				value="#{labels['general.clear']}"  id="btnClear" 
+							 				update="systemClassifListForm:panelData"
+							 				icon="fas fa-eraser" tabindex="-1"/> 
+									</div>
+				 
+								    <div class="p-col-6 p-md-5" style="text-align: right;">
+										<p:commandButton action="#{systemClassifList.actionSearch()}" 
+											value="#{labels['general.search']}" icon="fas fa-search" 
+											id="btnSearch" update="systemClassifListForm:panelTable" />
+									</div>
+								</div>
+							</p:panel>
+							
+							<br/>
+							
+							<p:panel id="panelTable" >
+								<f:facet name="header">
+									<h:outputText value="#{labels['general.result']}: #{systemClassifList.classifList.size()}"/>
+									<span jsf:rendered="#{systemClassifList.classifList.size() > 0}" style="margin: auto 0.5rem;"> 
+										<span class="fas fa-ellipsis-v" />
+									</span>
+									
+									<p:commandButton  icon="fas fa-plus" 
+										title="#{labels['general.newClassif']}" 
+										value="Нова" 
+										oncomplete="PF('modalOpisClassif').show();"
+										action="#{systemClassifList.actionNewOpis}" 
+										update="systemClassifListForm:modalOpisClassifWrapper"
+										style="margin-right: 0.5rem;"
+										styleClass="button-green"/>
+									<p:fileUpload id="filesUpload" skinSimple="true" label=""  
+										invalidFileMessage="Невалиден формат: "
+								        allowTypes="/(\.|\/)(xml|txt)$/" update="modalImportClassifPanel" auto="true" 
+								  		listener="#{systemClassifList.handleFileUpload}"
+								  		styleClass="upload-basic" />
+							  		<p:tooltip for="filesUpload" value="#{labels['general.import']}"/>
+								</f:facet>
+								
+								<p:dataTable id="tbl" var="row" value="#{systemClassifList.classifList}" rows="15"
+									rowIndexVar="index" sortMode="single" reflow="true"
+									rendered="#{systemClassifList.classifList ne null}"	emptyMessage="" 
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+									rowsPerPageTemplate="15,20,25" paginatorPosition="bottom"
+									paginator="true" style="margin-bottom:20px">
+									
+									<f:facet name="{Exporters}">
+							            <h:commandLink >
+							                <p:graphicImage library="images" name="excel.png" width="24"/>
+							                <p:dataExporter type="xls" target="tbl" fileName="systemClassifList" encoding="utf-8"/>
+							            </h:commandLink>
+							 
+							            <h:commandLink> <!-- TODO -->
+							                <p:graphicImage library="images" name="pdf.png" width="24"/>
+							                <p:dataExporter type="pdf" target="tbl" fileName="systemClassifList" encoding="utf-8"/>
+							            </h:commandLink>
+							 
+							            <h:commandLink>
+							                <p:graphicImage library="images" name="csv.png" width="24"/>
+							                <p:dataExporter type="csv" target="tbl" fileName="systemClassifList"  encoding="utf-8"/>
+							            </h:commandLink>
+							 
+							            <h:commandLink>
+							                <p:graphicImage library="images" name="xml.png" width="24"/>
+							                <p:dataExporter type="xml" target="tbl" fileName="systemClassifList"  encoding="utf-8"/>
+							            </h:commandLink>
+							        </f:facet>
+									
+									<p:column style="text-align: center" width="75" headerText="No" sortBy="#{row.id}">
+										<h:outputText value="#{row.id}" />
+									</p:column>
+									
+									<p:column style="text-align: center" width="65" exportable="false">
+										<p:commandButton rendered="#{!row.logical and !row.dynamic}"
+											icon="fas #{!row.userEditable ? 'fa-eye' : 'fa-edit'}"
+											ajax="false" 
+											action="systemClassifEdit"
+											onclick="rc()"
+											title="#{!row.userEditable ? labels['general.viewClassif'] : labels['general.editClassif']}">
+											<f:param name="idObj" value="#{row.id}" />
+										</p:commandButton>
+										
+										<p:commandButton rendered="#{row.logical or row.dynamic}"
+											icon="fas #{row.dynamic or !row.userEditable ? 'fa-eye' : 'fa-edit'}"
+											ajax="false" 
+											action="systemClassifLogical"
+											onclick="rc()"
+											title="#{row.dynamic or !row.userEditable ? labels['general.viewClassif'] : labels['general.editClassif']}">
+											<f:param name="idObj" value="#{row.id}" />
+										</p:commandButton>
+									</p:column>
+									
+									<p:column headerText="#{labels['general.name']}" sortBy="#{row.getTekst()}" width="365">
+										<h:outputText value="#{row.getTekst()}" />
+									</p:column>
+									
+									<p:column style="text-align: center" width="120" headerText="#{labels['general.dinamic']}" 
+										sortBy="#{row.dynamic}" exportable="false">
+										<i class="fas fa-check" jsf:rendered="#{row.dynamic}"></i>
+									</p:column>
+									
+									<p:column style="text-align: center" width="120" headerText="#{labels['general.logical']}" 
+										sortBy="#{row.logical}" exportable="false">
+										<i class="fas fa-check" jsf:rendered="#{row.logical}"></i>
+									</p:column>
+									
+									<p:column headerText="#{labels['general.ais']}" width="200px;" exportable="false"
+										sortBy="#{systemData.decodeItem(SysConstants.CODE_CLASSIF_ALL_INFO_MODELS, row.aisId, systemClassifList.currentLang, null, systemClassifList.userId)}">
+										<h:outputText value="#{systemData.decodeItem(SysConstants.CODE_CLASSIF_ALL_INFO_MODELS, row.aisId, systemClassifList.currentLang, null, systemClassifList.userId)}" />
+									</p:column>
+									
+									<p:column style="text-align: center" width="96" exportable="false">
+										<p:commandButton icon="fas fa-gear" 
+											action="#{systemClassifList.actionEditOpis(row.id)}"
+											update="systemClassifListForm:modalOpisClassifWrapper"
+											oncomplete="PF('modalOpisClassif').show();"
+											title="#{labels['general.editCassifOpis']}"
+											style="margin-right: 6px;"/>
+										<p:commandButton action="#{systemClassifList.exportClassif(row.id)}" ajax="false"
+										icon="fas fa-download" title="#{labels['general.export']}" />
+									</p:column>
+									
+									<p:column style="text-align: center" width="52" exportable="false">
+										<p:commandButton action="#{systemClassifList.actionDeleteClassif(row.id, index)}"
+											update="systemClassifListForm:tbl systemClassifListForm:modalDeletePanel" rendered="#{row.userEditable}"
+											icon="fas fa-times" title="#{labels['general.delete']}">
+											<p:confirm header="#{labels['general.delete']}" message="#{labels['general.confirm']}" icon="ui-icon-alert" />
+										</p:commandButton>
+									</p:column>
+																		
+								</p:dataTable>
+							</p:panel>
+						</div>
+					</p:outputPanel>
+					
+				</div>
+				
+				<p:dialog widgetVar="modalOpisClassif" header="#{labels['general.opisClassif']}" 
+					modal="true" resizable="false" width="900">
+					<div jsf:id="modalOpisClassifWrapper">
+						
+						<div class="p-grid p-align-stretch ui-fluid">
+							<div class="p-col-7" style="display:flex; align-items:center;">
+								<h:outputText value="#{labels['general.vid']}: " styleClass="bolded" style="margin-right: 0.5rem;" />
+								<h:outputText rendered="#{systemClassifList.sysClassifOpis.id ne null}" 
+									value="#{systemClassifList.typeClassif eq ClassifTypes.NORMAL ? labels['general.clasic'] : (systemClassifList.typeClassif eq ClassifTypes.DYNAMIC ? labels['general.dinamic'] : labels['general.logical'] )}" />
+								<p:selectOneRadio value="#{systemClassifList.typeClassif}" rendered="#{systemClassifList.sysClassifOpis.id eq null}">
+						            <f:selectItem itemLabel="#{labels['general.clasic']}" itemValue="#{ClassifTypes.NORMAL}" />
+						            <f:selectItem itemLabel="#{labels['general.dinamic']}" itemValue="#{ClassifTypes.DYNAMIC}" />
+						            <f:selectItem itemLabel="#{labels['general.logical']}" itemValue="#{ClassifTypes.LOGICAL}" />
+						            <p:ajax event="change" update="modalOpisClassifWrapper" process="modalOpisClassifWrapper"/>
+						        </p:selectOneRadio>
+							</div>
+							
+							<div class="p-col-5" style="display:flex; align-items:center;">
+								<h:outputText value=" #{labels['general.ais']}: " styleClass="req bolded" style="flex-shrink:0; margin-right:0.5rem;"/>
+								<p:selectOneMenu id="aisId" value="#{systemClassifList.sysClassifOpis.aisId}">
+				    				<f:selectItem itemValue="" itemLabel=""/>
+				    				<f:selectItems value="#{systemData.getSysClassification(SysConstants.CODE_CLASSIF_ALL_INFO_MODELS, null, systemClassifList.currentLang, systemClassifList.userId)}"
+				    					var="ais" itemLabel="#{ais.tekst}" itemValue="#{ais.code}" />
+				    			</p:selectOneMenu>
+				    			<p:message for="aisId"  display="tooltip"/>
+							</div>
+						</div>
+						
+						<div class="p-grid">
+							<div class="p-col-2">
+				    			<p:selectBooleanCheckbox value="#{systemClassifList.sysClassifOpis.cacheStartup}"
+				    				itemLabel="#{labels['general.cache']}"/>
+							</div>
+							
+							<div class="p-col-3" jsf:id="extCodeNumber">
+								<div>
+					    			<p:selectBooleanCheckbox value="#{systemClassifList.sysClassifOpis.external}"
+					    				itemLabel="#{labels['general.external']}">
+					    				<p:ajax update="systemClassifListForm:extCodeNumber" 
+					    					partialSubmit="true" process="@this" />
+					    			</p:selectBooleanCheckbox>
+				    			</div>
+				    			<div jsf:rendered="#{systemClassifList.sysClassifOpis.external}" style="margin-top: 0.5rem;">
+					    			<p:selectBooleanCheckbox value="#{systemClassifList.sysClassifOpis.numCodeExt}"
+					    				itemLabel="#{labels['general.extCodeNumber']}"/>
+				    			</div>
+						    </div>
+				    		
+				    		<div class="p-col-4">
+				    			<p:selectBooleanCheckbox value="#{systemClassifList.sysClassifOpis.userEditable}"
+				    				itemLabel="#{labels['general.userEditable']}"/>
+							</div>
+							
+							<div class="p-col-3">
+						    	<h:outputText value="#{labels['general.levelExpand']}" style="margin-right:0.5rem;" />
+						    	<p:spinner value="#{systemClassifList.sysClassifOpis.levelExpand}" size="2"/>
+						    </div>
+						</div>
+						
+						<p:panel style="margin-bottom: 0.5rem;" rendered="#{systemClassifList.typeClassif == ClassifTypes.DYNAMIC}">
+							<f:facet name="header">
+								<h:outputText styleClass="req" value="#{labels['general.metotDinamicClass']}"/>
+							</f:facet>
+							
+							<p:inputText id="dynamicMethod" value="#{systemClassifList.sysClassifOpis.dynamicMethod}"/>	
+							<p:message for="dynamicMethod"  display="tooltip"/>
+						</p:panel>
+						
+						<p:panel style="margin-bottom: 0.5rem;" rendered="#{systemClassifList.typeClassif == ClassifTypes.LOGICAL}">
+							<f:facet name="header">
+								<h:outputText styleClass="req" value="#{labels['general.classIztLogic']}"/>
+							</f:facet>
+							<div class="p-grid ui-fluid">
+								<div class="p-col-12">
+									<p:selectOneMenu id="logicalSourceId" filter="true" dynamic="true"
+										value="#{systemClassifList.sysClassifOpis.logicalSourceId}">
+										<f:selectItem itemLabel="" itemValue=""/>
+										<f:selectItems value="#{systemClassifList.listClasicClassif}" var="classif" 
+											itemValue="#{classif.id}" itemLabel="#{classif.tekst}" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+							<p:tooltip for="logicalSourceId" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('logicalSourceId',view))}">
+								<p:message for="logicalSourceId"  display="text" style="color:#ffffff; background:none; border:0px"/>
+							</p:tooltip>
+						</p:panel>
+						
+						<p:panel header="#{labels['general.name']}" style="margin-bottom: 0.5rem;">
+							<div class="p-grid">
+								<p:dataTable id="opisNameTbl" var="row" value="#{systemClassifList.sysLangs}">
+					 		
+					 				<p:column  width="150" rendered="#{systemClassifList.multiLang}">
+								        <h:outputText value="#{row.tekst}" />	
+								    </p:column>
+								    
+								    <p:column>
+							 			<p:inputText id="nameItem" value="#{systemClassifList.textNode[row.code]}" style="width:100%"/>
+							 			<p:message for="nameItem"  display="tooltip"/>
+							 		</p:column>
+							 		
+								</p:dataTable>
+							</div>
+						</p:panel>
+						
+						<div>
+							<p:commandButton value="#{labels['general.save']}" 
+								update="systemClassifListForm:tbl modalOpisClassifWrapper"  
+								ajax="true" oncomplete="handleOpisClassif(xhr, status, args)"
+								action="#{systemClassifList.actionSaveOpis}" icon="fas fa-save" />
+						</div>
+						
+					</div>
+				</p:dialog>
+				
+				<p:dialog header="#{labels['general.delete']}" widgetVar="modalDeleteMess" modal="true" resizable="false" width="550">
+				    <p:outputPanel id="modalDeletePanel"> 
+				    	<i class="fas fa-exclamation-triangle" style="color:red"/>
+						#{beanMessages['general.objectInUseInClass']}
+						<br/>	
+						<p:scrollPanel mode="native" style="width:500;height:250px;border :none" >	
+							<h:outputText value=" #{systemClassifList.customMess}"  escape="false"/>	
+						</p:scrollPanel>        	 
+					</p:outputPanel>
+				</p:dialog>
+				
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			    </p:confirmDialog>
+			    
+				<p:dialog header="#{labels['general.importClassif']}" widgetVar="modalImportClassif" 
+					modal="true" resizable="false" width="500">
+				    <p:outputPanel id="modalImportClassifPanel"> 
+				    	<i class="fas fa-exclamation-triangle"/>
+						<h:outputText value="Сигурни ли сте, че искате да импортнете класификация(и)? " />	
+						<h:outputText value=" #{systemClassifList.importClassifName}" escape="false"/>	
+						        	 
+						<p:commandButton value="#{labels['general.yes']}" action="#{systemClassifList.importClassif}" 
+							icon="ui-icon-check" oncomplete="PF('modalImportClassif').hide();" />
+						<p:commandButton value="#{labels['general.no']}" type="button"  
+							icon="ui-icon-close" onclick="PF('modalImportClassif').hide();"/>
+					</p:outputPanel>
+				</p:dialog>
+				
+				<script type="text/javascript">
+				    function handleOpisClassif(xhr, status, args) {
+				        if(args.validationFailed || !args.validOpisClassif) {
+				            PF('modalOpisClassif').jq.effect("shake", {times:5}, 100);
+				        } else { 
+				        	PF('modalOpisClassif').hide();
+				        }
+				    }
+				</script>
+		    
+			</h:form>
+		
+		</ui:define>
+		
+	</ui:composition>
+</html>

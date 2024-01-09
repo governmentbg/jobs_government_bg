@@ -1,0 +1,782 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+
+<f:metadata>
+	<f:viewAction action="#{userData.hasAccessPage(7,107)}" />
+</f:metadata>
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">
+		#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 72, environment.currentLang, null, null)} 
+	</ui:define>
+
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form id="formPracticeProcess">
+
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants" />
+			<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+
+			<p:tooltip />
+
+			<!-- PAGE TITLE -->
+			<div class="title-page back">
+
+				<div class="container">
+
+					<div class="p-grid p-align-center">
+						<div class="p-col-fixed back-col">
+							<p:link outcome="practiceProcessList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+								<i class="fas fa-caret-left"></i>
+							</p:link>
+						</div>
+						<div class="p-col">
+							<h3 class="title"> #{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 72, environment.currentLang, null, null)} (#{labels['practice.number']}: #{practiceProcess.practice.id})</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container">
+
+				<div class="container-white">
+
+					<p:outputPanel id="panelData">
+
+						<p:tabView id="tabsPracticeProcess" dynamic="true" cache="true" effect="fold">
+						
+							<p:ajax event="tabChange" listener="#{practiceProcess.onTabChange}" update="tabsPracticeProcess" partialSubmit="true" />
+
+							<p:tab title="#{labels['practiceProcess.practiceInfo']}" id="tabPracticeInfo">
+
+								<div class="p-grid">
+
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['general.admStruc']}: " style="font-weight: bold;" />
+									</div>
+
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, practiceProcess.practice.administration, practiceProcess.currentLang, now, practiceProcess.userId)}" />
+									</div>
+
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['advertisement.zveno']}: " style="font-weight: bold;" />
+									</div>
+
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, practiceProcess.practice.unit, practiceProcess.currentLang, now, practiceProcess.userId)}" />
+									</div>
+
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['practiceList.numPositions']}: " style="font-weight: bold;" />
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<p:outputLabel value="#{practiceProcess.practice.num}" />
+									</div>
+
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['practice.educationArea']}: " style="font-weight: bold;" />
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SUBJECT, practiceProcess.practice.educationArea, practiceProcess.currentLang, now, practiceProcess.userId)}" />
+									</div>
+									
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right" >
+										<h:outputText value="#{labels['practiceExtView.srokKand']}: " style="font-weight: bold;"/>
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<h:outputText value="#{practiceProcess.practice.dateFrom}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+							             - 
+							            <h:outputText value="#{practiceProcess.practice.dateTo}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+									</div>	
+									
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['campaign.rankingDate']}: " style="font-weight: bold;" />
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<h:outputText value="#{practiceProcess.practice.rankingDate}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+									</div>
+									
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right" >
+										<h:outputText value="#{labels['practiceProcess.srokAcceptFirst']}: " style="font-weight: bold;"/>
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<h:outputText value="#{practiceProcess.practice.confirmDateFrom}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+							             - 
+							            <h:outputText value="#{practiceProcess.practice.confirmDateTo}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+									</div>	
+									
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['campaign.rankingDate2']}: " style="font-weight: bold;" />
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<h:outputText value="#{practiceProcess.practice.rankingDate2}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+									</div>
+									
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right" >
+										<h:outputText value="#{labels['practiceProcess.srokAcceptSecond']}: " style="font-weight: bold;"/>
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<h:outputText value="#{practiceProcess.practice.confirmDateFrom2}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+							             - 
+							            <h:outputText value="#{practiceProcess.practice.confirmDateTo2}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+									</div>	
+
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['practice.begDatePract']}: " style="font-weight: bold;" />
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<h:outputText value="#{practiceProcess.practice.practiceDateFrom}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+									</div>
+									
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['practice.endDatePractice']}: " style="font-weight: bold;" />
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<h:outputText value="#{practiceProcess.practice.practiceDateTo}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+									</div>
+
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['general.oblast']}: " style="font-weight: bold;" />
+									</div>
+									
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, practiceProcess.practice.region, practiceProcess.currentLang, now, practiceProcess.userId)}" />
+									</div>
+
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right">
+										<h:outputText value="#{labels['general.obshtina']}: " style="font-weight: bold;" />
+									</div>
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, practiceProcess.practice.municipality, practiceProcess.currentLang, now, practiceProcess.userId)}" />
+									</div>
+									
+									<div class="p-col-12 p-md-4 p-lg-4 cc-right" >
+										<h:outputText value="#{labels['general.nasMiasto']}: " style="font-weight: bold;"/>
+									</div>
+									<div class="p-col-12 p-md-8 p-lg-8">
+										<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, practiceProcess.practice.town, practiceProcess.currentLang, now, practiceProcess.userId)}"/>						 		
+									</div>	
+
+								</div>
+
+								<div class="title-box">#{labels['practice.description']}</div>
+
+								<p:textEditor value="#{practiceProcess.practice.description}" readonly="true" toolbarVisible="false" secure="true" />
+
+							</p:tab>
+
+							<p:tab title="#{labels['practiceProcess.scheduleInterview']}" id="tabInterview">
+							
+								<div class="p-grid">
+
+									<div class="p-col-12 p-md-12 p-lg-12 cc-right">
+										<h:outputText value="#{labels['practiceProcess.finalSrok']}: " style="font-weight: bold;" />
+										<h:outputText value="#{practiceProcess.practice.rankingDate.time - 1}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+									</div>
+										
+									<div class="p-col-12">
+									
+										<p:dataTable id="tblCandidates" rowIndexVar="index" var="row" value="#{practiceProcess.candidatesList}" 
+											emptyMessage="#{labels['general.norows']}" reflow="true" >
+											
+											<p:column headerText="#{labels['general.No-symbol']}" width="5">
+												<h:outputText value="#{index + 1}" />
+											</p:column>
+											
+											<p:column style="text-align: center" width="40" exportable="false">	
+										  		 <p:commandButton icon="fa fa-fw fa-search" action="candidateView.jsf" ajax="false" title="#{labels['practiceProcess.viewProfile']}" >
+												 	   <f:param name="idObj" value="#{row[1]}" />
+									  				   <f:param name="idPrac" value="#{practiceProcess.practice.id}" />							   
+												 </p:commandButton>			
+									        </p:column>	
+									        
+									        <p:column style="text-align: center" width="40" exportable="false">										        	
+												<p:commandButton icon="pi pi-users" action="#{practiceProcess.actionSetDataInterview(row[0])}" update="formPracticeProcess:panelDataInterview" 
+											 		 oncomplete="PF('modalDataInterview').show();" title="#{labels['practiceProcess.dataForInterview']}" disabled="#{!practiceProcess.editInterviewData}"/>											
+											</p:column>
+											
+											<p:column headerText="#{labels['general.pin']}" width="80">
+												<h:outputText value="#{row[11]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['general.imena']}" width="180">
+												<h:outputText value="#{row[2]}" rendered="#{row[2] ne null}"/>
+												<h:outputText value="#{labels['practiceProcess.deletedUser']}" rendered="#{row[2] eq null}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.email']}" width="140">
+												<h:outputText value="#{row[3]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.statusCandidat']}" width="100">
+												 <h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_CANDIDATE, row[4], practiceProcess.currentLang, now, practiceProcess.userId)}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.dateInterview']}" width="120">
+												<h:outputText value="#{row[5]}" >
+													<f:convertDateTime pattern="dd.MM.yyyy HH:mm" timeZone="#{practiceProcess.timeZone}"/>
+												</h:outputText>
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.placeInterview']}" width="200">
+												<h:outputText value="#{row[6]}" />
+											</p:column>											
+											
+										</p:dataTable>
+										
+									</div>
+								
+								</div>
+
+							</p:tab>
+
+							<p:tab title="#{labels['practiceProcess.firstRanking']}" id="tabFirstRanking" >
+							
+								<div class="p-grid">
+								
+									<div class="p-col-12 p-md-12 p-lg-12">
+
+										<p:commandButton icon="fas fa-list-ol" update="formPracticeProcess" value="#{labels['practiceProcess.finishFirstRanked']}" styleClass="p-mr-2"
+											oncomplete="PF('modalConfirmRanked').show();" disabled="#{practiceProcess.finishFirstRanked or !practiceProcess.viewConfirmRanked}" />
+
+										<p:spacer width="19%" />
+										
+										<h:outputText value="#{labels['practiceList.numPositions']}: " style="font-weight: bold;" />
+										<p:outputLabel value=" #{practiceProcess.practice.num}" />
+										
+										<p:spacer width="10" />
+
+										<h:outputText value="#{labels['campaign.rankingDate']}: " style="font-weight: bold;" styleClass="cc-right" />
+										<h:outputText value="#{practiceProcess.practice.rankingDate}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+
+										<p:spacer width="10" />
+										
+										<h:outputText value="#{labels['practiceProcess.srokAcceptFirst']}: " style="font-weight: bold;"/>
+							            <h:outputText value="#{practiceProcess.practice.confirmDateTo}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+										
+									</div>
+
+									<div class="p-col-12">										
+																	
+										<p:dataTable id="tblfirstRanking" rowIndexVar="index" var="row" value="#{practiceProcess.firstRankingList}" 
+											emptyMessage="#{labels['general.norows']}" reflow="true" >	
+											
+											<p:column headerText="#{labels['practiceProcess.numClassif']}" width="70" style="text-align: center" rendered="#{!practiceProcess.finishFirstRanked}"> 									               
+							                	<p:inputNumber  id="classRankedIn" value="#{row[7]}" inputStyle="width: 45%; text-align: center" min="1" decimalPlaces="0" rendered="#{!practiceProcess.finishFirstRanked}" >
+							                		<p:ajax event="change" partialSubmit="true" process="@this" listener="#{practiceProcess.actionCheckFirstRanking(index)}" update="classRankedIn"/>
+							                	</p:inputNumber>							                	
+									        </p:column>	
+									        
+									        <p:column headerText="#{labels['practiceProcess.numClassif']}" width="70" style="text-align: center" rendered="#{practiceProcess.finishFirstRanked}" sortBy="#{row[7]}" > 									               
+							                	<h:outputText value="#{row[7]}" />
+									        </p:column>	
+									        
+									        <p:column headerText="#{labels['general.pin']}" width="80">
+												<h:outputText value="#{row[11]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['general.imena']}" rendered="#{!practiceProcess.finishFirstRanked}" width="200">
+												<h:outputText value="#{row[2]}" rendered="#{row[2] ne null}"/>
+												<h:outputText value="#{labels['practiceProcess.deletedUser']}" rendered="#{row[2] eq null}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.imena']}" width="200" rendered="#{practiceProcess.finishFirstRanked}" sortBy="#{row[2]}" >
+												<h:outputText value="#{row[2]}" rendered="#{row[2] ne null}"/>
+												<h:outputText value="#{labels['practiceProcess.deletedUser']}" rendered="#{row[2] eq null}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.email']}" width="150">
+												<h:outputText value="#{row[3]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.statusCandidat']}" width="150">
+												 <h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_CANDIDATE, row[4], practiceProcess.currentLang, now, practiceProcess.userId)}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.acceptDate']}" width="100">
+												<h:outputText value="#{row[9]}">
+								        			<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+								           		</h:outputText>
+							            	</p:column>
+											
+										</p:dataTable>
+										
+									</div>
+								
+								</div>
+
+							</p:tab>
+							
+							<ui:remove>
+							<p:tab title="#{labels['practiceProcess.secondRanking']}" id="tabSecondRanking" disabled="#{!practiceProcess.viewSecondRanking}">
+							
+								<div class="p-grid">
+								
+									<div class="p-col-12 p-md-12 p-lg-12">
+			        		
+						        		<p:commandButton icon="fas fa-list-ol" update="formPracticeProcess" value="#{labels['practiceProcess.finishSecRanked']}" styleClass="p-mr-2" 
+						        			oncomplete="PF('modalConfirmSecondRanked').show();" disabled="#{practiceProcess.finishSecondRanked and practiceProcess.freePositionAfterFirst == 0}"/>	
+						        		
+						        		<p:spacer width="17%" rendered="#{!practiceProcess.finishFinalRanked}"/>	
+						        		<p:spacer width="31%" rendered="#{practiceProcess.finishFinalRanked}"/>
+											
+										<h:outputText value="#{labels['practiceProcess.freePosition']}: " style="font-weight: bold;" rendered="#{!practiceProcess.finishFinalRanked}"/>
+										<p:outputLabel value=" #{practiceProcess.freePositionAfterFirst}" rendered="#{!practiceProcess.finishFinalRanked}"/>
+										
+										<p:spacer width="10" />
+	
+										<h:outputText value="#{labels['campaign.rankingDate2']}: " style="font-weight: bold;" styleClass="cc-right" />
+										<h:outputText value="#{practiceProcess.practice.rankingDate2}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+	
+										<p:spacer width="10" />
+										
+										<h:outputText value="#{labels['practiceProcess.srokAcceptSecond']}: " style="font-weight: bold;"/>
+							            <h:outputText value="#{practiceProcess.practice.confirmDateTo2}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+					        			
+									</div>
+
+									<div class="p-col-12">												
+																	
+										<p:dataTable id="tblSecondRanking" rowIndexVar="index" var="row" value="#{practiceProcess.secondRankingList}" 
+											emptyMessage="#{labels['general.norows']}" reflow="true" >	
+											
+											<p:column headerText="#{labels['practiceProcess.numClassif']}" width="70" style="text-align: center" rendered="#{!practiceProcess.finishSecondRanked}">
+												<h:outputText value="#{row[7]}" />
+											</p:column>
+											
+											 <p:column headerText="#{labels['practiceProcess.numClassif']}" width="70" style="text-align: center" rendered="#{practiceProcess.finishSecondRanked}" sortBy="#{row[7]}" > 									               
+							                	<h:outputText value="#{row[7]}" />
+									        </p:column>		
+											
+											<p:column width="60" exportable="false" headerText="#{labels['practiceProcess.ranked']}" style="text-align: center;">												
+												<p:selectBooleanCheckbox value="#{practiceProcess.selectRanked2[practiceProcess.castLong(row[0])]}" disabled="#{practiceProcess.finishSecondRanked}">
+													<p:ajax event="change" update="tblSecondRanking" partialSubmit="true" process="@this tblSecondRanking" />
+												</p:selectBooleanCheckbox>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.pin']}" width="80">
+												<h:outputText value="#{row[11]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['general.imena']}" rendered="#{!practiceProcess.finishSecondRanked}" width="200">
+												<h:outputText value="#{row[2]}" rendered="#{row[2] ne null}"/>
+												<h:outputText value="#{labels['practiceProcess.deletedUser']}" rendered="#{row[2] eq null}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.imena']}" width="200" rendered="#{practiceProcess.finishSecondRanked}" sortBy="#{row[2]}" >
+												<h:outputText value="#{row[2]}" rendered="#{row[2] ne null}"/>
+												<h:outputText value="#{labels['practiceProcess.deletedUser']}" rendered="#{row[2] eq null}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.email']}" width="150">
+												<h:outputText value="#{row[3]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.statusCandidat']}" width="150">
+												 <h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_CANDIDATE, row[4], practiceProcess.currentLang, now, practiceProcess.userId)}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.acceptDate']}" width="100">
+												<h:outputText value="#{row[9]}">
+								        			<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+								           		</h:outputText>
+							            	</p:column>
+											
+										</p:dataTable>
+										
+									</div>
+								
+								</div>
+
+							</p:tab>
+							</ui:remove>
+							
+							<p:tab title="#{labels['practiceProcess.secondRanking']}" id="tabSecond2Ranking" disabled="#{!practiceProcess.viewSecond2Ranking}">
+							
+								<div class="p-grid">
+								
+									<div class="p-col-12 p-md-12 p-lg-12 cc-right">	 
+	
+										<h:outputText value="#{labels['campaign.rankingDate2']}: " style="font-weight: bold;" />
+										<h:outputText value="#{practiceProcess.practice.rankingDate2}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+	
+										<p:spacer width="10" />
+										
+										<h:outputText value="#{labels['practiceProcess.srokAcceptSecond']}: " style="font-weight: bold;"/>
+							            <h:outputText value="#{practiceProcess.practice.confirmDateTo2}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+					        			
+									</div>
+
+									<div class="p-col-12">												
+																	
+										<p:dataTable id="tblSecondRanking2" rowIndexVar="index" var="row" value="#{practiceProcess.second2RankingList}" 
+											emptyMessage="#{labels['general.norows']}" reflow="true" >	
+											
+											<p:column headerText="#{labels['practiceProcess.numClassif']}" width="70" style="text-align: center" sortBy="#{row[7]}" > 									               
+							                	<h:outputText value="#{row[7]}" />
+									        </p:column>	
+									        
+									        <p:column headerText="#{labels['general.pin']}" width="80">
+												<h:outputText value="#{row[11]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['general.imena']}" width="200" sortBy="#{row[2]}" >
+												<h:outputText value="#{row[2]}" rendered="#{row[2] ne null}"/>
+												<h:outputText value="#{labels['practiceProcess.deletedUser']}" rendered="#{row[2] eq null}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.email']}" width="150">
+												<h:outputText value="#{row[3]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.statusCandidat']}" width="150">
+												 <h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_CANDIDATE, row[4], practiceProcess.currentLang, now, practiceProcess.userId)}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.acceptDate']}" width="100">
+												<h:outputText value="#{row[9]}">
+								        			<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+								           		</h:outputText>
+							            	</p:column>
+											
+										</p:dataTable>
+										
+									</div>
+								
+								</div>
+
+							</p:tab>
+							
+							<p:tab title="#{labels['practiceProcess.finalRanking']}" id="tabFinalRanking" disabled="#{!practiceProcess.finishFinalRanked}">
+							
+								<div class="p-grid">
+								
+									<div class="p-col-12 p-md-12 p-lg-12 cc-right" >
+											
+										<h:outputText value="#{labels['practiceProcess.freePosition']}: " style="font-weight: bold;" />
+										<p:outputLabel value=" #{practiceProcess.freePositionAfterSecond}" />
+										
+										<ui:remove>
+	
+										<p:spacer width="10" />
+										
+										<h:outputText value="#{labels['practiceProcess.srokAcceptSecond']}: " style="font-weight: bold;"/>
+							            <h:outputText value="#{practiceProcess.practice.confirmDateTo2}">
+							        		<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}"/>
+							            </h:outputText>
+							            
+							            </ui:remove>
+					        			
+									</div>
+
+									<div class="p-col-12">												
+																	
+										<p:dataTable id="tblFinalRanking" rowIndexVar="index" var="row" value="#{practiceProcess.finalRankingList}" 
+											emptyMessage="#{labels['general.norows']}" reflow="true" >	
+											
+											<p:column headerText="#{labels['practiceProcess.numClassif']}" width="70" style="text-align: center">
+												<h:outputText value="#{row[7]}" />
+											</p:column>	
+											
+											<p:column width="120" exportable="false" style="text-align: center;">
+												<p:commandButton icon="fa fa-check" update="formPracticeProcess" value="#{labels['practiceProcess.acceptPractice']}" styleClass="p-mr-2" 
+						        					disabled="#{row[10] ne null}" action="#{practiceProcess.actionAcceptedPractice(row[0], row[1], row[2])}" ajax="false"/>							        		
+											</p:column>
+											
+											<p:column headerText="#{labels['general.pin']}" width="80">
+												<h:outputText value="#{row[11]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['general.imena']}" width="200">
+												<h:outputText value="#{row[2]}" rendered="#{row[2] ne null}"/>
+												<h:outputText value="#{labels['practiceProcess.deletedUser']}" rendered="#{row[2] eq null}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.email']}" width="150">
+												<h:outputText value="#{row[3]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.statusCandidat']}" width="150">
+												 <h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_CANDIDATE, row[4], practiceProcess.currentLang, now, practiceProcess.userId)}" />
+											</p:column>
+											
+										</p:dataTable>
+										
+									</div>
+								
+								</div>
+
+							</p:tab>
+
+							<p:tab title="#{labels['practiceProcess.practiceResult']}" id="tabPracticeResult" disabled="#{!practiceProcess.finishPractice}">
+							
+								<div class="p-grid">
+								
+									<div class="p-col-12 p-md-12 p-lg-12">
+			        		
+						        		<p:commandButton icon="fa fa-save" action="#{practiceProcess.actionSaveResultPractice}" update="formPracticeProcess" value="#{labels['general.save']}" styleClass="p-mr-2" />	
+						        			
+						        		<p:spacer width="72%" />
+
+										<h:outputText value="#{labels['practice.endDatePractice']}: " style="font-weight: bold;" styleClass="cc-right"/>
+										<h:outputText value="#{practiceProcess.practice.practiceDateTo}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{practiceProcess.timeZone}" />
+										</h:outputText>
+
+									</div>
+									
+									<div class="p-col-12">												
+																	
+										<p:dataTable id="tblPracticeResult" rowIndexVar="index" var="row" value="#{practiceProcess.practiceResultList}" 
+											emptyMessage="#{labels['general.norows']}" reflow="true" >												
+											
+											<p:column width="120" exportable="false" headerText="#{labels['general.result']}" style="text-align: center;" >
+												<p:selectOneRadio id="probMove" value="#{row[8]}" layout="lineDirection" >
+													<f:selectItem itemValue="#{IBConstantsSys.CODE_ZNACHENIE_DA}" itemLabel="#{labels['general.yes']}" />
+													<f:selectItem itemValue="#{IBConstantsSys.CODE_ZNACHENIE_NE}" itemLabel="#{labels['general.no']}" />
+												</p:selectOneRadio>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.pin']}" width="80">
+												<h:outputText value="#{row[11]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['general.imena']}" width="200">
+												<h:outputText value="#{row[2]}" rendered="#{row[2] ne null}"/>
+												<h:outputText value="#{labels['practiceProcess.deletedUser']}" rendered="#{row[2] eq null}"/>
+											</p:column>
+											
+											<p:column headerText="#{labels['general.email']}" width="150">
+												<h:outputText value="#{row[3]}" />
+											</p:column>
+											
+											<p:column headerText="#{labels['practiceProcess.statusCandidat']}" width="150">
+												 <h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_CANDIDATE, row[4], practiceProcess.currentLang, now, practiceProcess.userId)}" />
+											</p:column>
+											
+										</p:dataTable>
+										
+									</div>
+								
+								</div>
+
+							</p:tab>
+
+						</p:tabView>
+
+					</p:outputPanel>
+
+				</div>
+
+			</div>
+
+			<p:dialog header="#{labels['practiceProcess.dataForInterview']}" appendTo="@form" widgetVar="modalDataInterview" dynamic="true" modal="true" position="top" responsive="true" width="48%" closeOnEscape="true">
+
+				<p:messages>
+					<p:autoUpdate />
+				</p:messages>
+
+				<p:outputPanel id="panelDataInterview">
+
+					<div class="p-grid ui-fluid">
+
+						<div class="p-grid">
+
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['practiceProcess.candidat']}:" style="font-weight: bold;" />
+							</div>
+							
+							<div class="p-col-12 p-md-9 p-lg-9">								
+								<p:outputLabel value="#{practiceProcess.names}" />
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['practiceProcess.dateInterview']}:" style="font-weight: bold;" styleClass="req"/>
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3">
+								 <p:calendar id="dateInterview" value="#{practiceProcess.practiceLice.dateInterview}" pattern="dd.MM.yyyy HH:mm" mask="true" showOn="button" 
+										timeZone="#{practiceProcess.timeZone}" locale="bg" label="#{labels['practiceProcess.dateInterview']}" defaultHour="10" defaultMinute="00"/>
+    							 <p:tooltip for="dateInterview" rendered="#{not empty facesContext.messageList and not empty facesContext.getMessageList(p:resolveFirstComponentWithId('dateInterview', view).clientId)}">						        
+									<p:message for="dateInterview"  display="text" style="color:#ffffff; background:none; border:0px">
+										<p:autoUpdate/>
+									</p:message>
+								 </p:tooltip>
+							</div> 
+							
+							<div class="p-col-12 p-md-6 p-lg-6">
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['practiceProcess.placeInterview']}: " style="font-weight: bold;" styleClass="req"/>
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+								<p:inputText id="interviewPlace" value="#{practiceProcess.practiceLice.interviewPlace}" />
+								<p:message for="interviewPlace" showDetail="true" showSummary="true" display="tooltip">
+									<p:autoUpdate/>
+								</p:message>
+							</div>
+
+						</div>
+
+					</div>
+
+				</p:outputPanel>
+
+				<f:facet name="footer">
+					
+					<div class="p-grid p-nogutter">					
+						<div class="p-col-6" align="left">
+							<p:commandButton id="saveData" icon="fas fa-save" value="#{labels['general.save']}" action="#{practiceProcess.actionSaveDataInterview}" 
+								update="panelDataInterview formPracticeProcess:panelData" partialSubmit="true" process="panelDataInterview formPracticeProcess:panelData @this" />
+						</div>
+							
+						<div class="p-col-6" align="right">
+							<p:commandButton update="panelDataInterview" process="@this panelDataInterview" icon="fas fa-times"
+								styleClass="ui-button-secondary" value="#{labels['general.cancel']}" oncomplete="PF('modalDataInterview').hide();" />
+						</div>
+					</div>
+				
+				</f:facet>
+
+			</p:dialog>
+			
+			<p:dialog appendTo="@form" header="#{labels['practiceProcess.confirmRankedTitle']}" width="600" widgetVar="modalConfirmRanked" dynamic="true" modal="true">
+						
+				<p:messages>
+			        <p:autoUpdate />
+			    </p:messages>	
+				
+				<p:outputPanel id="panelConfirmRanked">
+
+					<div class="p-grid ui-fluid">
+						
+						<div class="p-col-12 p-md-12">
+							<h:outputText value="#{labels['practiceProcess.finishRanked']}" styleClass="form-label" rendered="#{practiceProcess.firstRankingList.size() > 0}"/>
+							<h:outputText value="#{labels['practiceProcess.noCandidates']}" styleClass="form-label" rendered="#{practiceProcess.firstRankingList.size() == 0}" />
+						</div>
+						
+					</div>
+	
+				</p:outputPanel>
+				
+				<f:facet name="footer">
+					
+					<div class="p-grid p-nogutter">					
+						<div class="p-col-6" align="left">
+							<p:commandButton icon="fas fa-check-double" value="#{labels['practiceProcess.confirmRanked']}" action="#{practiceProcess.actionConfirmFirstRanked}" 
+							update="formPracticeProcess" disabled="#{practiceProcess.firstRankingList.size() == 0}"/>
+						</div>
+							
+						<div class="p-col-6" align="right">
+							<p:commandButton update="panelConfirmRanked" process="@this panelConfirmRanked" icon="fas fa-times"
+								styleClass="ui-button-secondary" value="#{labels['general.cancel']}" oncomplete="PF('modalConfirmRanked').hide();" />
+						</div>
+					</div>
+				
+				</f:facet>
+					
+			</p:dialog>
+			
+			<p:dialog appendTo="@form" header="#{labels['practiceProcess.confirmSecRankedTitle']}" width="600" widgetVar="modalConfirmSecondRanked" dynamic="true" modal="true">
+						
+				<p:messages>
+			        <p:autoUpdate />
+			    </p:messages>	
+				
+				<p:outputPanel id="panelConfirmSecRanked">
+
+					<div class="p-grid ui-fluid">
+						
+						<div class="p-col-12 p-md-12">
+							<h:outputText value="#{labels['practiceProcess.finishSecondRanked']}" styleClass="form-label" />
+						</div>
+						
+					</div>
+	
+				</p:outputPanel>
+				
+				<f:facet name="footer">
+					
+					<div class="p-grid p-nogutter">					
+						<div class="p-col-6" align="left">
+							<p:commandButton icon="fas fa-check-double" value="#{labels['practiceProcess.confirmRanked']}" action="#{practiceProcess.actionConfirmSecondRanked}" 
+							update="formPracticeProcess" />
+						</div>
+							
+						<div class="p-col-6" align="right">
+							<p:commandButton update="panelConfirmSecRanked" process="@this panelConfirmSecRanked" icon="fas fa-times"
+								styleClass="ui-button-secondary" value="#{labels['general.cancel']}" oncomplete="PF('modalConfirmSecondRanked').hide();" />
+						</div>
+					</div>
+				
+				</f:facet>
+					
+			</p:dialog>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

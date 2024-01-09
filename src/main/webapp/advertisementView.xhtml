@@ -1,0 +1,401 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/components">
+	
+	<ui:composition template="/templateExt/mainExt.xhtml">
+
+		<ui:define name="metatags">
+			<meta property="og:type" content="article" />
+			<meta property="og:title" content="Обяви за мобилност | Mobility"/>
+			<meta property="og:description" content="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_JOBS, advertisementView.adver.position, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}" />
+			<ui:remove>
+				<meta property="og:site_name" content="" />
+				<meta property="og:url" content="" />
+				<meta property="og:locale" content="" />
+			</ui:remove>
+		</ui:define>
+		
+		<ui:define name="title">#{labels['advertisementView.title']}</ui:define>
+		
+		<!-- Navigation menu (NAVBAR) -->
+		<ui:define name="menu-items">
+			<ui:include src="/include/menuExt.xhtml"/>
+		</ui:define>
+		
+	<ui:define name="content">
+	
+		<style>
+			.ql-container.ql-snow {
+			    border: none;
+			}
+			
+			.ql-editor {
+				padding: 0;
+				white-space: normal;
+			}
+		</style>
+	
+	  <h:form id="formAdverView">
+		   
+		  <p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  <p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+		  
+		  	<p:tooltip/>
+		  	
+		  	  <div class="title-page back">
+				<div class="container">
+					<div class="p-grid p-align-center">
+						<div class="p-col-fixed back-col">
+							<p:link outcome="adverExtList.jsf" title="#{labels['general.back']}" styleClass="back-button">
+						  		<i class="fas fa-caret-left" ></i>
+						    </p:link>
+					    </div>
+						<div class="p-col">
+							<h3 class="title">
+								#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_JOBS, advertisementView.adver.position, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}
+							</h3>
+						</div>
+					</div>
+ 				</div>
+ 				
+ 			  </div>	
+ 			  
+			  			  
+			  <div class="container">
+			  
+			  <div class="container-white">				 	
+			  
+			  <div class="p-grid tab-layout">
+			  
+			  <div class="p-col-12 p-lg-3 column-tabs">
+				<div class="p-grid tabs">
+					
+					<div class="p-lg-12 tab" id="tab-general">
+						<i class="fas fa-scroll tab-icon"></i>
+						<div class="tab-title">#{labels['advertisementEdit.description']}</div>
+					</div>
+					
+					<div class="p-lg-12 tab" id="tab-miastoSrokPodavane">
+						<i class="fas fa-building tab-icon"></i>
+						<div class="tab-title">#{labels['advertisement.miastoSrokPodavane']}</div>
+					</div>
+										
+					<div class="p-lg-12 tab" id="tab-files">
+						<i class="fas fa-paperclip tab-icon"></i>
+						<div class="tab-title">#{labels['general.attachedDoc']}</div>
+					</div>
+					
+				</div>
+			</div>
+			
+			<div class="p-col-12 p-lg-9 column-contents">
+						  
+			  <p:outputPanel id="panelData">
+					
+					<div id="tab-content-general" class="tab-content">
+			  		
+			  		<div class="p-grid">
+			  			
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['general.admStruc']}: " style="font-weight: bold;"/>
+							</div>
+	
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_REGISTER, advertisementView.adver.administration, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>						 		
+						 	</div>
+						 	
+						 	<div class="p-col-12 p-md-3 p-lg-3 cc-right" jsf:rendered="#{!advertisementView.direkcia.isEmpty()}"></div>
+							<div class="p-col-12 p-md-9 p-lg-9" jsf:rendered="#{!advertisementView.direkcia.isEmpty()}">
+						 		<p:outputLabel value="#{advertisementView.direkcia}" style="font-style: italic;" escape="false"/>
+						 	</div>
+						 	
+						 	<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.zveno']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">							
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, advertisementView.adver.unit, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}" rendered="#{advertisementView.adver.unit!=null}"/>	                                							                        
+							</div>
+						 	
+						 	<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['general.oblast']}: " style="font-weight: bold;"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+			  					<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, advertisementView.adver.locationRegion, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['general.obshtina']}: " style="font-weight: bold;"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+			  					<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, advertisementView.adver.locationMunicipality, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>			  					
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['general.nasMiasto']}: " style="font-weight: bold;"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+			  					<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, advertisementView.adver.locationTown, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>			  					
+			  				</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.dlajnost']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">	
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_JOBS, advertisementView.adver.position, advertisementView.currentLang, advertisementView.adver.dateReg, IBConstants.PORTAL_USER)}"/>
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.profNapr']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_PROFESSIONAL_FIELD, advertisementView.adver.professionalField, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>																	                        
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.dlajNivo']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_POSITION_LEVEL, advertisementView.adver.level, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>
+							</div>	
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.tipMobil']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_MOBILITY_TYPE, advertisementView.adver.mobilityType, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>																		                        
+							</div>
+											
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.minObrazStepen']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EDUCATION_DEGREE, advertisementView.adver.educationDegree, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>	
+							</div>								
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.minProfOpit']}: " style="font-weight: bold;"/> 
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EXPERIENCE, advertisementView.adver.experience, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>
+							</div>									
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.rang']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_RANK, advertisementView.adver.rank, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.minRazmerNaOsnZapl']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{advertisementView.adver.salary}"/>      
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.brMesta']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">								
+								<p:outputLabel value="#{advertisementView.adver.num}" />									                        
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['advertisement.specIziskDlaj']}: " style="font-weight: bold;"/>
+							</div>
+	
+							<div class="p-col-12 p-md-9 p-lg-9">	
+								<p:textEditor id="specIziskDlaj" value="#{advertisementView.adver.requirements}" readonly="true" toolbarVisible="false" secure="true"/>
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['advertisement.dopIziskDlaj']}: " style="font-weight: bold;"/>
+							</div>
+	
+							<div class="p-col-12 p-md-9 p-lg-9">						
+								<p:textEditor id="dopIziskDlaj" value="#{advertisementEdit.adver.addInfoNew}" readonly="true" toolbarVisible="false" secure="true" />							
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['advertisement.nachinPodbor']}: " style="font-weight: bold;"/>
+							</div>
+	
+							<div class="p-col-12 p-md-9 p-lg-9">							
+								<p:outputLabel value="#{advertisementEdit.adver.selectionMode}" />								
+							</div>
+			  			
+			  			</div>
+			  		
+				  		<div class="title-box">		  		
+				  			#{labels['advertisement.kratkoOpisDlaj']}
+				  		</div>
+				  		<div class="p-grid">
+				  			<div class="p-col-12">
+				  				<p:textEditor id="editor" value="#{advertisementView.adver.description}" readonly="true" toolbarVisible="false" secure="true"/>
+				  			</div>
+				  		</div>
+			  			<p:remoteCommand name="updateEditor" update="editor specIziskDlaj dopIziskDlaj iziskvaniDokumenti" />
+			  		</div>
+			  		
+			  		<div id="tab-content-miastoSrokPodavane" class="tab-content">
+			  		
+				  		<div class="title-box" style="margin-bottom:10px">		  		
+				  			#{labels['advertisement.miastoSrokPodavane']}
+				  		</div>	
+			  			<div class="p-grid">
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['general.oblast']}: " style="font-weight: bold;"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+			  					<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, advertisementView.adver.region, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>
+			  				</div>
+			  				
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['general.obshtina']}: " style="font-weight: bold;"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+			  					<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, advertisementView.adver.municipality, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>			  					
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['general.nasMiasto']}: " style="font-weight: bold;"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+			  					<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_EKATTE, advertisementView.adver.town, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>			  					
+			  				</div>
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+			  					<h:outputText value="#{labels['general.adress']}: " style="font-weight: bold;"/>
+			  				</div>
+			  				<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{advertisementView.adver.address}" />								
+							</div>						
+			  				<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['advertisement.adminZveno']}: " style="font-weight: bold;"/>
+							</div>	
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_ADM_FLAT, advertisementView.adver.admUnit, advertisementView.currentLang, now, IBConstants.PORTAL_USER)}"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.datePubl']}:" style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{advertisementView.adver.dateFrom}">
+									<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{advertisementView.timeZone}"/>
+								</p:outputLabel>								 
+							</div>							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right" >
+								<h:outputText value="#{labels['advertisement.srokPodavDocum']}:" style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:outputLabel value="#{advertisementView.adver.dateTo}">
+									<f:convertDateTime pattern="dd.MM.yyyy" timeZone="#{advertisementView.timeZone}"/>
+								</p:outputLabel>
+							</div>
+							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['genaral.locationEmail']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">							
+								<p:outputLabel value="#{advertisementView.adver.locationEmail}" />								
+							</div>
+							 							
+							<div class="p-col-12 p-md-3 p-lg-3 cc-right">
+								<h:outputText value="#{labels['general.iziskvaniDokumenti']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-9 p-lg-9">
+								<p:textEditor id="iziskvaniDokumenti" value="#{advertisementView.adver.addInfo}" readonly="true" toolbarVisible="false" secure="true"/>
+							</div>
+							
+						</div>
+						
+						<div class="title-box" style="margin-bottom:10px">		  		
+				  			#{labels['advertisement.liceKontakt']}
+				  		</div>	
+				  		
+				  		<div class="p-grid">
+			  				<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.imena']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">								
+								<p:outputLabel value="#{advertisementView.adver.contactPerson}" />								                        
+							</div>	
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.telefon']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">								
+								<p:outputLabel value="#{advertisementView.adver.contactPhone}" />								                        
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.email']}: " style="font-weight: bold;"/>
+							</div>
+							<div class="p-col-12 p-md-10 p-lg-10">								
+								<p:outputLabel value="#{advertisementView.adver.contactEmail}" />								                        
+							</div>	
+						</div>
+			  		
+			  		</div>
+			  		
+			  		<div id="tab-content-files" class="tab-content">
+			  		
+			  			<div class="title-box">		  		
+				  			#{labels['general.attachedDoc']}
+				  		</div>
+						<div class="p-grid">
+
+						<div class="p-col-12 p-md-12 p-lg-12">	
+						
+							<p:dataTable id="fileList" var="row" value="#{advertisementView.filesList}" emptyMessage="#{labels['general.norows']}">
+	
+								<p:column headerText="" width="60">
+									<p:commandButton ajax="false" actionListener="#{advertisementView.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+								</p:column>
+
+								<p:column headerText="#{labels['file.filename']}">
+									<h:outputText value="#{row.description}" rendered="#{row.description != null}" />
+									<h:outputText value="#{row.filename}" rendered="#{row.description == null or row.description == ''}" />
+								</p:column>
+
+							</p:dataTable>
+							
+							</div>
+						
+						</div>
+					
+					</div>	
+				
+			 	</p:outputPanel>
+					 	
+			 	</div>	
+				
+			</div>
+			
+			</div>
+			 	
+		  </div>			 
+		  	 
+		</h:form>
+		
+			<script>
+				$(document).ready(function() {
+					attachTabClickListeners();
+					updateEditor();
+					
+					$(".tab-layout").each(function() {
+						$(this).find(".tab").bind("click", function() {
+							setTimeout(function() {updateEditor();}, 500);
+						})
+					});
+					
+				});
+			</script>
+		
+	</ui:define>
+
+</ui:composition>
+		
+</html>	

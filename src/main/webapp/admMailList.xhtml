@@ -1,0 +1,212 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:pe="http://primefaces.org/ui/extensions"
+	  xmlns:ibg="http://java.sun.com/jsf/composite/ibg">
+
+<ui:composition template="/templateExt/mainExt.xhtml">
+
+	<ui:define name="title">#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 51, environment.currentLang, null, null)}</ui:define>
+
+	<!-- Navigation menu (NAVBAR) -->
+	<ui:define name="menu-items">
+		<ui:include src="/include/menuExt.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+	
+	<style>
+		div {
+		  text-align: justify;
+		  text-justify: inter-word;
+		}
+		
+		.ui-datatable .ui-datatable-header {
+			 text-align: left;		
+		}
+	</style>	
+
+		<h:form id="formAdmMails">
+			
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  	<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />
+			
+			<div class="title-page">
+				<div class="container">
+					<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, 51, environment.currentLang, null, null)}</h3>
+				</div>
+			</div>
+
+			<div class="container">
+
+				<div class="container-white"  onkeypress="if(event.keyCode === 13) { event.preventDefault();  document.getElementById('formAdmMails:btnSearch').click()}">
+				
+					<p:focus context="panelSearch"/>	 
+					
+					<p:panel header="#{labels['general.search']}" id="panelSearch">
+						<div class="p-grid">
+							
+							<div class="p-col-12 p-md-1 p-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.period']}:"/>
+							</div>
+							<div class="p-col-12 p-md-3 p-lg-3">
+								<p:selectOneMenu id="idPer" value="#{admMailList.period}" >
+		                             <f:selectItem value="#{null}" itemValue="#{null}"/>          
+		                             <f:selectItems  value="#{admMailList.periodList}"  var="clPer" itemLabel="#{clPer.tekst}" itemValue="#{clPer.code}" />
+		                             <p:ajax event="change" update="formAdmMails:idPer formAdmMails:dateOt formAdmMails:dateDo" listener="#{admMailList.changePeriod}"/>   
+		                        </p:selectOneMenu>		                        
+	                        </div>
+	                                
+	                        <div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.dataOt']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								 <p:calendar id="dateOt" pattern="dd.MM.yyyy" mask="true"  showOn="button" timeZone="#{admMailList.timeZone}" size="10" locale="bg" 
+							         	value="#{admMailList.dateFrom}" label="#{labels['publ.dateFrom']}" styleClass="form-control #{admMailList.hasMessages('formAdmMails:dateOt') ? 'cc-red ': '' }" />
+							      <p:message for="dateOt" showDetail="true" showSummary="true" display="tooltip">
+							      		<p:autoUpdate/>
+							      </p:message>
+							</div>
+							
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['general.dataDo']}:"/>
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:calendar id="dateDo" pattern="dd.MM.yyyy" mask="true" showOn="button" timeZone="#{admMailList.timeZone}" size="10" locale="bg" 
+						         	value="#{admMailList.dateTo}" label="#{labels['publ.dateTo']}"  styleClass="form-control #{admMailList.hasMessages('formAdmMails:dateDo') ? 'cc-red' : '' }" />
+							     <p:message for="dateDo" showDetail="true" showSummary="true" display="tooltip">
+							     	 <p:autoUpdate/>
+							     </p:message> 
+							</div> 
+						</div>
+						<div class="p-grid">						
+		                    
+		                    <div class="ui-g-12 ui-md-1 ui-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.imena']}: " />
+							</div>
+							<div class="ui-g-12 ui-md-4 ui-lg-4">
+								<p:inputText value="#{admMailList.nameLice}" id="names" style="width:99%;"/>  											                        
+							</div>
+							<div class="ui-g-12 ui-md-1 ui-lg-1 cc-right" >
+								<h:outputText value="#{labels['general.email']}: " />
+							</div>
+							<div class="ui-g-12 ui-md-2 ui-lg-2">
+								<p:inputText value="#{admMailList.email}" id="email" style="width:99%;" />   										                        
+							</div>
+							<div class="p-col-12 p-md-2 p-lg-2 cc-right" >
+								<h:outputText value="#{labels['admMailList.statusMail']}: "/>
+							</div>
+									
+							<div class="p-col-12 p-md-2 p-lg-2">
+								<p:selectOneMenu value="#{admMailList.status}" id="status">                                     
+	                               		<f:selectItem value="#{null}" itemValue="#{null}"/> 
+	                               		<f:selectItems value="#{systemData.getSysClassification(IBConstants.CODE_SYSCLASS_STATUS_MAIL, now, admMailList.currentLang, admMailList.userId)}" 
+	                               					   var="stat" itemLabel="#{stat.tekst}" itemValue="#{stat.code}" />	
+	                            </p:selectOneMenu>			                       
+		                    </div>	
+									
+							<div class="p-col-6 p-md-6 p-lg-6">
+				 				<p:commandButton action="#{admMailList.actionClear}" value="#{labels['general.clear']}" update="formAdmMails:tbl formAdmMails:panelSearch" id="btnClear" tabindex="-1"/> 
+						 	</div>						 	
+						 	
+						    <div class="p-col-6 p-md-6 p-lg-6 cc-rightAll" >
+						        <p:commandButton action="#{admMailList.actionSearch}" value="#{labels['general.search']}" icon="fa fa-search" update="formAdmMails:tbl" id="btnSearch" />
+						    </div>						
+						</div>						
+					
+					</p:panel>
+					
+					<br/><br />
+					
+					<p:dataTable id="tbl" var="row" value="#{admMailList.mailsList}" lazy="true" rows="15"
+							rowIndexVar="idx" sortMode="single" reflow="true" emptyMessage="#{labels['general.norows']}"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+							rowsPerPageTemplate="15,20,25" paginatorPosition="bottom" selection="#{admMailList.selectedMails}"
+							paginator="true" style="margin-bottom:20px">
+						
+						<f:facet name="header">
+				            <p:splitButton id="changeStatus" value="#{labels['admMailList.changeStatus']}"  icon="fa fa-list" rendered="#{admMailList.mailsList.rowCount > 0}">
+					            <p:menuitem value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_MAIL, IBConstants.CODE_ZNACHENIE_STATUS_MAIL_SEND, admMailList.currentLang, now, admMailList.userId)}" action="#{admMailList.actionStatusSendMail}" icon="fa fa-envelope-open" update="formAdmMails:tbl"/> 
+					            <p:menuitem value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_MAIL, IBConstants.CODE_ZNACHENIE_STATUS_MAIL_NOT_SEND, admMailList.currentLang, now, admMailList.userId)}" action="#{admMailList.actionStatusNotSendMail}" icon="fa fa-envelope" update="formAdmMails:tbl"/>					         
+					            <p:menuitem value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_MAIL, IBConstants.CODE_ZNACHENIE_STATUS_MAIL_ERROR, admMailList.currentLang, now, admMailList.userId)}" action="#{admMailList.actionStatusErrorMail}" icon="fa fa-bug" update="formAdmMails:tbl"/> 
+       						</p:splitButton>
+				        </f:facet>
+				        
+				        <p:column selectionMode="multiple" style="width:16px;text-align:center" id="selMailForChange"/>
+						
+						<p:column style="width:25px">
+				            <p:rowToggler />
+				        </p:column>
+
+						<p:column width="120" sortBy="#{row.A1}">
+							 <f:facet name="header">
+								 <h:outputText value="#{labels['general.email']}" />
+							 </f:facet>
+							 <h:outputText value="#{row[1]}" />
+						 </p:column>
+						
+						<p:column width="120" sortBy="#{row.A2}">
+							 <f:facet name="header">
+								 <h:outputText value="#{labels['general.imena']}" />
+							 </f:facet>
+							 <h:outputText value="#{row[2]}" />
+						 </p:column>
+						 
+						 <p:column width="150" sortBy="#{row.A3}">
+							 <f:facet name="header">
+								 <h:outputText value="#{labels['userMailMess.subject']}" />
+							 </f:facet>
+							 <h:outputText value="#{row[3]}" />
+						 </p:column>
+						 
+						 <p:column width="80" sortBy="#{row.A4}">
+							<f:facet name="header">
+								 <h:outputText value="#{labels['userMailMess.dateSent']}" />									  
+							</f:facet>
+							<h:outputText value="#{row[4]}">
+							     <f:convertDateTime type="date" pattern="dd.MM.yyyy" timeZone="#{admMailList.timeZone}"/>
+							</h:outputText>
+						</p:column>	
+						
+						<p:column width="150" sortBy="#{row.A5}">
+							<f:facet name="header">
+								<h:outputText value="#{labels['admMailList.statusMail']}:" />
+							</f:facet>							
+							<h:outputText value="#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_STATUS_MAIL, row[5], admMailList.currentLang, now, admMailList.userId)}" />
+						</p:column>
+						
+					 	<p:column style="text-align: center" width="30">
+							 
+							 <p:commandButton  icon="fa fa-fw fa-envelope" action="#{admMailList.actionSendMail}" title="#{labels['general.sendMail']}" rendered="#{row[5] eq IBConstants.CODE_ZNACHENIE_STATUS_MAIL_ERROR}" update="formAdmMails:tbl">
+							 	<f:param name="idObj" value="#{row[0]}" />
+							 </p:commandButton>
+
+				        </p:column>		
+						
+						<p:rowExpansion>
+							<h:outputText value="#{labels['general.infoError']}: " style="font-weight: bold;" rendered="#{row[5] == 3}"/>
+							<br />						 
+							<p:outputLabel value="#{row[6]}" rendered="#{row[5] == 3}" />
+							<br /> <br />
+							<h:outputText value="#{labels['admMailList.msgMail']}: " style="font-weight: bold;"/>
+							<br />						 
+							<p:outputLabel value="#{row[7]}" escape="false"/>
+							<br />
+						</p:rowExpansion>						 
+					
+					</p:dataTable>
+
+				</div>
+				
+			</div>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+
+</html>	

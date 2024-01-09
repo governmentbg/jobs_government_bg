@@ -1,0 +1,199 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ibg="http://java.sun.com/jsf/composite/components">
+		
+	<style>
+		
+		.ui-fileupload-buttonbar {
+		    margin: 0px 0px 0px 0px !important;
+		    padding: 0px 0px 0px 0px !important;
+		    border: none;
+		    position: relative;  
+		    background-color: #fff;
+		}
+		
+		.ui-fileupload {
+		    margin: 0px 0px 0px 0px !important;
+		    padding: 0px 0px 0px 0px !important;
+		    display: inline-block;
+		    border: none;
+		   
+		}
+		
+		.ui-fileupload-content { 
+		   border: none;
+		   padding: 0px !important;
+		}
+		.ui-fileupload-files {display:none;}
+		.ui-selectonemenu-filter-container {
+		    width: 98% !important;
+		}		 
+			
+	</style>	
+		
+		<h:form id="formPageText">
+		
+			<p:importConstants type="indexbg.pjobs.system.Constants" var="IBConstants" className="indexbg.pjobs.system.Constants"/>
+		  	<p:importConstants type="com.indexbg.system.SysConstants" var="IBConstantsSys" className="com.indexbg.system.SysConstants" />	
+		  	
+		  	<!-- PAGE TITLE -->
+			<div class="title-page">
+				<div class="container">	 
+					<h3>#{systemData.decodeItem(IBConstants.CODE_SYSCLASS_SECTION, pagesText.sect, environment.currentLang, null, null)} </h3>
+				</div>
+ 			</div>	
+					
+			<div class="container">
+			
+			<div class="container-white">
+
+				<p:outputPanel id="panelData">
+				
+					<br />
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton id="bntSave" action="#{pagesText.actionSave}" update="formPageText:panelData" icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+						
+						 <f:facet name="right">
+						 	<p:selectOneMenu id="idLang" value="#{pagesText.lang}" style="width:130px">
+                               <f:selectItems value="#{systemData.getSysClassification(IBConstantsSys.CODE_CLASSIF_LANG, now, pagesText.lang, pagesText.userId)}"  
+                               		var="langItem" itemLabel="#{langItem.tekst}" itemValue="#{langItem.code}" />
+                               <p:ajax event="change" update="formPageText:panelData" listener="#{pagesText.actionChangeLang}" process="@all"/>
+	                        </p:selectOneMenu>
+						 </f:facet>
+					</p:toolbar>					
+					<br />
+					
+					<p:panel style="margin-bottom:10px">
+                        
+							<div class="p-grid">
+							
+							<div class="p-col-12 p-md-12 p-lg-12">
+								<p:selectBooleanCheckbox value="#{pagesText.txtPages.visibleOnSite}" itemLabel="#{labels['pagesText.publish']}"/>
+							</div> 
+
+							<div class="p-col-12 p-md-12 p-lg-12">
+								
+								<p:textEditor id="staticTxt" widgetVar="editor" value="#{pagesText.txtPages.pageText}" height="500" placeholder="#{labels['pagesText.insertTxt']}" secure="true">
+									
+									<f:facet name="toolbar">
+										
+										<span class="ql-formats"> 										
+											<select	class="ql-size" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-bold" />
+											<button class="ql-italic" />
+											<button class="ql-underline" />
+											<button class="ql-strike" />
+										</span>
+										<span class="ql-formats"> <select class="ql-color" />
+											<select class="ql-background" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-script" value="sub" />
+											<button class="ql-script" value="super" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-header" value="1" />
+											<button class="ql-header" value="2" />
+											<button class="ql-blockquote" />
+											<button class="ql-code-block" />
+										</span>
+										<span class="ql-formats">
+											<button class="ql-list" value="ordered" />
+											<button class="ql-list" value="bullet" />
+											<button class="ql-indent" value="-1" />
+											<button class="ql-indent" value="+1" />
+										</span>										
+										<span class="ql-formats">
+											<button class="ql-link" />
+										</span>
+
+									</f:facet>
+								
+								</p:textEditor>
+							
+							</div>
+						
+						</div>
+						
+						<p:panel header="#{labels['general.files']}" style="margin-bottom:10px" rendered="#{pagesText.sect eq 42}">
+					
+						<div class="p-grid">
+						
+							<div class="p-col-12 p-md-12 p-lg-12">
+								<p:fileUpload id="filesUpload" listener="#{pagesText.uploadFileListener}" label="" skinSimple="true" update="fileList" auto="true"
+											  allowTypes="#{systemData.getSettingsValue('fileExtensionsForAttaching')}" invalidSizeMessage="#{labels['general.invalidFileSize']}" 
+					    					  invalidFileMessage="#{labels['general.invalidFileTypeAt']}" mode="advanced"/>
+											  							
+								<p:tooltip for="filesUpload" value="#{labels['file.upload']}" />
+							</div>
+
+						<div class="p-col-12 p-md-12 p-lg-12">	
+							
+							 <p:dataTable id="fileList" var="row" value="#{pagesText.filesList}" reflow="true" 
+							 			  rowIndexVar="rkv" emptyMessage="#{labels['general.norows']}" rows="10" style="margin-bottom:10px" paginator="true" 
+							 			  paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+							      
+							        <p:column headerText="#{labels['general.No-symbol']}" width="40">
+										<h:outputText value="#{rkv + 1}" />
+									</p:column>
+									
+									 <p:column headerText="" width="60">									           	
+								        <p:commandButton ajax="false" actionListener="#{pagesText.download(row)}" icon="fa fa-fw fa-download" title="#{labels['file.download']}" />
+								     </p:column>
+									
+							       	<p:column headerText="#{labels['file.filename']}" width="30%" >
+							       		 <h:outputText value="#{row.filename}" />     
+							         </p:column>
+							       	
+							       <p:column headerText="#{labels['file.description']}" width="60%" >									   
+							            <p:inputText value="#{row.description}" />									            								           
+							       </p:column>				       
+											
+									<p:column headerText="" width="60" exportable="false">
+										<p:commandButton action="#{pagesText.remove(row)}" update="fileList" icon="fa fa-fw fa-trash" style="color: #d90000;" title="#{labels['general.delete']}"
+														 onclick="if(!confirm('#{labels['file.confirmDeleteFile']}'))return false;">
+											<f:param name="idObjDel" value="#{row.id}" />																						
+										</p:commandButton>										
+									</p:column>
+							  
+							   </p:dataTable>
+							   
+							   <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							        <p:commandButton value="#{labels['general.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							        <p:commandButton value="#{labels['general.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+							   </p:confirmDialog>
+							   
+							</div>
+						</div>
+					
+					</p:panel>		 				
+							
+					</p:panel>
+				
+					<p:toolbar>
+					
+						<f:facet name="left">
+							<p:commandButton id="bntSaveDown" action="#{pagesText.actionSave}" update="formPageText:panelData" icon="fa fa-save" value="#{labels['general.save']}" />
+						</f:facet>
+				
+					</p:toolbar>
+			
+				</p:outputPanel>				
+			 
+			    </div>
+
+			</div>
+			
+		</h:form>
+
+</html>
